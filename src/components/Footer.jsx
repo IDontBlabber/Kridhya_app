@@ -23,7 +23,7 @@ export default function Footer() {
         {/* brand + newsletter */}
         <div className="col-span-2 lg:col-span-3">
           <Link to="/" aria-label="Kridhya by Devanshi Agarwal — home"><Logo /></Link>
-          <p className="mt-4 font-display text-[22px] italic leading-snug text-gold-light">{TAGLINE}</p>
+          <p className="mt-4 font-display text-[22px] Nunito Sans leading-snug text-gold-light">{TAGLINE}</p>
           <p className="mt-3 max-w-xs text-[15px] leading-relaxed text-ivory/60">
             Thoughtfully designed jewellery for everyday elegance, meaningful gifting and the moments that matter.
           </p>

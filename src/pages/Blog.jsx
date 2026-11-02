@@ -5,7 +5,7 @@ import { Breadcrumbs } from '../components/ui'
 import { EASE, Stagger, blurChild } from '../components/motion'
 import { POSTS } from '../data/blog'
 import { srcSetFor } from '../data/images'
-import { IconArrow } from '../components/Icons'
+import { IconArrow, IconSearch } from '../components/Icons'
 import useDocumentMeta from '../hooks/useDocumentMeta'
 
 export const fmtDate = (d) => new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })
@@ -14,7 +14,10 @@ export default function Blog() {
   useDocumentMeta('The Journal | Kridhya by Devanshi Agarwal', 'Styling notes, jewellery care and gifting ideas from Kridhya by Devanshi Agarwal.')
   const cats = ['All', ...new Set(POSTS.map((p) => p.category))]
   const [cat, setCat] = useState('All')
-  const list = cat === 'All' ? POSTS : POSTS.filter((p) => p.category === cat)
+  const [q, setQ] = useState('')
+  const term = q.trim().toLowerCase()
+  const byCat = cat === 'All' ? POSTS : POSTS.filter((p) => p.category === cat)
+  const list = term ? byCat.filter((p) => `${p.title} ${p.excerpt} ${p.category}`.toLowerCase().includes(term)) : byCat
   const [featured, ...rest] = list
 
   return (
@@ -25,21 +28,39 @@ export default function Blog() {
           <motion.h1 initial={{ opacity: 0, y: 14, filter: 'blur(10px)' }} animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }} transition={{ duration: 1, ease: EASE }} className="h-display mt-5">
             The Journal
           </motion.h1>
-          <div className="scrollbar-none -mx-5 mt-6 flex gap-2 overflow-x-auto border-b border-wine-900/10 px-4 pb-4 sm:mx-0 sm:px-0" role="tablist" aria-label="Journal categories">
-            {cats.map((c) => (
-              <button key={c} role="tab" aria-selected={cat === c} onClick={() => setCat(c)} className={`relative min-h-[44px] shrink-0 px-4 text-[13px] uppercase tracking-[0.2em] ${cat === c ? 'text-wine-900' : 'text-wine-900/55 hover:text-wine-900'}`}>
-                {c}
-                {cat === c && <span className="absolute -bottom-4 left-0 right-0 h-px bg-wine-900" />}
-              </button>
-            ))}
+          <div className="mt-6 flex flex-col gap-3 border-b border-wine-900/10 pb-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="scrollbar-none -mx-5 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:px-0" role="tablist" aria-label="Journal categories">
+              {cats.map((c) => (
+                <button key={c} role="tab" aria-selected={cat === c} onClick={() => setCat(c)} className={`relative min-h-[44px] shrink-0 px-4 text-[13px] uppercase tracking-[0.2em] ${cat === c ? 'text-wine-900' : 'text-wine-900/55 hover:text-wine-900'}`}>
+                  {c}
+                  {cat === c && <span className="absolute -bottom-4 left-0 right-0 h-px bg-wine-900" />}
+                </button>
+              ))}
+            </div>
+            <label className="relative flex min-h-[44px] w-full items-center sm:w-64">
+              <span className="sr-only">Search the journal</span>
+              <IconSearch size={16} className="pointer-events-none absolute left-3 text-wine-900/50" />
+              <input
+                type="search"
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                placeholder="Search the journal"
+                className="h-11 w-full border border-wine-900/15 bg-transparent pl-9 pr-3 text-[16px] placeholder:text-wine-900/45 focus:border-wine-700 focus:outline-none"
+              />
+            </label>
           </div>
         </div>
       </section>
 
       <section className="bg-ivory pb-12">
-        <div className="container-site">
+        <div className="container-hero">
           <AnimatePresence mode="wait">
-            <motion.div key={cat} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
+            <motion.div key={`${cat}-${term}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
+              {!featured && (
+                <p className="py-16 text-center text-[16px] text-wine-900/70" role="status">
+                  No articles match “{q.trim()}”. Try another word or <button type="button" onClick={() => { setQ(''); setCat('All') }} className="font-semibold text-wine-800 underline decoration-gold-deep/60 underline-offset-4">clear the search</button>.
+                </p>
+              )}
               {featured && (
                 <Link to={`/blog/${featured.slug}`} className="group grid items-center gap-6 md:grid-cols-12 lg:gap-10">
                   <div className="aspect-[3/2] overflow-hidden bg-cream md:col-span-7">

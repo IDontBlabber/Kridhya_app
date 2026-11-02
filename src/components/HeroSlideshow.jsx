@@ -7,9 +7,9 @@ import { EASE } from './motion'
 
 const COPY = [
   { label: 'Aevum', eyebrow: 'Small joys worn close to heart', title: ['Jewellery for the', 'moments that matter.'] },
-  { label: 'Bracelets & Cuffs', eyebrow: 'Fine bracelets & cuffs', title: ['Made to move', 'with you.'] },
-  { label: 'Everyday Gold', eyebrow: 'Everyday elegance', title: ['Quiet details,', 'lasting meaning.'] },
-  { label: 'Gifting', eyebrow: 'Corporate gifting & bulk orders', title: ['Gifts that are kept,', 'not forgotten.'] },
+  { label: 'Bracelets & Cuffs', eyebrow: 'Small joys worn close to heart', title: ['Made to move', 'with you.'] },
+  { label: 'Everyday Gold', eyebrow: 'Small joys worn close to heart', title: ['Quiet details,', 'lasting meaning.'] },
+  { label: 'Gifting', eyebrow: ' Small joys worn close to heart', title: ['Gifts that are kept,', 'not forgotten.'] },
 ]
 const SLIDES = IMG.heroSlides.map((s, i) => ({ ...s, ...COPY[i] }))
 const INTERVAL = 6500
