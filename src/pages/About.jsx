@@ -12,7 +12,7 @@ import Founders from '../components/Founders'
 // Copy follows the "Suggested About Us Copy — Draft for Client Approval" in the developer brief.
 // Pending client sign-off; add verified brand facts only once approved.
 export default function About() {
-  useDocumentMeta('About Us | Kridhya by Devanshi', 'At Kridhya by Devanshi, we believe the smallest details can hold the most meaning.')
+  useDocumentMeta('About Us | Kridhya by Devanshi Agarwal', 'At Kridhya by Devanshi Agarwal, we believe the smallest details can hold the most meaning.')
   const { hash } = useLocation()
   // Deep links like /about#founder land on the section once the page has rendered.
   useEffect(() => {
@@ -52,9 +52,9 @@ export default function About() {
           <div className="md:col-span-6">
             <FadeUp as="p" className="eyebrow text-gold-deep">Who we are</FadeUp>
             <FadeUp as="p" delay={0.05} className="mt-3 font-display text-[clamp(calc(1.6rem_+_2px),calc(2.6vw_+_2px),calc(2.2rem_+_2px))] font-light leading-[1.25]">
-              At Kridhya by Devanshi, we believe the smallest details can hold the most meaning.
+              At Kridhya by Devanshi Agarwal, we believe the smallest details can hold the most meaning.
             </FadeUp>
-            <FadeUp as="p" delay={0.1} className="mt-4 max-w-[56ch] text-[17.5px] leading-[1.8] text-wine-900/75">
+            <FadeUp as="p" delay={0.1} className="mt-4 max-w-[56ch] text-[16px] leading-[1.8] text-wine-900/75">
               Jewellery is more than something we wear — it can reflect our individuality, mark a special moment, or become part of a story we carry with us.
             </FadeUp>
           </div>
@@ -84,7 +84,7 @@ export default function About() {
               <motion.div key={t} variants={blurChild} className="bg-cream p-6 sm:p-8">
                 {/* client-supplied illustration; its white ground was made transparent so it sits on the beige card */}
                 <img src={`/images/illustrations/${img}.webp`} alt={alt} loading="lazy" className="mx-auto mb-5 aspect-square w-full max-w-[280px] object-contain" />
-                <p className="font-display text-[16px] italic text-gold-deep">0{i + 1}</p>
+                <p className="num text-[13px] text-gold-deep">0{i + 1}</p>
                 <h3 className="mt-3 font-display text-[26px]">{t}</h3>
                 <p className="mt-2 text-[16px] leading-relaxed text-wine-900/65">{b}</p>
               </motion.div>
@@ -103,7 +103,7 @@ export default function About() {
             <div>
               <FadeUp as="p" className="eyebrow text-gold-deep">Our approach to jewellery</FadeUp>
               <FadeUp as="h2" delay={0.05} className="h-section mt-3">From everyday style to meaningful occasions</FadeUp>
-              <FadeUp as="p" delay={0.1} className="mt-4 max-w-[54ch] text-[17.5px] leading-[1.8] text-wine-900/75">
+              <FadeUp as="p" delay={0.1} className="mt-4 max-w-[54ch] text-[16px] leading-[1.8] text-wine-900/75">
                 We design for real life — pieces that layer with ease, sit comfortably through the day and still feel special when the moment calls for it.
               </FadeUp>
             </div>
@@ -111,7 +111,7 @@ export default function About() {
             <div>
               <FadeUp as="p" className="eyebrow text-gold-deep">What we want you to feel</FadeUp>
               <FadeUp as="p" delay={0.05} className="mt-3 font-display text-[clamp(calc(1.5rem_+_2px),calc(2.4vw_+_2px),calc(2rem_+_2px))] italic leading-snug text-wine-700">Seen, celebrated, and a little more yourself.</FadeUp>
-              <FadeUp as="p" delay={0.1} className="mt-4 max-w-[54ch] text-[17.5px] leading-[1.8] text-wine-900/75">
+              <FadeUp as="p" delay={0.1} className="mt-4 max-w-[54ch] text-[16px] leading-[1.8] text-wine-900/75">
                 We invite you to discover jewellery that feels uniquely yours — a piece that speaks to your style, your story, and the moments you want to remember.
               </FadeUp>
             </div>

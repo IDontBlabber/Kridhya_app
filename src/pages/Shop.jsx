@@ -27,8 +27,8 @@ export default function Shop() {
   const cat = getCategory(category)
 
   useDocumentMeta(
-    `${cat ? cat.name : 'Shop All Jewellery'} | Kridhya by Devanshi`,
-    cat ? cat.blurb : 'Browse necklaces, earrings, cuffs, rings and brooches by Kridhya by Devanshi.',
+    `${cat ? cat.name : 'Shop All Jewellery'} | Kridhya by Devanshi Agarwal`,
+    cat ? cat.blurb : 'browse pendants, earrings, bracelets, rings, necklaces and brooches from Kridhya by Devanshi Agarwal.',
   )
 
   const setParam = (key, value) => {
@@ -57,27 +57,27 @@ export default function Shop() {
 
   return (
     <>
-      <section className="bg-ivory pb-8 pt-28 sm:pt-32">
-        <div className="container-site">
+      <section className="bg-ivory pb-8 pt-32 sm:pt-36">
+        <div className="container-hero">
           <Breadcrumbs items={[{ label: 'Home', to: '/' }, cat ? { label: 'Collections', to: '/collections' } : { label: 'Shop' }, ...(cat ? [{ label: cat.name }] : [])]} />
           <div className="mt-5 grid items-end gap-4 lg:grid-cols-12">
             <motion.h1 initial={{ opacity: 0, y: 14, filter: 'blur(10px)' }} animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }} transition={{ duration: 1, ease: EASE }} className="h-display font-medium lg:col-span-7">
-              {cat ? cat.name : <>The <em className="text-wine-600">Collection</em></>}
+              {cat ? <span className="font-collection tracking-[0.08em]">{cat.name}</span> : <>The Collection</>}
             </motion.h1>
-            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3, duration: 1 }} className="max-w-sm text-[17px] font-medium text-wine-900/75 lg:col-span-5 lg:justify-self-end">
-              {cat ? cat.blurb : 'Necklaces, earrings, cuffs, rings and brooches — designed for everyday elegance and the moments you’ll remember.'}
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3, duration: 1 }} className="max-w-sm text-[15px] font-medium text-wine-900/75 lg:col-span-5 lg:justify-self-end">
+              {cat ? cat.blurb : 'Pendants, earrings, bracelets and rings — designed for everyday elegance and the moments you’ll remember.'}
             </motion.p>
           </div>
         </div>
       </section>
 
       {/* filter bar */}
-      <div className="relative z-30 border-y border-wine-900/10 bg-ivory/95 backdrop-blur-md md:sticky md:top-[63px]">
-        <div className="container-site flex flex-col gap-2 py-2 lg:flex-row lg:items-center lg:justify-between">
-          <nav aria-label="Categories" className="scrollbar-none -mx-5 flex gap-5 overflow-x-auto px-5 sm:mx-0 sm:px-0 lg:gap-4 xl:gap-5">
+      <div className="relative z-30 border-y border-wine-900/10 bg-ivory">
+        <div className="container-hero flex flex-col gap-1 py-2 min-[1360px]:flex-row min-[1360px]:items-center min-[1360px]:justify-between min-[1360px]:gap-6">
+          <nav aria-label="Categories" className="flex flex-wrap gap-x-5 gap-y-0 min-[1360px]:flex-nowrap">
             {[{ slug: 'all', name: 'All' }, ...CATEGORIES].map((c) => {
               const active = category === c.slug
-              const cls = `min-h-[44px] min-w-[44px] shrink-0 border-b text-center text-[13px] font-semibold uppercase tracking-[0.16em] transition-colors ${active ? 'border-wine-900 text-wine-900' : 'border-transparent text-wine-900/55 hover:text-wine-900'}`
+              const cls = `min-h-[44px] min-w-[44px] shrink-0 border-b text-center text-[12.5px] font-semibold uppercase tracking-[0.14em] transition-colors ${active ? 'border-wine-900 text-wine-900' : 'border-transparent text-wine-900/55 hover:text-wine-900'}`
               const inner = c.name
               const href = catHref(c.slug)
               return href ? (
@@ -88,7 +88,7 @@ export default function Shop() {
             })}
           </nav>
 
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3 lg:shrink-0 lg:flex-nowrap">
+          <div className="flex flex-wrap items-center gap-2 pb-1 sm:gap-3 lg:justify-end min-[1360px]:flex-nowrap min-[1360px]:pb-0">
             <label className="relative flex min-h-[44px] basis-full items-center sm:basis-auto">
               <span className="sr-only">Search jewellery</span>
               <IconSearch size={16} className="pointer-events-none absolute left-3 text-wine-900/50" />
@@ -109,10 +109,10 @@ export default function Shop() {
                   aria-label={f}
                   title={f}
                   onClick={() => setParam('finish', finish === f ? '' : f)}
-                  className={`inline-flex h-11 min-w-[44px] items-center justify-center gap-2 border px-3 text-[14px] font-semibold transition-colors ${finish === f ? 'border-wine-900 bg-wine-900 text-ivory' : 'border-wine-900/15 hover:border-wine-900/40'}`}
+                  className={`inline-flex h-11 min-w-[44px] items-center justify-center gap-2 border px-3 text-[13px] font-semibold transition-colors ${finish === f ? 'border-wine-900 bg-wine-900 text-ivory' : 'border-wine-900/15 hover:border-wine-900/40'}`}
                 >
                   <FinishDot finish={f} />
-                  <span className="hidden sm:inline lg:hidden 2xl:inline">{f}</span>
+                  <span className="hidden sm:inline min-[1360px]:hidden">{f}</span>
                 </button>
               ))}
             </div>
@@ -132,9 +132,9 @@ export default function Shop() {
       </div>
 
       <section className="bg-ivory pb-12 pt-6">
-        <div className="container-site">
+        <div className="container-hero">
           <div className="mb-8 flex flex-wrap items-center gap-3 text-[16px] font-semibold text-wine-900/75" aria-live="polite">
-            <span>{filtered.length} {filtered.length === 1 ? 'piece' : 'pieces'}</span>
+            <span className="num">{filtered.length} {filtered.length === 1 ? 'piece' : 'pieces'}</span>
             {(finish || q) && (
               <>
                 {finish && <Chip onClear={() => setParam('finish', '')}>{finish}</Chip>}
@@ -176,7 +176,7 @@ export default function Shop() {
             </nav>
           )}
 
-          <p className="mt-10 text-center text-[14px] text-wine-900/45">Mockup preview — prices and photography are placeholders pending client approval.</p>
+          <p className="mt-10 text-center text-[13px] text-wine-900/45">Mockup preview — prices and photography are placeholders pending client approval.</p>
         </div>
       </section>
     </>

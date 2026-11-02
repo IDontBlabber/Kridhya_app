@@ -67,16 +67,16 @@ export default function CartDrawer() {
                         <div className="flex flex-1 flex-col">
                           <div className="flex justify-between gap-3">
                             <Link to={`/product/${i.slug}`} onClick={() => setOpen(false)} className="font-display text-[22px] leading-tight">{i.name}</Link>
-                            <p className="shrink-0 text-[16px]">{formatPrice(i.price * i.qty)}</p>
+                            <p className="num shrink-0 text-[16px]">{formatPrice(i.price * i.qty)}</p>
                           </div>
-                          <p className="mt-1 text-[14px] uppercase tracking-[0.18em] text-wine-900/60">{i.finish}</p>
+                          <p className="mt-1 text-[13px] uppercase tracking-[0.18em] text-wine-900/60">{i.finish}</p>
                           <div className="mt-auto flex items-center justify-between">
                             <div className="flex items-center border border-wine-900/20">
                               <button type="button" className="inline-flex h-10 w-10 items-center justify-center" onClick={() => update(i.id, i.qty - 1)} aria-label={`Decrease ${i.name} quantity`}><IconMinus size={14} /></button>
-                              <span className="w-6 text-center text-[16px]" aria-live="polite">{i.qty}</span>
+                              <span className="num w-6 text-center text-[16px]" aria-live="polite">{i.qty}</span>
                               <button type="button" className="inline-flex h-10 w-10 items-center justify-center" onClick={() => update(i.id, i.qty + 1)} aria-label={`Increase ${i.name} quantity`}><IconPlus size={14} /></button>
                             </div>
-                            <button type="button" onClick={() => update(i.id, 0)} className="link-underline min-h-[44px] text-[14px] uppercase tracking-[0.18em] text-wine-900/60">Remove</button>
+                            <button type="button" onClick={() => update(i.id, 0)} className="link-underline min-h-[44px] text-[13px] uppercase tracking-[0.18em] text-wine-900/60">Remove</button>
                           </div>
                         </div>
                       </motion.li>
@@ -86,10 +86,10 @@ export default function CartDrawer() {
                 <div className="border-t border-wine-900/10 bg-cream/60 px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-5">
                   <div className="flex items-baseline justify-between">
                     <span className="eyebrow">Subtotal</span>
-                    <span className="font-display text-[26px]">{formatPrice(subtotal)}</span>
+                    <span className="num text-[20px] font-medium">{formatPrice(subtotal)}</span>
                   </div>
-                  <p className="mt-1 text-[14px] text-wine-900/60">Shipping &amp; taxes calculated at checkout.</p>
-                  <button type="button" className="btn btn-wine mt-5 w-full">Proceed to checkout</button>
+                  <p className="mt-1 text-[13px] text-wine-900/60">Shipping &amp; taxes calculated at checkout.</p>
+                  <Link to="/checkout" onClick={() => setOpen(false)} className="btn btn-wine mt-5 w-full">Proceed to checkout</Link>
                 </div>
               </>
             )}

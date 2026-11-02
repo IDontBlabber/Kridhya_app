@@ -43,3 +43,13 @@ To list every placeholder still on a page, run `document.querySelectorAll('[data
 
 ## Generated art
 `public/images/generated/` holds procedurally generated satin backdrops in burgundy, beige, and wine-gold. Brand ornaments are inline SVG: the lotus mark and a self-drawing infinity line.
+
+## Latest round of changes
+- **Tagline** "Small joys worn close to heart" — footer, home marquee, hero, 404 and order confirmation (`TAGLINE` in `src/data/site.js`).
+- **Collection name** "Aevum" with the punchline "The Infinity Edit" (Home).
+- **Jewellery Highlights** section on Home — edit the picks in `HIGHLIGHTS` (`src/data/products.js`).
+- **Collections page:** category index now sits below the hero, not on the image.
+- **Numerals:** one lining-figure style site-wide (`.num` + global `lnum` in `src/index.css`).
+- **Fonts:** Contact details restyled; eight typeface pairings in `src/data/fonts.js`, previewed live with the floating "Aa" picker (`SHOW_FONT_PICKER` in `src/data/site.js`; set to `false` and change `DEFAULT_FONT` once one is approved).
+- **New pages:** `/checkout`, `/order-confirmed`, `/faq`, `/jewellery-care`, `/shipping-returns`, `/privacy-policy`, `/terms` (policy copy is draft; checkout is a demo with no payment gateway).
+- **Logo variations** documented at the top of `src/components/Logo.jsx` (horizontal, stacked, wordmark, mark).

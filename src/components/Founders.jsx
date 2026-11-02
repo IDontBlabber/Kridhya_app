@@ -21,10 +21,10 @@ export default function Founders({ variant = 'full' }) {
                 {/* light mandala centred behind the name, role and bio */}
                 <Mandala className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[460px] w-[460px] -translate-x-1/2 -translate-y-1/2 text-gold/[0.18] sm:h-[540px] sm:w-[540px]" strokeWidth={0.7} />
                 <h2 className="text-[clamp(calc(2.3rem_+_2px),calc(4.4vw_+_2px),calc(3.6rem_+_2px))] font-medium leading-[1.02]">{f.name}</h2>
-                <p className="mt-3 text-[14.5px] font-semibold uppercase tracking-[0.22em] text-gold-deep">{f.role}</p>
+                <p className="mt-3 text-[13px] font-semibold uppercase tracking-[0.22em] text-gold-deep">{f.role}</p>
                 <div className="hairline my-6 max-w-sm" />
                 {(teaser ? f.bio.slice(0, 1) : f.bio).map((para) => (
-                  <p key={para} className="mt-4 max-w-[54ch] text-[19px] font-medium leading-[1.75] text-wine-900/80">{para}</p>
+                  <p key={para} className="mt-4 max-w-[54ch] text-[16px] font-medium leading-[1.75] text-wine-900/80">{para}</p>
                 ))}
                 {teaser && (
                   <Link to="/about#founder" className="mt-8 inline-flex min-h-[44px] items-center gap-2 text-[13.5px] font-semibold uppercase tracking-[0.2em] text-wine-800 hover:text-wine-600">

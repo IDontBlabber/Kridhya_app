@@ -6,7 +6,7 @@ import { IconArrow, IconArrowLeft, IconPause, IconPlay } from './Icons'
 import { EASE } from './motion'
 
 const COPY = [
-  { label: 'The Infinity Edit', eyebrow: 'Kridhya by Devanshi', title: ['Jewellery for the', 'moments that matter.'] },
+  { label: 'Aevum', eyebrow: 'Small joys worn close to heart', title: ['Jewellery for the', 'moments that matter.'] },
   { label: 'Bracelets & Cuffs', eyebrow: 'Fine bracelets & cuffs', title: ['Made to move', 'with you.'] },
   { label: 'Everyday Gold', eyebrow: 'Everyday elegance', title: ['Quiet details,', 'lasting meaning.'] },
   { label: 'Gifting', eyebrow: 'Corporate gifting & bulk orders', title: ['Gifts that are kept,', 'not forgotten.'] },
@@ -149,7 +149,7 @@ export default function HeroSlideshow() {
       <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-wine-950/50 to-transparent" />
 
       {/* copy */}
-      <motion.div style={{ y: copyY, opacity: fade }} className="container-site relative flex h-full flex-col justify-end pb-36 sm:pb-40">
+      <motion.div style={{ y: copyY, opacity: fade }} className="container-hero relative flex h-full flex-col justify-end pb-28 sm:pb-32">
         <div className="max-w-xl" aria-live={autoplay ? 'off' : 'polite'}>
           <AnimatePresence mode="wait">
             <motion.div key={index} initial="hidden" animate="show" exit="exit">
@@ -159,11 +159,11 @@ export default function HeroSlideshow() {
               >
                 <span className="h-px w-6 bg-gold" /> {slide.eyebrow}
               </motion.p>
-              <h1 className="mt-4 text-[clamp(calc(2.4rem_+_2px),calc(5.6vw_+_2px),calc(4.6rem_+_2px))] leading-[1.02]">
+              <h1 className="mt-4 font-['Cormorant_Garamond',Georgia,serif] text-[clamp(calc(2.4rem_+_2px),calc(5.6vw_+_2px),calc(4.6rem_+_2px))] font-medium leading-[1.02]">
                 {slide.title.map((line, i) => (
                   <motion.span
                     key={line}
-                    className={`block ${i === 1 ? 'italic text-gold-light' : ''}`}
+                    className={`block ${i === 1 ? 'text-gold-light' : ''}`}
                     variants={{
                       hidden: { opacity: 0, y: 24, filter: 'blur(12px)' },
                       show: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 1, delay: 0.45 + i * 0.12, ease: EASE } },
@@ -210,7 +210,7 @@ export default function HeroSlideshow() {
                     />
                   )}
                 </span>
-                <span className={`font-display text-[16px] italic transition-colors ${i === index ? 'text-gold' : 'text-ivory/45 group-hover:text-ivory/80'}`}>0{i + 1}</span>
+                <span className={`num text-[13px] transition-colors ${i === index ? 'text-gold' : 'text-ivory/45 group-hover:text-ivory/80'}`}>0{i + 1}</span>
                 <span className={`hidden text-[12.5px] uppercase tracking-[0.18em] transition-colors md:inline ${i === index ? 'text-ivory' : 'text-ivory/45 group-hover:text-ivory/80'}`}>{s.label}</span>
               </button>
             ))}

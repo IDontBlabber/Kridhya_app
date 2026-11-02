@@ -24,6 +24,7 @@ export const IconPen = (p) => <Svg {...p}><path d="M4 20l4-1 11-11-3-3L5 16l-1 4
 export const IconTruck = (p) => <Svg {...p}><path d="M2.5 6h11v10h-11zM13.5 10h4l3 3v3h-7z" /><circle cx="6.5" cy="17.5" r="1.6" /><circle cx="17" cy="17.5" r="1.6" /></Svg>
 export const IconShield = (p) => <Svg {...p}><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3z" /><path d="m9 12 2 2 4-4" /></Svg>
 export const IconInstagram = (p) => <Svg {...p}><rect x="3.5" y="3.5" width="17" height="17" rx="5" /><circle cx="12" cy="12" r="3.8" /><circle cx="17.2" cy="6.8" r=".6" fill="currentColor" /></Svg>
+export const IconFacebook = (p) => <Svg {...p}><path d="M14 8.5h2.5V5H14c-2.2 0-3.5 1.5-3.5 3.7V11H8v3.5h2.5V21H14v-6.5h2.3l.5-3.5H14V9.2c0-.5.2-.7.7-.7z" /></Svg>
 export const IconFilter = (p) => <Svg {...p}><path d="M4 7h10M18 7h2M4 17h4M12 17h8" /><circle cx="16" cy="7" r="2" /><circle cx="10" cy="17" r="2" /></Svg>
 
 export const IconWhatsApp = ({ size = 22, ...p }) => (

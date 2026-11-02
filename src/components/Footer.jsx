@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Logo from './Logo'
-import { CATEGORIES } from '../data/products'
+import { CONTACT, HELP, TAGLINE } from '../data/site'
+import { COLLECTIONS } from '../data/products'
 import { WHATSAPP_MESSAGES, whatsappLink } from '../data/site'
-import { IconArrow, IconInstagram, IconWhatsApp } from './Icons'
+import { IconArrow, IconFacebook, IconInstagram, IconWhatsApp } from './Icons'
 
 const HOUSE = [
   { label: 'Our Story', to: '/our-story' },
@@ -17,12 +18,13 @@ export default function Footer() {
   const [sent, setSent] = useState(false)
 
   return (
-    <footer className="border-t border-gold/15 bg-wine-950 text-ivory">
+    <footer className="border-t border-gold/15 bg-wine-950 font-sans text-ivory">
       <div className="container-site grid grid-cols-2 gap-x-6 gap-y-8 py-10 lg:grid-cols-12 lg:gap-8">
         {/* brand + newsletter */}
-        <div className="col-span-2 lg:col-span-4">
-          <Link to="/" aria-label="Kridhya by Devanshi — home"><Logo /></Link>
-          <p className="mt-4 max-w-xs text-[15px] leading-relaxed text-ivory/60">
+        <div className="col-span-2 lg:col-span-3">
+          <Link to="/" aria-label="Kridhya by Devanshi Agarwal — home"><Logo /></Link>
+          <p className="mt-4 font-display text-[22px] italic leading-snug text-gold-light">{TAGLINE}</p>
+          <p className="mt-3 max-w-xs text-[15px] leading-relaxed text-ivory/60">
             Thoughtfully designed jewellery for everyday elegance, meaningful gifting and the moments that matter.
           </p>
           <form
@@ -47,13 +49,13 @@ export default function Footer() {
                 <IconArrow size={15} />
               </button>
             </div>
-            <p role="status" className="mt-2 h-4 text-[14px] text-gold-light">{sent ? 'Thank you — you’re on the list.' : ''}</p>
+            <p role="status" className="mt-2 h-4 text-[13px] text-gold-light">{sent ? 'Thank you — you’re on the list.' : ''}</p>
           </form>
         </div>
 
-        <FooterCol title="Shop" className="lg:col-span-2 lg:col-start-6">
+        <FooterCol title="Shop" className="lg:col-span-2">
           <FooterLink to="/shop">All jewellery</FooterLink>
-          {CATEGORIES.map((c) => (
+          {COLLECTIONS.map((c) => (
             <FooterLink key={c.slug} to={`/collections/${c.slug}`}>{c.name}</FooterLink>
           ))}
         </FooterCol>
@@ -62,7 +64,11 @@ export default function Footer() {
           {HOUSE.map((l) => <FooterLink key={l.to} to={l.to}>{l.label}</FooterLink>)}
         </FooterCol>
 
-        <FooterCol title="Contact" className="col-span-2 sm:col-span-1 lg:col-span-3">
+        <FooterCol title="Help" className="lg:col-span-2">
+          {HELP.map((l) => <FooterLink key={l.to} to={l.to}>{l.label}</FooterLink>)}
+        </FooterCol>
+
+        <FooterCol title="Contact" className="col-span-2 sm:col-span-1 lg:col-span-2">
           <li>
             <a href={whatsappLink(WHATSAPP_MESSAGES.general)} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 py-2.5 text-ivory/70 transition-colors hover:text-gold-light sm:py-0">
               <IconWhatsApp size={14} /> <span className="link-underline">Chat on WhatsApp</span>
@@ -74,8 +80,13 @@ export default function Footer() {
             </a>
           </li>
           <li>
-            <a href="https://instagram.com/" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 py-2.5 text-ivory/70 transition-colors hover:text-gold-light sm:py-0">
+            <a href={CONTACT.instagram.href} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 py-2.5 text-ivory/70 transition-colors hover:text-gold-light sm:py-0">
               <IconInstagram size={14} /> <span className="link-underline">Instagram</span>
+            </a>
+          </li>
+          <li>
+            <a href={CONTACT.facebook.href} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 py-2.5 text-ivory/70 transition-colors hover:text-gold-light sm:py-0">
+              <IconFacebook size={14} /> <span className="link-underline">Facebook</span>
             </a>
           </li>
           <li className="py-2 text-ivory/45 sm:py-0 sm:pt-1">kridhyabydevanshi.com</li>
@@ -83,8 +94,8 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-ivory/10">
-        <div className="container-site flex flex-col gap-2 py-5 text-[14px] text-ivory/45 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} Kridhya by Devanshi. All rights reserved.</p>
+        <div className="container-site flex flex-col gap-2 py-5 text-[13px] text-ivory/45 sm:flex-row sm:items-center sm:justify-between">
+          <p>© {new Date().getFullYear()} Kridhya by Devanshi Agarwal. All rights reserved.</p>
           <p>Prices shown are indicative in this preview.</p>
         </div>
       </div>

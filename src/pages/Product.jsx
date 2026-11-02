@@ -25,7 +25,7 @@ function ProductView({ product }) {
   const [qty, setQty] = useState(1)
   const [stickyBar, setStickyBar] = useState(false)
   const buyRef = useRef(null)
-  useDocumentMeta(`${product.name} | Kridhya by Devanshi`, product.short)
+  useDocumentMeta(`${product.name} | Kridhya by Devanshi Agarwal`, product.short)
 
   // Show the mobile sticky add-to-bag bar once the main button scrolls out of view.
   useEffect(() => {
@@ -95,9 +95,9 @@ function ProductView({ product }) {
               <div className="lg:sticky lg:top-28">
                 <p className="eyebrow text-gold-deep">{cat.name}</p>
                 <h1 className="mt-3 text-[clamp(calc(1.9rem_+_2px),calc(3.2vw_+_2px),calc(2.6rem_+_2px))] leading-[1.05]">{product.name}</h1>
-                <p className="mt-3 font-sans text-[22px] font-light">{formatPrice(product.price)}</p>
+                <p className="num mt-3 text-[22px] font-light">{formatPrice(product.price)}</p>
                 <div className="hairline my-6" />
-                <p className="text-[17px] leading-relaxed text-wine-900/75">{product.short}</p>
+                <p className="text-[16px] leading-relaxed text-wine-900/75">{product.short}</p>
 
                 <fieldset className="mt-6">
                   <legend className="eyebrow mb-3">Finish — <span className="normal-case tracking-normal text-wine-900/70">{finish}</span></legend>
@@ -173,7 +173,7 @@ function ProductView({ product }) {
             <img src={product.images[0]} alt="" className="h-12 w-12 object-cover" />
             <div className="min-w-0 flex-1">
               <p className="truncate font-display text-[20px] leading-tight">{product.name}</p>
-              <p className="text-[16px]">{formatPrice(product.price)}</p>
+              <p className="num text-[16px]">{formatPrice(product.price)}</p>
             </div>
             <button type="button" onClick={() => add(product, finish, qty)} className="btn btn-wine">Add</button>
           </motion.div>
@@ -194,7 +194,7 @@ function Accordion({ title, children, defaultOpen = false }) {
       <AnimatePresence initial={false}>
         {open && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.4, ease: EASE }} className="overflow-hidden">
-            <div className="pb-6 text-[17px] leading-relaxed text-wine-900/75">{children}</div>
+            <div className="pb-6 text-[16px] leading-relaxed text-wine-900/75">{children}</div>
           </motion.div>
         )}
       </AnimatePresence>

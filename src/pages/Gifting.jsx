@@ -24,7 +24,7 @@ const STEPS = [
 const HIGHLIGHTS = ['infinity-heart-necklace', 'bindu', 'ananta-gulabi', 'lemniscate-brooch'].map(getProduct)
 
 export default function Gifting() {
-  useDocumentMeta('Corporate Gifting & Bulk Orders | Kridhya by Devanshi', 'Jewellery gifts for teams, clients and celebrations. Enquire about corporate gifting and bulk orders with Kridhya by Devanshi.')
+  useDocumentMeta('Corporate Gifting & Bulk Orders | Kridhya by Devanshi Agarwal', 'Jewellery gifts for teams, clients and celebrations. Enquire about corporate gifting and bulk orders with Kridhya by Devanshi Agarwal.')
   return (
     <>
       <Hero />
@@ -59,9 +59,9 @@ export default function Gifting() {
               <article key={o.title} className="flex flex-col border border-gold/40 bg-ivory p-2">
                 <img src={o.img.src} srcSet={srcSetFor(o.img.src)} sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw" alt={o.img.alt} loading="lazy" data-placeholder="true" className="aspect-[4/3] w-full object-cover" />
                 <div className="flex flex-1 flex-col p-4 pt-5">
-                  <p className="font-display text-[16px] font-semibold italic text-gold-deep">0{i + 1}</p>
+                  <p className="num text-[13px] font-semibold text-gold-deep">0{i + 1}</p>
                   <h3 className="mt-1 font-display text-[26px] font-semibold leading-tight">{o.title}</h3>
-                  <p className="mt-2 flex-1 text-[17px] font-medium leading-relaxed text-wine-900/75">{o.body}</p>
+                  <p className="mt-2 flex-1 text-[16px] font-medium leading-relaxed text-wine-900/75">{o.body}</p>
                   <a href={whatsappLink(WHATSAPP_MESSAGES.gifting)} target="_blank" rel="noreferrer" className="mt-4 inline-flex min-h-[44px] items-center gap-2 self-start text-[13px] font-semibold uppercase tracking-[0.18em] text-wine-800 hover:text-wine-600">
                     Enquire for this occasion <IconArrow size={13} />
                   </a>
@@ -91,7 +91,7 @@ export default function Gifting() {
               <motion.div key={title} variants={blurChild} className="bg-wine-900 p-6">
                 <div className="flex items-center justify-between">
                   <I size={20} className="text-gold" />
-                  <span className="font-display text-[16px] italic text-ivory/40">0{i + 1}</span>
+                  <span className="num text-[13px] text-ivory/40">0{i + 1}</span>
                 </div>
                 <h3 className="mt-6 font-display text-[26px]">{title}</h3>
                 <p className="mt-2 text-[16px] leading-relaxed text-ivory/65">{body}</p>
@@ -125,13 +125,13 @@ function Hero() {
     <section ref={ref} className="grain relative isolate overflow-hidden bg-wine-900 text-ivory">
       <motion.img style={{ y: bg }} src={IMG.satinWineGold.src} alt="" className="absolute inset-0 -z-10 h-full w-full object-cover opacity-40" />
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-wine-950/70 to-wine-900" />
-      <div className="container-site grid items-center gap-10 pb-16 pt-28 md:grid-cols-12 lg:min-h-[86svh] lg:pt-24">
+      <div className="container-hero grid items-center gap-10 pb-16 pt-32 md:grid-cols-12 lg:min-h-[86svh] lg:pt-32">
         <div className="md:col-span-6 lg:col-span-5">
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1, duration: 0.8 }} className="eyebrow text-gold">Corporate gifting &amp; bulk orders</motion.p>
           <motion.h1 initial={{ opacity: 0, y: 16, filter: 'blur(12px)' }} animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }} transition={{ duration: 1.1, delay: 0.15, ease: EASE }} className="h-display mt-4">
-            Gifts that are <em className="text-gold-light">kept,</em> not forgotten.
+            Gifts that are kept, not forgotten.
           </motion.h1>
-          <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 1, ease: EASE }} className="mt-5 max-w-md text-[17px] leading-relaxed text-ivory/75">
+          <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 1, ease: EASE }} className="mt-5 max-w-md text-[15px] leading-relaxed text-ivory/75">
             Thoughtfully designed jewellery to celebrate your people — for festive seasons, milestones, clients and celebrations.
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55, duration: 1, ease: EASE }} className="mt-8 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">

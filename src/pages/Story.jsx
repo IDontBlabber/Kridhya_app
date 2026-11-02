@@ -8,7 +8,7 @@ import useDocumentMeta from '../hooks/useDocumentMeta'
 // EDITORIAL TEMPLATE — replace the paragraphs below with the client's existing "Our Story" copy.
 // Keep the meaning unchanged; do not add brand history or craftsmanship claims that aren't approved.
 export default function Story() {
-  useDocumentMeta('Our Story | Kridhya by Devanshi', 'The story behind Kridhya by Devanshi — jewellery for the moments that matter.')
+  useDocumentMeta('Our Story | Kridhya by Devanshi Agarwal', 'The story behind Kridhya by Devanshi Agarwal — jewellery for the moments that matter.')
   return (
     <>
       <PageHero
@@ -75,7 +75,7 @@ export default function Story() {
           <div className="md:col-span-6 md:col-start-7">
             <FadeUp as="p" className="eyebrow text-gold">III · Your story</FadeUp>
             <FadeUp as="h2" delay={0.05} className="h-section mt-3">Made to be part of your story</FadeUp>
-            <FadeUp as="p" delay={0.1} className="mt-4 max-w-[54ch] text-[17.5px] leading-[1.8] text-ivory/75">
+            <FadeUp as="p" delay={0.1} className="mt-4 max-w-[54ch] text-[16px] leading-[1.8] text-ivory/75">
               Whether it’s a gift chosen for someone you love, or a piece you choose for yourself, we hope Kridhya becomes part of the moments you remember.
             </FadeUp>
             <FadeUp delay={0.15} className="mt-7 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
@@ -97,7 +97,7 @@ function Chapter({ id, n, label, title, paras, img, flip = false }) {
           <FadeUp as="p" className="eyebrow text-gold-deep">{n} · {label}</FadeUp>
           <FadeUp as="h2" delay={0.05} className="h-section mt-3">{title}</FadeUp>
           {paras.map((p, i) => (
-            <FadeUp key={i} as="p" delay={0.1 + i * 0.05} className="mt-4 max-w-[58ch] text-[17.5px] leading-[1.8] text-wine-900/75">{p}</FadeUp>
+            <FadeUp key={i} as="p" delay={0.1 + i * 0.05} className="mt-4 max-w-[58ch] text-[16px] leading-[1.8] text-wine-900/75">{p}</FadeUp>
           ))}
         </div>
         <ParallaxLayer distance={30} className={`md:col-span-5 ${flip ? 'md:order-1' : 'md:col-start-8'}`}>

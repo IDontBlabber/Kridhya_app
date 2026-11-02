@@ -5,12 +5,20 @@
 @layer base {
   :root {
     --ease-luxe: cubic-bezier(0.22, 1, 0.36, 1);
+    /* typeface pairing — swapped live by components/FontPicker.jsx; defaults match data/fonts.js */
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-sans: 'Nunito Sans', system-ui, sans-serif;
+    --font-brand: Cinzel, Georgia, serif;
+    --font-collection: Cinzel, Georgia, serif;
     color-scheme: light;
   }
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    /* one numeral style site-wide: lining figures in every typeface (old-style figures made prices and phone numbers look mismatched) */
+    font-variant-numeric: lining-nums;
+    font-feature-settings: 'lnum' 1;
   }
   html.lenis, html.lenis body { height: auto; }
   .lenis.lenis-smooth { scroll-behavior: auto !important; }
@@ -28,10 +36,12 @@
 }
 
 @layer components {
+  /* hero + header container: wider than body sections so hero copy sits further left, with less empty space on big screens */
+  .container-hero { @apply mx-auto w-full max-w-[1500px] px-5 sm:px-8 lg:px-12; }
   .container-site { @apply mx-auto w-full max-w-site px-5 sm:px-8 lg:px-10; }
   .section { @apply py-10 sm:py-12 lg:py-14; }
   .eyebrow { @apply font-sans text-[13px] font-medium uppercase tracking-[0.26em]; }
-  .h-display { @apply text-[clamp(calc(2.25rem_+_2px),calc(4.6vw_+_2px),calc(3.75rem_+_2px))] leading-[1.02]; }
+  .h-display { @apply text-[clamp(2.25rem,4.6vw,3.75rem)] leading-[1.02]; }
   .h-section { @apply text-[clamp(calc(1.75rem_+_2px),calc(3vw_+_2px),calc(2.6rem_+_2px))] leading-[1.08]; }
   .hairline { @apply h-px w-full bg-gradient-to-r from-transparent via-gold/50 to-transparent; }
   .btn {
@@ -57,6 +67,8 @@
     mix-blend-mode: overlay;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
+  /* every price, quantity, count and phone number uses the body font's lining figures — never the display serif */
+  .num { font-family: var(--font-sans); font-variant-numeric: lining-nums tabular-nums; font-feature-settings: 'lnum' 1, 'tnum' 1; font-style: normal; }
   .scrollbar-none { scrollbar-width: none; }
   .scrollbar-none::-webkit-scrollbar { display: none; }
 }

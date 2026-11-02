@@ -23,10 +23,11 @@ export default {
         },
       },
       fontFamily: {
-        display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
-        sans: ['Jost', 'system-ui', 'sans-serif'],
-        // sturdier serif for the Contact page: reads well in bold on light grounds
-        contact: ['"Playfair Display"', 'Georgia', 'serif'],
+        display: ['var(--font-display)', 'Georgia', 'serif'],
+        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+        // classical capitals matching the KRIDHYA wordmark on the official logo
+        brand: ['var(--font-brand)', 'Georgia', 'serif'],
+        collection: ['var(--font-collection)', 'Georgia', 'serif'],
       },
       letterSpacing: { luxe: '0.32em' },
       maxWidth: { site: '1240px' },

@@ -17,7 +17,7 @@ export function SectionHeading({ eyebrow, title, intro, align = 'left', light = 
         {eyebrow && <FadeUp as="p" className={`eyebrow ${light ? 'text-gold' : 'text-gold-deep'}`}>{eyebrow}</FadeUp>}
         <FadeUp as="h2" delay={0.05} className={`h-section mt-3 ${light ? 'text-ivory' : 'text-wine-900'}`}>{title}</FadeUp>
         {intro && (
-          <FadeUp as="p" delay={0.1} className={`mt-3 text-[17px] leading-relaxed ${center ? 'mx-auto' : ''} ${light ? 'text-ivory/70' : 'text-wine-900/65'}`}>
+          <FadeUp as="p" delay={0.1} className={`mt-3 text-[16px] leading-relaxed ${center ? 'mx-auto' : ''} ${light ? 'text-ivory/70' : 'text-wine-900/65'}`}>
             {intro}
           </FadeUp>
         )}
@@ -49,10 +49,10 @@ export function ProductCard({ product, priority = false }) {
             loading={priority ? 'eager' : 'lazy'}
             decoding="async"
             data-placeholder={product.placeholder ? 'true' : undefined}
-            className={`absolute inset-0 h-full w-full object-cover mix-blend-multiply transition-[opacity,transform] duration-700 ease-luxe group-hover:scale-[1.04] ${second ? '[@media(hover:hover)]:group-hover:opacity-0' : ''}`}
+            className="absolute inset-0 h-full w-full object-cover mix-blend-multiply transition-transform duration-700 ease-luxe group-hover:scale-[1.04]"
           />
           {second && (
-            <img src={second} alt="" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover opacity-0 mix-blend-multiply transition-opacity duration-700 ease-luxe [@media(hover:hover)]:group-hover:opacity-100" />
+            <img src={second} alt="" loading="eager" decoding="async" onError={(e) => { e.currentTarget.style.display = 'none' }} className="absolute inset-0 h-full w-full bg-cream object-cover opacity-0 transition-[opacity,transform] duration-700 ease-luxe group-hover:scale-[1.04] [@media(hover:hover)]:group-hover:opacity-100" />
           )}
           {product.badge && (
             <span className="absolute left-2.5 top-2.5 bg-ivory/90 px-2 py-0.5 text-[12.5px] font-semibold uppercase tracking-[0.16em] text-wine-900">{product.badge}</span>
@@ -74,7 +74,7 @@ export function ProductCard({ product, priority = false }) {
             <Link to={`/product/${product.slug}`}>{product.name}</Link>
           </h3>
         </div>
-        <p className="shrink-0 pt-4 text-[16.5px] font-semibold">{formatPrice(product.price)}</p>
+        <p className="num shrink-0 pt-4 text-[16px] font-semibold">{formatPrice(product.price)}</p>
       </div>
     </motion.article>
   )
@@ -100,7 +100,7 @@ export function PageHero({ eyebrow, title, intro, image, imageAlt = '', position
     <section ref={ref} className="grain relative isolate overflow-hidden bg-wine-900 text-ivory">
       <motion.img style={{ y: bg }} src="/images/generated/satin-wine-gold.webp" alt="" aria-hidden="true" className="absolute inset-0 -z-10 h-full w-full object-cover opacity-40" />
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-wine-950/70 to-wine-900" />
-      <div className="container-site grid items-center gap-10 pb-10 pt-28 md:grid-cols-12 lg:min-h-[72svh] lg:pb-12 lg:pt-28">
+      <div className="container-hero grid items-center gap-10 pb-10 pt-32 md:grid-cols-12 lg:min-h-[72svh] lg:pb-12 lg:pt-36">
         <motion.div style={{ y: textY, opacity: o }} className="md:col-span-6 lg:col-span-5">
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.1 }} className="eyebrow text-gold">{eyebrow}</motion.p>
           <motion.h1
@@ -112,7 +112,7 @@ export function PageHero({ eyebrow, title, intro, image, imageAlt = '', position
             {title}
           </motion.h1>
           {intro && (
-            <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.4, ease: EASE }} className="mt-5 max-w-md text-[17px] leading-relaxed text-ivory/75">
+            <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.4, ease: EASE }} className="mt-5 max-w-md text-[15px] leading-relaxed text-ivory/75">
               {intro}
             </motion.p>
           )}
@@ -142,7 +142,7 @@ export function HeroIndex({ items }) {
       {items.map((it, i) => (
         <li key={it.href} className="border-b border-ivory/15">
           <a href={it.href} className="flex min-h-[52px] items-center gap-4 py-2.5 hover:text-gold-light">
-            <span className="w-6 font-display text-[16px] italic text-gold">0{i + 1}</span>
+            <span className="num w-6 text-[13px] text-gold">0{i + 1}</span>
             <span className="flex-1 font-display text-[22px] font-medium leading-tight">{it.label}</span>
             <IconArrow size={15} className="rotate-90 text-gold" />
           </a>

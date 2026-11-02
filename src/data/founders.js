@@ -10,7 +10,7 @@ export const FOUNDERS = [
     role: 'Founder & Designer',
     portrait: null, // e.g. '/images/founders/devanshi.webp' (4:5) once supplied
     bio: [
-      'Kridhya by Devanshi is the vision of Devanshi Agarwal — a brand built on the belief that the smallest details can hold the most meaning.',
+      'Kridhya is the vision of its founder, Devanshi Agarwal — a brand built on the belief that the smallest details can hold the most meaning.',
       'Devanshi’s approach is guided by a love for thoughtful design and timeless elegance: pieces that feel personal, whether they are worn every day or chosen to mark a special moment.',
     ],
   },

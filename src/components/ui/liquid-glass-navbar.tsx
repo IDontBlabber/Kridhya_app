@@ -68,7 +68,7 @@ const PAD = 14 // canvas bleed around the pill, for shadows and ripples
 const NIMBUS_CSS = `
 .nimbus-nav{--n-tint:rgba(231,214,188,.62);--n-fg:#2B0912;--n-fg-soft:rgba(43,9,18,.64);--n-rim:rgba(241,230,211,.8);
   position:relative;display:inline-flex;align-items:center;gap:2px;padding:5px;border-radius:999px;isolation:isolate;
-  font-family:Jost,ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased;user-select:none;-webkit-tap-highlight-color:transparent}
+  font-family:var(--font-sans),ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased;user-select:none;-webkit-tap-highlight-color:transparent}
 .nimbus-nav[data-tone="dark"]{--n-tint:rgba(94,24,44,.55);--n-fg:#F1E6D3;--n-fg-soft:rgba(241,230,211,.7);--n-rim:rgba(231,209,162,.3)}
 .nimbus-glass{position:absolute;inset:0;border-radius:inherit;z-index:-2;overflow:hidden;background:var(--n-tint);
   -webkit-backdrop-filter:blur(10px) saturate(1.2) brightness(1.06);backdrop-filter:blur(10px) saturate(1.2) brightness(1.06);

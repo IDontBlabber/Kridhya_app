@@ -112,8 +112,8 @@ export default function CoverflowCarousel({ products }) {
                   {p.badge && <span className="absolute left-2 top-2 bg-ivory/90 px-2 py-0.5 text-[12.5px] font-medium uppercase tracking-[0.16em] text-wine-900">{p.badge}</span>}
                 </div>
                 <div className="flex items-center justify-between gap-2 px-1 pb-1 pt-2.5">
-                  <span className="truncate font-display text-[19px] font-semibold">{p.name}</span>
-                  <span className="shrink-0 text-[15px] font-semibold">{formatPrice(p.price)}</span>
+                  <span className="truncate font-display text-[16px] font-semibold">{p.name}</span>
+                  <span className="num shrink-0 text-[15px] font-semibold">{formatPrice(p.price)}</span>
                 </div>
               </button>
             </motion.div>
@@ -128,7 +128,7 @@ export default function CoverflowCarousel({ products }) {
             <motion.div key={current.slug} initial={{ opacity: 0, y: 8, filter: 'blur(6px)' }} animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.45, ease: EASE }}>
               <p className="text-[13px] uppercase tracking-[0.18em] text-gold-deep">{getCategory(current.category)?.name}</p>
               <Link to={`/product/${current.slug}`} className="link-underline mt-1 font-display text-[26px]">{current.name}</Link>
-              <p className="mt-0.5 text-[15.5px] text-wine-900/70">{formatPrice(current.price)}</p>
+              <p className="num mt-0.5 text-[15px] text-wine-900/70">{formatPrice(current.price)}</p>
             </motion.div>
           </AnimatePresence>
         </div>

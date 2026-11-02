@@ -19,6 +19,11 @@ import Blog from './pages/Blog'
 import BlogPost from './pages/BlogPost'
 import Contact from './pages/Contact'
 import NotFound from './pages/NotFound'
+import Checkout from './pages/Checkout'
+import OrderConfirmed from './pages/OrderConfirmed'
+import { Faq, JewelleryCare, ShippingReturns, Privacy, Terms } from './pages/Info'
+import FontPicker from './components/FontPicker'
+import { SHOW_FONT_PICKER } from './data/site'
 
 let lenis
 
@@ -76,6 +81,13 @@ export default function App() {
                 <Route path="/blog" element={<Blog />} />
                 <Route path="/blog/:slug" element={<BlogPost />} />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/order-confirmed" element={<OrderConfirmed />} />
+                <Route path="/faq" element={<Faq />} />
+                <Route path="/jewellery-care" element={<JewelleryCare />} />
+                <Route path="/shipping-returns" element={<ShippingReturns />} />
+                <Route path="/privacy-policy" element={<Privacy />} />
+                <Route path="/terms" element={<Terms />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
@@ -84,6 +96,7 @@ export default function App() {
         </AnimatePresence>
         <WhatsAppFloat />
         <CartDrawer />
+        {SHOW_FONT_PICKER && <FontPicker />}
       </CartProvider>
     </MotionConfig>
   )

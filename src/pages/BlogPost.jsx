@@ -57,7 +57,7 @@ function Article({ post }) {
             </aside>
             <div className="mx-auto max-w-[68ch] lg:col-span-8">
               <FadeUp as="p" className="font-display text-[clamp(calc(1.3rem_+_2px),calc(2vw_+_2px),calc(1.6rem_+_2px))] font-light italic leading-snug text-wine-700">{post.excerpt}</FadeUp>
-              <div className="mt-10 space-y-6 text-[18px] leading-[1.85] text-wine-900/85">
+              <div className="mt-10 space-y-6 text-[16px] leading-[1.85] text-wine-900/85">
                 {post.body.map((b, i) => {
                   if (b.h2) return <h2 key={i} className="!mt-10 text-[clamp(calc(1.5rem_+_2px),calc(2.4vw_+_2px),calc(1.9rem_+_2px))] leading-tight text-wine-900">{b.h2}</h2>
                   if (b.h3) return <h3 key={i} className="!mt-10 font-display text-[26px] text-wine-900">{b.h3}</h3>
@@ -71,7 +71,7 @@ function Article({ post }) {
                   return <p key={i}>{b.p}</p>
                 })}
               </div>
-              <div className="mt-10 border-t border-wine-900/10 pt-6 text-[17px] text-wine-900/70">
+              <div className="mt-10 border-t border-wine-900/10 pt-6 text-[16px] text-wine-900/70">
                 Looking for the right piece? <Link to="/shop" className="link-underline text-wine-700">Explore the collection</Link> or read about <Link to="/corporate-gifting" className="link-underline text-wine-700">corporate gifting</Link>.
               </div>
             </div>

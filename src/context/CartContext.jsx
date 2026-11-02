@@ -37,11 +37,13 @@ export function CartProvider({ children }) {
     setItems((prev) => (qty <= 0 ? prev.filter((i) => i.id !== id) : prev.map((i) => (i.id === id ? { ...i, qty } : i))))
   }, [])
 
+  const clear = useCallback(() => setItems([]), [])
+
   const value = useMemo(() => {
     const count = items.reduce((n, i) => n + i.qty, 0)
     const subtotal = items.reduce((n, i) => n + i.qty * i.price, 0)
-    return { items, count, subtotal, open, setOpen, add, update }
-  }, [items, open, add, update])
+    return { items, count, subtotal, open, setOpen, add, update, clear }
+  }, [items, open, add, update, clear])
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>
 }

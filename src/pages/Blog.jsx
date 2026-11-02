@@ -11,7 +11,7 @@ import useDocumentMeta from '../hooks/useDocumentMeta'
 export const fmtDate = (d) => new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })
 
 export default function Blog() {
-  useDocumentMeta('The Journal | Kridhya by Devanshi', 'Styling notes, jewellery care and gifting ideas from Kridhya by Devanshi.')
+  useDocumentMeta('The Journal | Kridhya by Devanshi Agarwal', 'Styling notes, jewellery care and gifting ideas from Kridhya by Devanshi Agarwal.')
   const cats = ['All', ...new Set(POSTS.map((p) => p.category))]
   const [cat, setCat] = useState('All')
   const list = cat === 'All' ? POSTS : POSTS.filter((p) => p.category === cat)
@@ -19,15 +19,15 @@ export default function Blog() {
 
   return (
     <>
-      <section className="bg-ivory pb-8 pt-28 sm:pt-32">
-        <div className="container-site">
+      <section className="bg-ivory pb-8 pt-32 sm:pt-36">
+        <div className="container-hero">
           <Breadcrumbs items={[{ label: 'Home', to: '/' }, { label: 'Journal' }]} />
           <motion.h1 initial={{ opacity: 0, y: 14, filter: 'blur(10px)' }} animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }} transition={{ duration: 1, ease: EASE }} className="h-display mt-5">
-            The <em className="text-wine-600">Journal</em>
+            The Journal
           </motion.h1>
           <div className="scrollbar-none -mx-5 mt-6 flex gap-2 overflow-x-auto border-b border-wine-900/10 px-4 pb-4 sm:mx-0 sm:px-0" role="tablist" aria-label="Journal categories">
             {cats.map((c) => (
-              <button key={c} role="tab" aria-selected={cat === c} onClick={() => setCat(c)} className={`relative min-h-[44px] shrink-0 px-4 text-[14px] uppercase tracking-[0.2em] ${cat === c ? 'text-wine-900' : 'text-wine-900/55 hover:text-wine-900'}`}>
+              <button key={c} role="tab" aria-selected={cat === c} onClick={() => setCat(c)} className={`relative min-h-[44px] shrink-0 px-4 text-[13px] uppercase tracking-[0.2em] ${cat === c ? 'text-wine-900' : 'text-wine-900/55 hover:text-wine-900'}`}>
                 {c}
                 {cat === c && <span className="absolute -bottom-4 left-0 right-0 h-px bg-wine-900" />}
               </button>
@@ -48,9 +48,9 @@ export default function Blog() {
                   <div className="md:col-span-5">
                     <p className="eyebrow text-gold-deep">Featured · {featured.category}</p>
                     <h2 className="mt-4 text-[clamp(calc(1.6rem_+_2px),calc(2.8vw_+_2px),calc(2.3rem_+_2px))] leading-[1.1] transition-colors group-hover:text-wine-600">{featured.title}</h2>
-                    <p className="mt-3 text-[17px] leading-relaxed text-wine-900/70">{featured.excerpt}</p>
+                    <p className="mt-3 text-[16px] leading-relaxed text-wine-900/70">{featured.excerpt}</p>
                     <p className="mt-6 text-[16px] text-wine-900/55">{fmtDate(featured.date)} · {featured.readTime}</p>
-                    <span className="mt-8 inline-flex items-center gap-3 text-[14px] uppercase tracking-[0.22em] text-wine-800">
+                    <span className="mt-8 inline-flex items-center gap-3 text-[13px] uppercase tracking-[0.22em] text-wine-800">
                       <span className="link-underline">Read more</span> <IconArrow size={14} className="transition-transform group-hover:translate-x-1" />
                     </span>
                   </div>
@@ -78,8 +78,8 @@ export function PostCard({ post }) {
         </div>
         <p className="mt-5 text-[13px] uppercase tracking-[0.22em] text-gold-deep">{post.category} · {post.readTime}</p>
         <h3 className="mt-1.5 font-display text-[23px] leading-snug transition-colors group-hover:text-wine-600">{post.title}</h3>
-        <p className="mt-2 line-clamp-2 text-[17px] text-wine-900/65">{post.excerpt}</p>
-        <span className="mt-4 inline-flex items-center gap-2 text-[14px] uppercase tracking-[0.2em] text-wine-800">
+        <p className="mt-2 line-clamp-2 text-[16px] text-wine-900/65">{post.excerpt}</p>
+        <span className="mt-4 inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.2em] text-wine-800">
           <span className="link-underline">Read more</span> <IconArrow size={14} />
         </span>
       </Link>

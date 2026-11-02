@@ -4,14 +4,20 @@
 export const WHATSAPP_NUMBER = '919886921568'
 
 export const WHATSAPP_MESSAGES = {
-  general: 'Hello Kridhya by Devanshi, I would love some help choosing a piece. Could you assist me?',
+  general: 'Hello Kridhya by Devanshi Agarwal, I would love some help choosing a piece. Could you assist me?',
   gifting:
-    'Hello Kridhya by Devanshi, I’m interested in corporate gifting or bulk jewellery orders. Could you please share the available options and details?',
-  product: (name) => `Hello Kridhya by Devanshi, I’m interested in the ${name}. Could you share more details?`,
+    'Hello Kridhya by Devanshi Agarwal, I’m interested in corporate gifting or bulk jewellery orders. Could you please share the available options and details?',
+  product: (name) => `Hello Kridhya by Devanshi Agarwal, I’m interested in the ${name}. Could you share more details?`,
 }
 
 export const whatsappLink = (message = WHATSAPP_MESSAGES.general) =>
   `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`
+
+export const BRAND_NAME = 'Kridhya by Devanshi Agarwal'
+export const TAGLINE = 'Small joys worn close to heart'
+
+// Review tool: shows the floating "Aa" typeface picker so the client can compare font pairings. Set to false at launch.
+export const SHOW_FONT_PICKER = true
 
 export const NAV = [
   { label: 'Shop', to: '/shop' },
@@ -23,13 +29,23 @@ export const NAV = [
   { label: 'Contact', to: '/contact' },
 ]
 
+// Help & policy pages (footer). Copy on these pages is draft text pending client approval.
+export const HELP = [
+  { label: 'FAQs', to: '/faq' },
+  { label: 'Jewellery Care', to: '/jewellery-care' },
+  { label: 'Shipping & Returns', to: '/shipping-returns' },
+  { label: 'Privacy Policy', to: '/privacy-policy' },
+  { label: 'Terms & Conditions', to: '/terms' },
+]
+
 // Contact details shown on the Contact page and Corporate Gifting enquiry block.
 // Phone/WhatsApp mirrors WHATSAPP_NUMBER above. PENDING: confirm email, Instagram handle and studio hours with the client.
 export const CONTACT = {
   phoneDisplay: '+91 98869 21568',
   phoneHref: 'tel:+919886921568',
   email: 'hello@kridhyabydevanshi.com',
-  instagram: { handle: '@kridhyabydevanshi', href: 'https://instagram.com/' },
+  instagram: { handle: '@kridhyabydevanshi', href: 'https://instagram.com/kridhyabydevanshi' },
+  facebook: { label: 'Facebook', href: 'https://www.facebook.com/profile.php?id=61595468576080' },
   website: 'kridhyabydevanshi.com',
   hours: 'Monday – Saturday, 10 am – 7 pm IST',
 }

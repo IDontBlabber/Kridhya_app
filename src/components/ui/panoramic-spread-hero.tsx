@@ -147,7 +147,7 @@ export default function PanoramicSpreadHero({
   images = DEFAULT_IMAGES,
   eyebrow = "The Collection",
   title = "Unfolding, piece by piece.",
-  description = "Necklaces, earrings, cuffs, rings and brooches — designed for everyday elegance and the moments that matter.",
+  description = "Pendants, earrings, bracelets and rings — designed for everyday elegance and the moments that matter.",
   children,
 }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -201,7 +201,7 @@ export default function PanoramicSpreadHero({
         >
           <span className="mb-3 font-sans text-[13px] font-medium uppercase tracking-[0.32em] text-gold">{eyebrow}</span>
           <h2 className="font-display text-[38px] font-light leading-none md:text-[3.4vw]">{title}</h2>
-          <p className="mt-4 max-w-[46ch] text-[16px] leading-relaxed text-ivory/70 md:text-[17px]">{description}</p>
+          <p className="mt-4 max-w-[46ch] text-[16px] leading-relaxed text-ivory/70 md:text-[16px]">{description}</p>
         </motion.div>
 
         {children && (
