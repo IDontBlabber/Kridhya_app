@@ -66,12 +66,13 @@ export default function Collections() {
                 <div className="overflow-hidden border border-gold/40 bg-cream p-1.5" style={{ aspectRatio: '4/3' }}>
                   <img src={c.cover} alt={`${c.name} by Kridhya`} loading="lazy" data-placeholder="true" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
                 </div>
-                <div className="mt-3 flex items-start justify-between gap-3">
-                  <div>
-                    <h2 className="font-collection text-[22px] font-semibold tracking-[0.08em]">{c.name}</h2>
-                    <p className="mt-1 max-w-xs text-[16px] font-medium text-wine-900/70">{c.blurb}</p>
+                {/* phones/tablets: name, blurb and count stack so nothing overflows a narrow column; side by side from md */}
+                <div className="mt-2.5 md:mt-3 md:flex md:items-start md:justify-between md:gap-3">
+                  <div className="min-w-0">
+                    <h2 className="font-collection text-[17px] font-semibold leading-tight tracking-[0.06em] sm:text-[20px] md:text-[22px] md:tracking-[0.08em]">{c.name}</h2>
+                    <p className="mt-1 max-w-xs text-[14px] font-medium leading-snug text-wine-900/70 sm:text-[15px] md:text-[16px] md:leading-normal">{c.blurb}</p>
                   </div>
-                  <span className="num inline-flex shrink-0 items-center gap-1.5 pt-1.5 text-[13px] font-semibold uppercase tracking-[0.16em] text-gold-deep">
+                  <span className="num mt-2 inline-flex shrink-0 items-center gap-1.5 text-[12px] font-semibold uppercase tracking-[0.14em] text-gold-deep md:mt-0 md:pt-1.5 md:text-[13px] md:tracking-[0.16em]">
                     {byCategory(c.slug).length} pieces <IconArrow size={13} />
                   </span>
                 </div>

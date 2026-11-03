@@ -67,14 +67,15 @@ export function ProductCard({ product, priority = false }) {
       >
         <IconBag size={16} />
       </button>
-      <div className="mt-3 flex items-start justify-between gap-3">
+      {/* name and price stack below lg (narrow grid columns); side by side on desktop */}
+      <div className="mt-2.5 sm:mt-3 lg:flex lg:items-start lg:justify-between lg:gap-3">
         <div className="min-w-0">
-          <p className="text-[13px] font-semibold uppercase tracking-[0.16em] text-gold-deep">{getCategory(product.category)?.name}</p>
-          <h3 className="mt-0.5 line-clamp-2 font-display text-[20px] font-semibold leading-snug sm:text-[21px]">
+          <p className="text-[11.5px] font-semibold uppercase tracking-[0.14em] text-gold-deep sm:text-[13px] sm:tracking-[0.16em]">{getCategory(product.category)?.name}</p>
+          <h3 className="mt-0.5 line-clamp-2 font-display text-[17px] leading-snug sm:text-[20px] lg:text-[21px]">
             <Link to={`/product/${product.slug}`}>{product.name}</Link>
           </h3>
         </div>
-        <p className="num shrink-0 pt-4 text-[16px] font-semibold">{formatPrice(product.price)}</p>
+        <p className="num mt-1 shrink-0 text-[15px] font-semibold sm:text-[16px] lg:mt-0 lg:pt-4">{formatPrice(product.price)}</p>
       </div>
     </motion.article>
   )

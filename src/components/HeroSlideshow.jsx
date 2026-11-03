@@ -159,7 +159,7 @@ export default function HeroSlideshow() {
               >
                 <span className="h-px w-6 bg-gold" /> {slide.eyebrow}
               </motion.p>
-              <h1 className="mt-4 font-['Cormorant_Garamond',Georgia,serif] text-[clamp(calc(2.4rem_+_2px),calc(5.6vw_+_2px),calc(4.6rem_+_2px))] font-medium leading-[1.02]">
+              <h1 className="mt-4 font-display text-[clamp(calc(2.4rem_+_2px),calc(5.6vw_+_2px),calc(4.6rem_+_2px))] font-medium leading-[1.02]">
                 {slide.title.map((line, i) => (
                   <motion.span
                     key={line}

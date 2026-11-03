@@ -42,20 +42,21 @@ function Categories() {
     <section className="section bg-ivory">
       <div className="container-site">
         <SectionHeading eyebrow="Shop by category" title="Find your signature" action={<TextLink to="/collections">All collections</TextLink>} />
-        <Stagger className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {/* phones & tablets: compact 3-up tiles (name + count); full cards with blurb from md */}
+        <Stagger className="mt-7 grid grid-cols-3 gap-2.5 sm:mt-10 sm:gap-4 lg:gap-5">
           {COLLECTIONS.map((c, i) => (
             <motion.div key={c.slug} variants={blurChild}>
-              <Link to={`/collections/${c.slug}`} className="group flex h-full flex-col border border-gold/40 bg-cream/70 p-2 transition-colors hover:border-gold">
-                <div className="aspect-[4/3] overflow-hidden bg-cream">
+              <Link to={`/collections/${c.slug}`} className="group flex h-full flex-col border border-gold/40 bg-cream/70 p-1 transition-colors hover:border-gold sm:p-1.5 md:p-2">
+                <div className="aspect-[5/4] overflow-hidden bg-cream md:aspect-[4/3]">
                   <img src={c.cover} alt={`${c.name} by Kridhya`} loading="lazy" data-placeholder="true" className="h-full w-full object-cover transition-transform duration-[1.2s] ease-luxe group-hover:scale-[1.04]" />
                 </div>
-                <div className="flex flex-1 flex-col p-4 pb-3">
-                  <span className="num text-[13px] text-gold-deep">0{i + 1}</span>
-                  <h3 className="mt-1 font-collection text-[22px] font-medium tracking-[0.08em]">{c.name}</h3>
-                  <p className="mt-2 text-[15px] leading-relaxed text-wine-900/75">{c.blurb}</p>
-                  <span className="mt-auto inline-flex items-center justify-between gap-3 pt-4 text-[13px] font-semibold uppercase tracking-[0.16em] text-wine-700">
+                <div className="flex flex-1 flex-col items-center px-1 pb-1.5 pt-2 text-center md:items-stretch md:p-4 md:pb-3 md:text-left">
+                  <span className="num hidden text-[13px] text-gold-deep md:block">0{i + 1}</span>
+                  <h3 className="font-collection text-[14.5px] font-medium leading-tight tracking-[0.04em] sm:text-[18px] md:mt-1 md:text-[22px] md:tracking-[0.08em]">{c.name}</h3>
+                  <p className="mt-2 hidden text-[15px] leading-relaxed text-wine-900/75 md:block">{c.blurb}</p>
+                  <span className="mt-auto inline-flex items-center justify-center gap-1 pt-1 text-[11.5px] font-medium tracking-[0.04em] text-wine-900/70 md:justify-between md:gap-3 md:pt-4 md:text-[13px] md:font-semibold md:uppercase md:tracking-[0.16em] md:text-wine-700">
                     <span className="num">{byCategory(c.slug).length} pieces</span>
-                    <IconArrow size={14} className="transition-transform duration-500 group-hover:translate-x-1" />
+                    <IconArrow size={12} className="transition-transform duration-500 group-hover:translate-x-1 md:h-3.5 md:w-3.5" />
                   </span>
                 </div>
               </Link>
@@ -91,8 +92,8 @@ function Highlights() {
     <section className="section bg-cream" aria-labelledby="highlights-title">
       <div className="container-site">
         <SectionHeading eyebrow="Handpicked for you" title={<span id="highlights-title">Jewellery Highlights</span>} intro="The pieces we reach for first — loved for gifting, layering and everyday wear." action={<TextLink to="/shop">Shop all jewellery</TextLink>} />
-        <Stagger className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-2">
-          <motion.div variants={blurChild} className="sm:col-span-2 lg:row-span-2">
+        <Stagger className="mt-7 grid grid-cols-2 gap-2.5 sm:mt-10 sm:gap-4 lg:grid-cols-4 lg:grid-rows-2">
+          <motion.div variants={blurChild} className="col-span-2 lg:row-span-2">
             <HighlightCard item={lead} big />
           </motion.div>
           {rest.map((h) => (
@@ -110,14 +111,14 @@ function HighlightCard({ item, big = false }) {
   const { product } = item
   return (
     <Link to={`/product/${product.slug}`} className="group relative block h-full overflow-hidden border border-gold/40 bg-cream">
-      <div className={`overflow-hidden ${big ? 'aspect-[4/5] lg:aspect-auto lg:h-full lg:min-h-[560px]' : 'aspect-square'}`}>
+      <div className={`overflow-hidden ${big ? 'aspect-[4/3] sm:aspect-[4/5] lg:aspect-auto lg:h-full lg:min-h-[560px]' : 'aspect-square'}`}>
         <img src={product.images[0]} alt={`${product.name} — ${product.short}`} loading="lazy" className="h-full w-full object-cover mix-blend-multiply transition-transform duration-[1.2s] ease-luxe group-hover:scale-[1.04]" />
       </div>
-      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-wine-950/85 via-wine-950/45 to-transparent p-4 pt-14 text-ivory sm:p-5 sm:pt-16">
-        <p className="text-[13px] font-semibold uppercase tracking-[0.18em] text-gold-light">{item.tag}</p>
-        <h3 className={`mt-1 font-display font-medium leading-tight ${big ? 'text-[28px] sm:text-[34px]' : 'text-[21px]'}`}>{product.name}</h3>
-        {big && <p className="mt-1.5 max-w-sm text-[16px] text-ivory/80">{item.line}</p>}
-        <p className="num mt-1.5 text-[16px] text-ivory/90">{formatPrice(product.price)}</p>
+      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-wine-950/85 via-wine-950/45 to-transparent p-3 pt-12 text-ivory sm:p-5 sm:pt-16">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gold-light sm:text-[13px] sm:tracking-[0.18em]">{item.tag}</p>
+        <h3 className={`mt-1 font-display font-medium leading-tight ${big ? 'text-[24px] sm:text-[34px]' : 'text-[16px] sm:text-[21px]'}`}>{product.name}</h3>
+        {big && <p className="mt-1.5 max-w-sm text-[14.5px] leading-snug text-ivory/80 sm:text-[16px]">{item.line}</p>}
+        <p className="num mt-1 text-[14px] text-ivory/90 sm:mt-1.5 sm:text-[16px]">{formatPrice(product.price)}</p>
       </div>
     </Link>
   )
@@ -229,15 +230,16 @@ function Journal() {
     <section className="section bg-ivory">
       <div className="container-site">
         <SectionHeading eyebrow="The Journal" title="Notes on style, care & gifting" action={<TextLink to="/blog">Read the journal</TextLink>} />
-        <Stagger className="mt-10 grid gap-8 md:grid-cols-3 md:gap-5">
+        {/* phones/tablets: swipeable row with the next card peeking; 3-up grid from md */}
+        <Stagger className="scrollbar-none -mx-5 mt-7 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-1 sm:-mx-8 sm:px-8 md:mx-0 md:mt-10 md:grid md:grid-cols-3 md:gap-5 md:overflow-visible md:px-0 md:pb-0">
           {POSTS.slice(0, 3).map((p) => (
-            <motion.article key={p.slug} variants={blurChild} className="group">
+            <motion.article key={p.slug} variants={blurChild} className="group w-[80%] shrink-0 snap-start sm:w-[46%] md:w-auto">
               <Link to={`/blog/${p.slug}`} className="block">
                 <div className="aspect-[3/2] overflow-hidden bg-cream">
                   <img src={p.cover} srcSet={srcSetFor(p.cover)} sizes="(min-width: 768px) 33vw, 100vw" alt={p.coverAlt} loading="lazy" className="h-full w-full object-cover transition-transform duration-[1.2s] ease-luxe group-hover:scale-105" />
                 </div>
-                <p className="mt-4 text-[12px] uppercase tracking-[0.2em] text-gold-deep">{p.category} · {p.readTime}</p>
-                <h3 className="mt-1.5 font-display text-[23px] leading-snug transition-colors group-hover:text-wine-600">{p.title}</h3>
+                <p className="mt-3 text-[12px] uppercase tracking-[0.2em] text-gold-deep sm:mt-4">{p.category} · {p.readTime}</p>
+                <h3 className="mt-1.5 font-display text-[19px] leading-snug transition-colors group-hover:text-wine-600 sm:text-[23px]">{p.title}</h3>
               </Link>
             </motion.article>
           ))}

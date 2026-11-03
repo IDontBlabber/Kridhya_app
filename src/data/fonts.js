@@ -10,7 +10,7 @@ export const FONT_PAIRS = [
   {
     id: 'playfair-nunito',
     name: 'Playfair + Nunito Sans',
-    note: 'Playfair Display headings with regular Nunito Sans body — soft, elegant, very readable. Default.',
+    note: 'Playfair Display headings with regular Nunito Sans body — soft, elegant, very readable.',
     display: '"Playfair Display", Georgia, serif',
     sans: '"Nunito Sans", system-ui, sans-serif',
     brand: 'Cinzel, Georgia, serif',
@@ -50,7 +50,7 @@ export const FONT_PAIRS = [
   {
     id: 'fraunces-nunito',
     name: 'Fraunces + Nunito Sans',
-    note: 'Soft, friendly luxury: Fraunces with Nunito Sans.',
+    note: 'Soft, friendly luxury: Fraunces with Nunito Sans. Default.',
     display: 'Fraunces, Georgia, serif',
     sans: '"Nunito Sans", system-ui, sans-serif',
     brand: 'Cinzel, Georgia, serif',
@@ -69,8 +69,8 @@ export const FONT_PAIRS = [
   },
 ]
 
-export const DEFAULT_FONT = 'playfair-nunito'
-export const FONT_KEY = 'kridhya-font'
+export const DEFAULT_FONT = 'fraunces-nunito'
+export const FONT_KEY = 'kridhya-font-v2'
 export const getFontPair = (id) => FONT_PAIRS.find((f) => f.id === id) ?? FONT_PAIRS[0]
 
 // Applies a pairing: loads its stylesheet once, then sets the CSS variables the Tailwind font families read.

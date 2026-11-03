@@ -6,7 +6,7 @@
   :root {
     --ease-luxe: cubic-bezier(0.22, 1, 0.36, 1);
     /* typeface pairing — swapped live by components/FontPicker.jsx; defaults match data/fonts.js */
-    --font-display: 'Playfair Display', Georgia, serif;
+    --font-display: Fraunces, Georgia, serif;
     --font-sans: 'Nunito Sans', system-ui, sans-serif;
     --font-brand: Cinzel, Georgia, serif;
     --font-collection: Cinzel, Georgia, serif;

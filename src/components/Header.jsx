@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import Logo from './Logo'
 import { NAV, WHATSAPP_MESSAGES, whatsappLink } from '../data/site'
 import { useCart } from '../context/CartContext'
-import { IconBag, IconClose, IconMenu, IconSearch, IconWhatsApp } from './Icons'
+import { IconBag, IconChevron, IconClose, IconMenu, IconSearch, IconWhatsApp } from './Icons'
 
 // Pages whose first section is dark — header text is beige there, burgundy on light pages.
 const DARK_TOP = ['/', '/corporate-gifting', '/our-story', '/about', '/collections', '/checkout', '/order-confirmed', '/faq', '/jewellery-care', '/shipping-returns', '/privacy-policy', '/terms']
@@ -94,25 +94,32 @@ export default function Header() {
       {menu && (
         <>
           <div className="fixed inset-0 z-[60] bg-wine-950/60 xl:hidden" onClick={() => setMenu(false)} />
-          <div id="mobile-menu" role="dialog" aria-modal="true" aria-label="Menu" className="fixed inset-y-0 right-0 z-[61] flex w-[86%] max-w-sm flex-col bg-wine-950 text-ivory xl:hidden">
-            <div className="flex h-16 items-center justify-between px-5">
-              <span className="eyebrow text-gold">Menu</span>
-              <button type="button" className="-mr-2 inline-flex h-10 w-10 items-center justify-center" aria-label="Close menu" onClick={() => setMenu(false)}>
+          {/* phones: full-screen sheet; tablets: right-hand drawer */}
+          <div id="mobile-menu" role="dialog" aria-modal="true" aria-label="Menu" className="fixed inset-0 z-[61] flex flex-col bg-wine-950 pt-[env(safe-area-inset-top)] text-ivory sm:left-auto sm:w-[86%] sm:max-w-sm xl:hidden">
+            <div className="flex h-[68px] shrink-0 items-center justify-between border-b border-gold/15 px-5 sm:px-8">
+              <Link to="/" aria-label="Kridhya by Devanshi Agarwal — home" onClick={() => setMenu(false)}>
+                <Logo />
+              </Link>
+              <button type="button" className="-mr-2 inline-flex h-11 w-11 items-center justify-center hover:text-gold" aria-label="Close menu" onClick={() => setMenu(false)}>
                 <IconClose size={22} />
               </button>
             </div>
-            <nav aria-label="Mobile" className="flex-1 overflow-y-auto px-5 pt-4">
+            <nav aria-label="Mobile" className="flex-1 overflow-y-auto px-5 pt-3 sm:px-8">
               <ul>
-                {NAV.map((n) => (
-                  <li key={n.to}>
-                    <Link to={n.to} aria-current={isSection(pathname, n.to) ? 'page' : undefined} className={`block border-b border-ivory/10 py-3.5 font-display text-[26px] ${isSection(pathname, n.to) ? 'text-gold' : ''}`}>
-                      {n.label}
-                    </Link>
-                  </li>
-                ))}
+                {NAV.map((n) => {
+                  const active = isSection(pathname, n.to)
+                  return (
+                    <li key={n.to}>
+                      <Link to={n.to} aria-current={active ? 'page' : undefined} className={`flex min-h-[56px] items-center justify-between border-b border-ivory/10 font-display text-[21px] transition-colors hover:text-gold ${active ? 'text-gold' : ''}`}>
+                        {n.label}
+                        <IconChevron size={18} className={active ? 'text-gold' : 'text-ivory/45'} />
+                      </Link>
+                    </li>
+                  )
+                })}
               </ul>
             </nav>
-            <div className="px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+            <div className="px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4 sm:px-8">
               <a href={whatsappLink(WHATSAPP_MESSAGES.general)} target="_blank" rel="noreferrer" className="btn btn-gold w-full">
                 <IconWhatsApp size={16} /> Chat with us
               </a>
