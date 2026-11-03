@@ -1,4 +1,4 @@
-// Image slot registry — the single place to swap photography.
+// Image slot registry - the single place to swap photography.
 // When VK delivers final images: drop the new file into /public/images/<folder>/,
 // update `src` + `alt` here and set `placeholder: false`. Layouts reserve aspect ratios,
 // so no component needs to change.
@@ -23,7 +23,7 @@ export function srcSetFor(src) {
 }
 
 export const IMG = {
-  // Full-bleed hero carousel — 16:9 banners at 3840 / 1920 / 1080 widths (served via srcset).
+  // Full-bleed hero carousel - 16:9 banners at 3840 / 1920 / 1080 widths (served via srcset).
   // TEMPORARY stock (Unsplash licence, see /public/images/hero/CREDITS.md) until VK's approved banners arrive.
   // To swap: export each banner at 3840×2160, save as hero-<name>-{3840,1920,1080}.webp, update `name` + `alt`.
   // `position` is the focal point kept in frame on narrow/portrait screens.
@@ -34,7 +34,7 @@ export const IMG = {
     { name: 'everyday-gold', alt: 'Layered gold necklaces and sculptural rings worn against warm skin tones', position: '50% 45%', mobilePosition: '50% 40%', placeholder: true },
     { name: 'gifting', alt: 'Polished gold herringbone necklace worn with a black blazer', position: '62% 40%', mobilePosition: '66% 40%', placeholder: true },
   ],
-  // Editorial slots — the client's supplied photos, cleaned of edge bands and enhanced
+  // Editorial slots - the client's supplied photos, cleaned of edge bands and enhanced
   // (2-step Lanczos upscale + edge-aware sharpening) to 1600px, with an 800px version for phones.
   // Replace with VK's original high-resolution files when available for full clarity.
   heroBanner: { src: e('hero-banner'), alt: 'Lotus pendant displayed on stone amid burgundy florals', placeholder: true },
@@ -47,7 +47,7 @@ export const IMG = {
   womanWearing: { src: e('woman-wearing'), alt: 'Woman in a burgundy saree wearing fine jewellery', placeholder: true },
   ringStill: { src: e('ring-still-life'), alt: 'Lotus cocktail ring on textured stone', placeholder: true },
   giftBox: { src: e('gift-box'), alt: 'Lotus ring presented in a burgundy velvet gift box', placeholder: true },
-  // Home 'Corporate gifting & bulk orders' banner — client-supplied 16:9 image ('Golden Floral Ring in Velvet Box'), AI-upscaled to 4K
+  // Home 'Corporate gifting & bulk orders' banner - client-supplied 16:9 image ('Golden Floral Ring in Velvet Box'), AI-upscaled to 4K
   giftBanner: { src: e('gift-banner'), alt: 'Floral gold ring in an open burgundy velvet box among dried florals', position: '70% 55%' },
   heartRose: { src: e('heart-necklace-rose-satin'), alt: 'Rose gold infinity heart necklace on satin', placeholder: true },
   heartSilver: { src: e('heart-necklace-silver-satin'), alt: 'Silver infinity heart necklace on satin', placeholder: true },
@@ -55,7 +55,7 @@ export const IMG = {
   doubleRose: { src: e('double-strand-rose-satin'), alt: 'Rose gold double strand infinity necklace on satin', placeholder: true },
   lariatSilver: { src: e('lariat-silver-satin'), alt: 'Silver lariat necklace with heart drop', placeholder: true },
 
-  // Generated art (procedural satin backdrops) — decorative, safe to keep after the swap
+  // Generated art (procedural satin backdrops) - decorative, safe to keep after the swap
   satinWine: { src: g('satin-burgundy'), alt: '' },
   satinBeige: { src: g('satin-beige'), alt: '' },
   satinWineGold: { src: g('satin-wine-gold'), alt: '' },

@@ -30,7 +30,7 @@ let lenis
 function useSmoothScroll() {
   const reduce = useReducedMotion()
   useEffect(() => {
-    // Touch devices already have native momentum scrolling — skip the extra rAF loop there.
+    // Touch devices already have native momentum scrolling - skip the extra rAF loop there.
     if (reduce || window.matchMedia('(pointer: coarse)').matches) return
     lenis = new Lenis({ lerp: 0.1, smoothWheel: true })
     let id
@@ -96,7 +96,7 @@ export default function App() {
         </AnimatePresence>
         <WhatsAppFloat />
         <CartDrawer />
-        {SHOW_FONT_PICKER && <FontPicker />}
+        {/* {SHOW_FONT_PICKER && <FontPicker />} */}
       </CartProvider>
     </MotionConfig>
   )

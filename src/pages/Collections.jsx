@@ -4,12 +4,12 @@ import { IconArrow } from '../components/Icons'
 import { FadeUp } from '../components/motion'
 import useDocumentMeta from '../hooks/useDocumentMeta'
 
-// Category names live in data/products.js (CATEGORIES) — one place to rename them.
+// Category names live in data/products.js (CATEGORIES) - one place to rename them.
 export default function Collections() {
-  useDocumentMeta('Collections | Kridhya by Devanshi Agarwal', 'Explore Kridhya jewellery by category — pendants, earrings, bracelets, rings, necklaces and brooches.')
+  useDocumentMeta('Collections | Kridhya by Devanshi Agarwal', 'Explore Kridhya jewellery by category - pendants, earrings, bracelets, rings, necklaces and brooches.')
   return (
     <>
-      {/* hero: banner image behind the heading only — the category index sits below it, on its own ground */}
+      {/* hero: banner image behind the heading only - the category index sits below it, on its own ground */}
       <section className="grain relative isolate overflow-hidden bg-wine-950 text-ivory">
         <img
           src="/images/hero/hero-everyday-gold-1920.webp"
@@ -27,14 +27,14 @@ export default function Collections() {
         <div className="container-hero pb-14 pt-36 sm:pb-16 lg:min-h-[52svh] lg:pb-20 lg:pt-48">
           <p className="eyebrow font-semibold text-gold">Collections</p>
           <h1 className="h-display mt-4 max-w-xl font-medium">Explore by category</h1>
-          <p className="mt-5 max-w-md text-[16px] font-medium leading-relaxed text-ivory/85">
-            Every piece, organised the way you shop — choose a category to see the full archive.
+          <p className="mt-5 max-w-md text-[13px] font-medium leading-relaxed text-ivory/85">
+            Every piece, organised the way you shop - choose a category to see the full archive.
           </p>
           <Link to="/shop" className="btn btn-gold mt-8 font-semibold">Shop all jewellery <IconArrow size={14} /></Link>
         </div>
       </section>
 
-      {/* category index — below the hero, on the page ground */}
+      {/* category index - below the hero, on the page ground */}
       <section className="section bg-ivory" aria-labelledby="category-index">
         <div className="container-site">
           <h2 id="category-index" className="sr-only">Categories</h2>
@@ -44,9 +44,9 @@ export default function Collections() {
                 <li key={c.slug} className="border-b border-wine-900/20">
                   <FadeUp delay={i * 0.04}>
                     <Link to={`/collections/${c.slug}`} className="group flex min-h-[72px] items-center gap-4 py-4 transition-colors hover:text-wine-600 sm:gap-6">
-                      <span className="num w-8 text-[13px] text-gold-deep">0{i + 1}</span>
-                      <span className="flex-1 font-collection text-[clamp(1.3rem,2.6vw,2rem)] font-medium leading-none tracking-[0.06em]">{c.name}</span>
-                      <span className="num text-[13px] font-semibold uppercase tracking-[0.16em] text-wine-900/65">{byCategory(c.slug).length} pieces</span>
+                      <span className="num w-8 text-[11px] text-gold-deep">0{i + 1}</span>
+                      <span className="flex-1 font-collection text-[clamp(calc(1.3rem_-_5px),calc(2.6vw_-_5px),calc(2rem_-_5px))] font-medium leading-none tracking-[0.06em]">{c.name}</span>
+                      <span className="num text-[11px] font-semibold uppercase tracking-[0.16em] text-wine-900/65">{byCategory(c.slug).length} pieces</span>
                       <IconArrow size={16} className="text-gold-deep transition-transform duration-500 group-hover:translate-x-1" />
                     </Link>
                   </FadeUp>
@@ -69,10 +69,10 @@ export default function Collections() {
                 {/* phones/tablets: name, blurb and count stack so nothing overflows a narrow column; side by side from md */}
                 <div className="mt-2.5 md:mt-3 md:flex md:items-start md:justify-between md:gap-3">
                   <div className="min-w-0">
-                    <h2 className="font-collection text-[17px] font-semibold leading-tight tracking-[0.06em] sm:text-[20px] md:text-[22px] md:tracking-[0.08em]">{c.name}</h2>
-                    <p className="mt-1 max-w-xs text-[14px] font-medium leading-snug text-wine-900/70 sm:text-[15px] md:text-[16px] md:leading-normal">{c.blurb}</p>
+                    <h2 className="font-collection text-[13px] font-semibold leading-tight tracking-[0.06em] sm:text-[16px] md:text-[18px] md:tracking-[0.08em]">{c.name}</h2>
+                    <p className="mt-1 max-w-xs text-[11px] font-medium leading-snug text-wine-900/70 sm:text-[12px] md:text-[13px] md:leading-normal">{c.blurb}</p>
                   </div>
-                  <span className="num mt-2 inline-flex shrink-0 items-center gap-1.5 text-[12px] font-semibold uppercase tracking-[0.14em] text-gold-deep md:mt-0 md:pt-1.5 md:text-[13px] md:tracking-[0.16em]">
+                  <span className="num mt-2 inline-flex shrink-0 items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-gold-deep md:mt-0 md:pt-1.5 md:text-[11px] md:tracking-[0.16em]">
                     {byCategory(c.slug).length} pieces <IconArrow size={13} />
                   </span>
                 </div>

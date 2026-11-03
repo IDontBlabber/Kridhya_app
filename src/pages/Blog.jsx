@@ -31,7 +31,7 @@ export default function Blog() {
           <div className="mt-6 flex flex-col gap-3 border-b border-wine-900/10 pb-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="scrollbar-none -mx-5 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:px-0" role="tablist" aria-label="Journal categories">
               {cats.map((c) => (
-                <button key={c} role="tab" aria-selected={cat === c} onClick={() => setCat(c)} className={`relative min-h-[44px] shrink-0 px-4 text-[13px] uppercase tracking-[0.2em] ${cat === c ? 'text-wine-900' : 'text-wine-900/55 hover:text-wine-900'}`}>
+                <button key={c} role="tab" aria-selected={cat === c} onClick={() => setCat(c)} className={`relative min-h-[44px] shrink-0 px-4 text-[11px] uppercase tracking-[0.2em] ${cat === c ? 'text-wine-900' : 'text-wine-900/55 hover:text-wine-900'}`}>
                   {c}
                   {cat === c && <span className="absolute -bottom-4 left-0 right-0 h-px bg-wine-900" />}
                 </button>
@@ -45,7 +45,7 @@ export default function Blog() {
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 placeholder="Search the journal"
-                className="h-11 w-full border border-wine-900/15 bg-transparent pl-9 pr-3 text-[16px] placeholder:text-wine-900/45 focus:border-wine-700 focus:outline-none"
+                className="h-11 w-full border border-wine-900/15 bg-transparent pl-9 pr-3 text-[13px] placeholder:text-wine-900/45 focus:border-wine-700 focus:outline-none"
               />
             </label>
           </div>
@@ -57,7 +57,7 @@ export default function Blog() {
           <AnimatePresence mode="wait">
             <motion.div key={`${cat}-${term}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
               {!featured && (
-                <p className="py-16 text-center text-[16px] text-wine-900/70" role="status">
+                <p className="py-16 text-center text-[13px] text-wine-900/70" role="status">
                   No articles match “{q.trim()}”. Try another word or <button type="button" onClick={() => { setQ(''); setCat('All') }} className="font-semibold text-wine-800 underline decoration-gold-deep/60 underline-offset-4">clear the search</button>.
                 </p>
               )}
@@ -68,10 +68,10 @@ export default function Blog() {
                   </div>
                   <div className="md:col-span-5">
                     <p className="eyebrow text-gold-deep">Featured · {featured.category}</p>
-                    <h2 className="mt-4 text-[clamp(calc(1.6rem_+_2px),calc(2.8vw_+_2px),calc(2.3rem_+_2px))] leading-[1.1] transition-colors group-hover:text-wine-600">{featured.title}</h2>
-                    <p className="mt-3 text-[16px] leading-relaxed text-wine-900/70">{featured.excerpt}</p>
-                    <p className="mt-6 text-[16px] text-wine-900/55">{fmtDate(featured.date)} · {featured.readTime}</p>
-                    <span className="mt-8 inline-flex items-center gap-3 text-[13px] uppercase tracking-[0.22em] text-wine-800">
+                    <h2 className="mt-4 text-[clamp(calc(1.6rem_-_3px),calc(2.8vw_-_3px),calc(2.3rem_-_3px))] leading-[1.1] transition-colors group-hover:text-wine-600">{featured.title}</h2>
+                    <p className="mt-3 text-[13px] leading-relaxed text-wine-900/70">{featured.excerpt}</p>
+                    <p className="mt-6 text-[13px] text-wine-900/55">{fmtDate(featured.date)} · {featured.readTime}</p>
+                    <span className="mt-8 inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.22em] text-wine-800">
                       <span className="link-underline">Read more</span> <IconArrow size={14} className="transition-transform group-hover:translate-x-1" />
                     </span>
                   </div>
@@ -97,10 +97,10 @@ export function PostCard({ post }) {
         <div className="aspect-[3/2] overflow-hidden bg-cream">
           <img src={post.cover} srcSet={srcSetFor(post.cover)} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" alt={post.coverAlt} loading="lazy" className="h-full w-full object-cover transition-transform duration-[1.4s] ease-luxe group-hover:scale-105" />
         </div>
-        <p className="mt-5 text-[13px] uppercase tracking-[0.22em] text-gold-deep">{post.category} · {post.readTime}</p>
-        <h3 className="mt-1.5 font-display text-[23px] leading-snug transition-colors group-hover:text-wine-600">{post.title}</h3>
-        <p className="mt-2 line-clamp-2 text-[16px] text-wine-900/65">{post.excerpt}</p>
-        <span className="mt-4 inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.2em] text-wine-800">
+        <p className="mt-5 text-[11px] uppercase tracking-[0.22em] text-gold-deep">{post.category} · {post.readTime}</p>
+        <h3 className="mt-1.5 font-display text-[19px] leading-snug transition-colors group-hover:text-wine-600">{post.title}</h3>
+        <p className="mt-2 line-clamp-2 text-[13px] text-wine-900/65">{post.excerpt}</p>
+        <span className="mt-4 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-wine-800">
           <span className="link-underline">Read more</span> <IconArrow size={14} />
         </span>
       </Link>

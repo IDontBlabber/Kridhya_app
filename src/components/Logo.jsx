@@ -1,4 +1,4 @@
-// Kridhya by Devanshi Agarwal — brand mark redrawn as vector from the official logo artwork:
+// Kridhya by Devanshi Agarwal - brand mark redrawn as vector from the official logo artwork:
 // a double square frame enclosing an inverted triangle between two rules, with a slender
 // three-petal lotus meeting at a single point. Uses currentColor so it works in gold on
 // burgundy and in burgundy on beige. Swap for the approved master SVG when the client supplies it.
@@ -32,11 +32,11 @@ export function LotusMark({ className = '', strokeWidth = 1 }) {
 }
 
 // ── Logo variations ──────────────────────────────────────────────────────────────────────────────
-//  <Logo />                horizontal lockup  — header, checkout, compact spots (mark + KRIDHYA / BY DEVANSHI AGARWAL)
+//  <Logo />                horizontal lockup  - header, checkout, compact spots (mark + KRIDHYA / BY DEVANSHI AGARWAL)
 //  <Logo compact />        horizontal, wordmark line only
-//  <LogoStacked />         full stacked lockup — footer, 404, founder card (add withTagline for the brand line)
-//  <LogoWordmark />        type only, no mark — inline sign-offs, emails, order confirmation
-//  <LotusMark />           mark only — favicon, loaders, watermarks, tiny sizes
+//  <LogoStacked />         full stacked lockup - footer, 404, founder card (add withTagline for the brand line)
+//  <LogoWordmark />        type only, no mark - inline sign-offs, emails, order confirmation
+//  <LotusMark />           mark only - favicon, loaders, watermarks, tiny sizes
 // All use currentColor / gold so they sit on burgundy (default) or beige (pass tone="dark").
 
 // Header lockup: mark + KRIDHYA / BY DEVANSHI AGARWAL
@@ -48,7 +48,7 @@ export default function Logo({ className = '', compact = false }) {
         <span className="font-brand text-[16px] font-medium tracking-[0.32em]">KRIDHYA</span>
         {!compact && <span className="mt-1.5 whitespace-nowrap font-brand text-[8.5px] font-medium tracking-[0.28em] text-gold">BY DEVANSHI AGARWAL</span>}
       </span>
-      <span className="sr-only">{BRAND.name} — home</span>
+      <span className="sr-only">{BRAND.name} - home</span>
     </span>
   )
 }

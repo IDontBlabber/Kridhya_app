@@ -17,7 +17,7 @@ import Founders from '../components/Founders'
 import useDocumentMeta from '../hooks/useDocumentMeta'
 
 export default function Home() {
-  useDocumentMeta('Kridhya by Devanshi Agarwal — Jewellery for the Moments That Matter', 'Thoughtfully designed jewellery for everyday elegance and meaningful gifting.')
+  useDocumentMeta('Kridhya by Devanshi Agarwal - Jewellery for the Moments That Matter', 'Thoughtfully designed jewellery for everyday elegance and meaningful gifting.')
   return (
     <>
       <HeroSlideshow />
@@ -36,7 +36,7 @@ export default function Home() {
   )
 }
 
-/* Categories — compact tiles with pointer tilt and an inner parallax image */
+/* Categories - compact tiles with pointer tilt and an inner parallax image */
 function Categories() {
   return (
     <section className="section bg-ivory">
@@ -51,10 +51,10 @@ function Categories() {
                   <img src={c.cover} alt={`${c.name} by Kridhya`} loading="lazy" data-placeholder="true" className="h-full w-full object-cover transition-transform duration-[1.2s] ease-luxe group-hover:scale-[1.04]" />
                 </div>
                 <div className="flex flex-1 flex-col items-center px-1 pb-1.5 pt-2 text-center md:items-stretch md:p-4 md:pb-3 md:text-left">
-                  <span className="num hidden text-[13px] text-gold-deep md:block">0{i + 1}</span>
-                  <h3 className="font-collection text-[14.5px] font-medium leading-tight tracking-[0.04em] sm:text-[18px] md:mt-1 md:text-[22px] md:tracking-[0.08em]">{c.name}</h3>
-                  <p className="mt-2 hidden text-[15px] leading-relaxed text-wine-900/75 md:block">{c.blurb}</p>
-                  <span className="mt-auto inline-flex items-center justify-center gap-1 pt-1 text-[11.5px] font-medium tracking-[0.04em] text-wine-900/70 md:justify-between md:gap-3 md:pt-4 md:text-[13px] md:font-semibold md:uppercase md:tracking-[0.16em] md:text-wine-700">
+                  <span className="num hidden text-[11px] text-gold-deep md:block">0{i + 1}</span>
+                  <h3 className="font-collection text-[11.5px] font-medium leading-tight tracking-[0.04em] sm:text-[14px] md:mt-1 md:text-[18px] md:tracking-[0.08em]">{c.name}</h3>
+                  <p className="mt-2 hidden text-[12px] leading-relaxed text-wine-900/75 md:block">{c.blurb}</p>
+                  <span className="mt-auto inline-flex items-center justify-center gap-1 pt-1 text-[11.5px] font-medium tracking-[0.04em] text-wine-900/70 md:justify-between md:gap-3 md:pt-4 md:text-[11px] md:font-semibold md:uppercase md:tracking-[0.16em] md:text-wine-700">
                     <span className="num">{byCategory(c.slug).length} pieces</span>
                     <IconArrow size={12} className="transition-transform duration-500 group-hover:translate-x-1 md:h-3.5 md:w-3.5" />
                   </span>
@@ -68,13 +68,13 @@ function Categories() {
   )
 }
 
-/* Thin brand band — drifts, and speeds up / reverses with scroll velocity */
+/* Thin brand band - drifts, and speeds up / reverses with scroll velocity */
 function Band() {
   const words = [TAGLINE, 'Everyday elegance', 'Meaningful gifting', 'Timeless design']
   return (
     <VelocityMarquee className="border-y border-gold/15 bg-wine-900 py-3 text-ivory" baseVelocity={-1.5}>
       {words.map((w) => (
-        <span key={w} className="flex items-center gap-6 pr-6 font-display text-[13px] italic tracking-[0.03em] sm:text-[14px]">
+        <span key={w} className="flex items-center gap-6 pr-6 font-display text-[11px] italic tracking-[0.03em] sm:text-[11px]">
           {w}
           <LotusMark className="h-3 w-3 text-gold" />
         </span>
@@ -83,7 +83,7 @@ function Band() {
   )
 }
 
-/* Jewellery Highlights — one large feature plus four supporting pieces */
+/* Jewellery Highlights - one large feature plus four supporting pieces */
 function Highlights() {
   const items = HIGHLIGHTS.map((h) => ({ ...h, product: getProduct(h.slug) })).filter((h) => h.product)
   const [lead, ...rest] = items
@@ -91,7 +91,7 @@ function Highlights() {
   return (
     <section className="section bg-cream" aria-labelledby="highlights-title">
       <div className="container-site">
-        <SectionHeading eyebrow="Handpicked for you" title={<span id="highlights-title">Jewellery Highlights</span>} intro="The pieces we reach for first — loved for gifting, layering and everyday wear." action={<TextLink to="/shop">Shop all jewellery</TextLink>} />
+        <SectionHeading eyebrow="Handpicked for you" title={<span id="highlights-title">Jewellery Highlights</span>} intro="The pieces we reach for first - loved for gifting, layering and everyday wear." action={<TextLink to="/shop">Shop all jewellery</TextLink>} />
         <Stagger className="mt-7 grid grid-cols-2 gap-2.5 sm:mt-10 sm:gap-4 lg:grid-cols-4 lg:grid-rows-2">
           <motion.div variants={blurChild} className="col-span-2 lg:row-span-2">
             <HighlightCard item={lead} big />
@@ -112,13 +112,13 @@ function HighlightCard({ item, big = false }) {
   return (
     <Link to={`/product/${product.slug}`} className="group relative block h-full overflow-hidden border border-gold/40 bg-cream">
       <div className={`overflow-hidden ${big ? 'aspect-[4/3] sm:aspect-[4/5] lg:aspect-auto lg:h-full lg:min-h-[560px]' : 'aspect-square'}`}>
-        <img src={product.images[0]} alt={`${product.name} — ${product.short}`} loading="lazy" className="h-full w-full object-cover mix-blend-multiply transition-transform duration-[1.2s] ease-luxe group-hover:scale-[1.04]" />
+        <img src={product.images[0]} alt={`${product.name} - ${product.short}`} loading="lazy" className="h-full w-full object-cover mix-blend-multiply transition-transform duration-[1.2s] ease-luxe group-hover:scale-[1.04]" />
       </div>
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-wine-950/85 via-wine-950/45 to-transparent p-3 pt-12 text-ivory sm:p-5 sm:pt-16">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gold-light sm:text-[13px] sm:tracking-[0.18em]">{item.tag}</p>
-        <h3 className={`mt-1 font-display font-medium leading-tight ${big ? 'text-[24px] sm:text-[34px]' : 'text-[16px] sm:text-[21px]'}`}>{product.name}</h3>
-        {big && <p className="mt-1.5 max-w-sm text-[14.5px] leading-snug text-ivory/80 sm:text-[16px]">{item.line}</p>}
-        <p className="num mt-1 text-[14px] text-ivory/90 sm:mt-1.5 sm:text-[16px]">{formatPrice(product.price)}</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gold-light sm:text-[11px] sm:tracking-[0.18em]">{item.tag}</p>
+        <h3 className={`mt-1 font-display font-medium leading-tight ${big ? 'text-[19px] sm:text-[29px]' : 'text-[13px] sm:text-[17px]'}`}>{product.name}</h3>
+        {big && <p className="mt-1.5 max-w-sm text-[11.5px] leading-snug text-ivory/80 sm:text-[13px]">{item.line}</p>}
+        <p className="num mt-1 text-[11px] text-ivory/90 sm:mt-1.5 sm:text-[13px]">{formatPrice(product.price)}</p>
       </div>
     </Link>
   )
@@ -142,7 +142,7 @@ function Bestsellers() {
               role="tab"
               aria-selected={tab === t.slug}
               onClick={() => setTab(t.slug)}
-              className={`-mb-px min-h-[44px] min-w-[44px] shrink-0 border-b text-center text-[13px] uppercase tracking-[0.18em] transition-colors ${tab === t.slug ? 'border-wine-900 text-wine-900' : 'border-transparent text-wine-900/55 hover:text-wine-900'}`}
+              className={`-mb-px min-h-[44px] min-w-[44px] shrink-0 border-b text-center text-[11px] uppercase tracking-[0.18em] transition-colors ${tab === t.slug ? 'border-wine-900 text-wine-900' : 'border-transparent text-wine-900/55 hover:text-wine-900'}`}
             >
               {t.name}
             </button>
@@ -184,11 +184,11 @@ function ParallaxColumns() {
       <Mandala className="pointer-events-none absolute -left-40 -top-24 -z-10 h-[460px] w-[460px] text-wine-700/[0.09]" strokeWidth={0.8} />
       <div className="container-site grid items-center gap-8 py-10 sm:py-12 lg:grid-cols-12 lg:py-0">
         <div className="lg:col-span-4">
-          <FadeUp as="p" className="eyebrow text-[13px] font-semibold text-gold-deep">The collection</FadeUp>
-          <FadeUp as="h2" delay={0.05} className="font-collection tracking-[0.1em] mt-3 text-[clamp(calc(2.6rem_+_2px),calc(6vw_+_2px),calc(5rem_+_2px))] font-medium leading-[1]">Aevum</FadeUp>
-          <FadeUp as="p" delay={0.08} className="mt-2 font-display text-[clamp(1.5rem,2.4vw,2rem)] italic leading-tight text-wine-700">The Infinity Edit</FadeUp>
-          <FadeUp as="p" delay={0.1} className="mt-5 max-w-sm text-[16px] font-medium leading-relaxed text-wine-900/75">
-            A line with no beginning and no end — an endless loop reimagined in gold, rose gold and silver, for bonds, promises and everyday rituals.
+          <FadeUp as="p" className="eyebrow text-[11px] font-semibold text-gold-deep">The collection</FadeUp>
+          <FadeUp as="h2" delay={0.05} className="font-collection tracking-[0.1em] mt-3 text-[clamp(calc(2.6rem_-_3px),calc(6vw_-_3px),calc(5rem_-_3px))] font-medium leading-[1]">Aevum</FadeUp>
+          <FadeUp as="p" delay={0.08} className="mt-2 font-display text-[clamp(calc(1.5rem_-_5px),calc(2.4vw_-_5px),calc(2rem_-_5px))] italic leading-tight text-wine-700">The Infinity Edit</FadeUp>
+          <FadeUp as="p" delay={0.1} className="mt-5 max-w-sm text-[13px] font-medium leading-relaxed text-wine-900/75">
+            A line with no beginning and no end - an endless loop reimagined in gold, rose gold and silver, for bonds, promises and everyday rituals.
           </FadeUp>
           <FadeUp delay={0.15} className="mt-6">
             <Link to="/shop" className="btn btn-wine">Discover Aevum <IconArrow size={14} /></Link>
@@ -204,7 +204,7 @@ function ParallaxColumns() {
   )
 }
 
-/* Gifting — framed window opens to full bleed on scroll */
+/* Gifting - framed window opens to full bleed on scroll */
 function Gifting() {
   return (
     <ExpandFrame src={IMG.giftBanner.src} alt={IMG.giftBanner.alt} position={IMG.giftBanner.position} className="bg-wine-950 text-ivory">
@@ -212,7 +212,7 @@ function Gifting() {
         <div className="max-w-md">
           <FadeUp as="p" className="eyebrow text-gold">Corporate gifting &amp; bulk orders</FadeUp>
           <FadeUp as="h2" delay={0.05} className="h-section mt-3">Gifting, made meaningful.</FadeUp>
-          <FadeUp as="p" delay={0.1} className="mt-4 text-[16px] leading-relaxed text-ivory/75">
+          <FadeUp as="p" delay={0.1} className="mt-4 text-[13px] leading-relaxed text-ivory/75">
             Celebrate teams, clients and milestones with jewellery chosen to be kept. Tell us about your occasion and we’ll share the options available.
           </FadeUp>
           <FadeUp delay={0.15} className="mt-7 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
@@ -238,8 +238,8 @@ function Journal() {
                 <div className="aspect-[3/2] overflow-hidden bg-cream">
                   <img src={p.cover} srcSet={srcSetFor(p.cover)} sizes="(min-width: 768px) 33vw, 100vw" alt={p.coverAlt} loading="lazy" className="h-full w-full object-cover transition-transform duration-[1.2s] ease-luxe group-hover:scale-105" />
                 </div>
-                <p className="mt-3 text-[12px] uppercase tracking-[0.2em] text-gold-deep sm:mt-4">{p.category} · {p.readTime}</p>
-                <h3 className="mt-1.5 font-display text-[19px] leading-snug transition-colors group-hover:text-wine-600 sm:text-[23px]">{p.title}</h3>
+                <p className="mt-3 text-[10px] uppercase tracking-[0.2em] text-gold-deep sm:mt-4">{p.category} · {p.readTime}</p>
+                <h3 className="mt-1.5 font-display text-[15px] leading-snug transition-colors group-hover:text-wine-600 sm:text-[19px]">{p.title}</h3>
               </Link>
             </motion.article>
           ))}

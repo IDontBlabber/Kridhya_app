@@ -19,7 +19,7 @@ export function CartProvider({ children }) {
     try {
       localStorage.setItem(KEY, JSON.stringify(items))
     } catch {
-      /* storage unavailable — bag stays in memory */
+      /* storage unavailable - bag stays in memory */
     }
   }, [items])
 

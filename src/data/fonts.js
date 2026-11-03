@@ -10,7 +10,7 @@ export const FONT_PAIRS = [
   {
     id: 'playfair-nunito',
     name: 'Playfair + Nunito Sans',
-    note: 'Playfair Display headings with regular Nunito Sans body — soft, elegant, very readable.',
+    note: 'Playfair Display headings with regular Nunito Sans body - soft, elegant, very readable.',
     display: '"Playfair Display", Georgia, serif',
     sans: '"Nunito Sans", system-ui, sans-serif',
     brand: 'Cinzel, Georgia, serif',

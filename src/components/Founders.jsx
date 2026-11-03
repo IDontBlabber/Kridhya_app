@@ -4,7 +4,7 @@ import { LotusMark } from './Logo'
 import Mandala from './Mandala'
 import { IconArrow } from './Icons'
 
-// "Meet the founder" — full profile on About, a shorter teaser on Home.
+// "Meet the founder" - full profile on About, a shorter teaser on Home.
 export default function Founders({ variant = 'full' }) {
   const teaser = variant === 'teaser'
   return (
@@ -21,15 +21,15 @@ export default function Founders({ variant = 'full' }) {
               <div className={`relative isolate md:col-span-7 ${i % 2 ? 'md:order-1' : 'md:col-start-7 md:col-span-6'}`}>
                 {/* light mandala centred behind the name, role and bio */}
                 <Mandala className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[460px] w-[460px] -translate-x-1/2 -translate-y-1/2 text-gold/[0.18] sm:h-[540px] sm:w-[540px]" strokeWidth={0.7} />
-                <h2 className="text-[clamp(calc(2.3rem_+_2px),calc(4.4vw_+_2px),calc(3.6rem_+_2px))] font-medium leading-[1.02]">{f.name}</h2>
-                <p className="mt-3 text-[13px] font-semibold uppercase tracking-[0.22em] text-gold-deep">Small joys worn close to heart</p>
-                <p className="mt-3 text-[13px] font-semibold uppercase tracking-[0.22em] text-gold-deep">{f.role}</p>
+                <h2 className="text-[clamp(calc(2.3rem_-_3px),calc(4.4vw_-_3px),calc(3.6rem_-_3px))] font-medium leading-[1.02]">{f.name}</h2>
+                <p className="mt-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-gold-deep">Small joys worn close to heart</p>
+                <p className="mt-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-gold-deep">{f.role}</p>
                 <div className="hairline my-6 max-w-sm" />
                 {(teaser ? f.bio.slice(0, 1) : f.bio).map((para) => (
-                  <p key={para} className="mt-4 max-w-[54ch] text-[16px] font-medium leading-[1.75] text-wine-900/80">{para}</p>
+                  <p key={para} className="mt-4 max-w-[54ch] text-[13px] font-medium leading-[1.75] text-wine-900/80">{para}</p>
                 ))}
                 {teaser && (
-                  <Link to="/about#founder" className="mt-8 inline-flex min-h-[44px] items-center gap-2 text-[13.5px] font-semibold uppercase tracking-[0.2em] text-wine-800 hover:text-wine-600">
+                  <Link to="/about#founder" className="mt-8 inline-flex min-h-[44px] items-center gap-2 text-[11.5px] font-semibold uppercase tracking-[0.2em] text-wine-800 hover:text-wine-600">
                     Read the full story <IconArrow size={14} />
                   </Link>
                 )}
@@ -52,8 +52,8 @@ function Portrait({ founder }) {
         <div className="grain relative isolate flex aspect-[4/5] w-full flex-col items-center justify-center overflow-hidden bg-wine-900 text-ivory" data-placeholder="true">
           <Mandala className="absolute -z-10 h-[130%] w-[130%] text-gold/20" />
           <LotusMark className="h-14 w-14 text-gold" />
-          <span className="mt-5 font-display text-[62px] font-medium tracking-[0.12em]">{founder.initials}</span>
-          <span className="mt-3 text-[13px] font-semibold uppercase tracking-[0.3em] text-gold-light">{founder.name}</span>
+          <span className="mt-5 font-display text-[57px] font-medium tracking-[0.12em]">{founder.initials}</span>
+          <span className="mt-3 text-[11px] font-semibold uppercase tracking-[0.3em] text-gold-light">{founder.name}</span>
         </div>
       )}
     </div>

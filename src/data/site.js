@@ -47,7 +47,7 @@ export const CONTACT = {
   instagram: { handle: '@kridhyabydevanshi', href: 'https://instagram.com/kridhyabydevanshi' },
   facebook: { label: 'Facebook', href: 'https://www.facebook.com/profile.php?id=61595468576080' },
   website: 'kridhyabydevanshi.com',
-  hours: 'Monday – Saturday, 10 am – 7 pm IST',
+  hours: 'Monday - Saturday, 10 am - 7 pm IST',
 }
 
 export const formatPrice = (n) =>

@@ -57,7 +57,7 @@ const generatePanoramicCards = (images: PanoramicImage[]): Card[] => {
   });
 };
 
-// High damping, zero bounce — removes scroll jitter
+// High damping, zero bounce - removes scroll jitter
 const PROGRESS_SPRING = { stiffness: 80, damping: 25, mass: 0.5, restDelta: 0.001 };
 const PARALLAX_SPRING = { stiffness: 50, damping: 25, mass: 0.5 };
 
@@ -147,7 +147,7 @@ export default function PanoramicSpreadHero({
   images = DEFAULT_IMAGES,
   eyebrow = "The Collection",
   title = "Unfolding, piece by piece.",
-  description = "Pendants, earrings, bracelets and rings — designed for everyday elegance and the moments that matter.",
+  description = "Pendants, earrings, bracelets and rings - designed for everyday elegance and the moments that matter.",
   children,
 }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -199,9 +199,9 @@ export default function PanoramicSpreadHero({
           className="pointer-events-none absolute z-[5] flex flex-col items-center px-6 text-center"
           style={{ y: textY, scale: textScale, opacity: textOpacity }}
         >
-          <span className="mb-3 font-sans text-[13px] font-medium uppercase tracking-[0.32em] text-gold">{eyebrow}</span>
-          <h2 className="font-display text-[38px] font-light leading-none md:text-[3.4vw]">{title}</h2>
-          <p className="mt-4 max-w-[46ch] text-[16px] leading-relaxed text-ivory/70 md:text-[16px]">{description}</p>
+          <span className="mb-3 font-sans text-[11px] font-medium uppercase tracking-[0.32em] text-gold">{eyebrow}</span>
+          <h2 className="font-display text-[33px] font-light leading-none md:text-[3.4vw]">{title}</h2>
+          <p className="mt-4 max-w-[46ch] text-[13px] leading-relaxed text-ivory/70 md:text-[13px]">{description}</p>
         </motion.div>
 
         {children && (

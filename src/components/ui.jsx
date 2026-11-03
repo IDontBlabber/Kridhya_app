@@ -17,7 +17,7 @@ export function SectionHeading({ eyebrow, title, intro, align = 'left', light = 
         {eyebrow && <FadeUp as="p" className={`eyebrow ${light ? 'text-gold' : 'text-gold-deep'}`}>{eyebrow}</FadeUp>}
         <FadeUp as="h2" delay={0.05} className={`h-section mt-3 ${light ? 'text-ivory' : 'text-wine-900'}`}>{title}</FadeUp>
         {intro && (
-          <FadeUp as="p" delay={0.1} className={`mt-3 text-[16px] leading-relaxed ${center ? 'mx-auto' : ''} ${light ? 'text-ivory/70' : 'text-wine-900/65'}`}>
+          <FadeUp as="p" delay={0.1} className={`mt-3 text-[13px] leading-relaxed ${center ? 'mx-auto' : ''} ${light ? 'text-ivory/70' : 'text-wine-900/65'}`}>
             {intro}
           </FadeUp>
         )}
@@ -29,7 +29,7 @@ export function SectionHeading({ eyebrow, title, intro, align = 'left', light = 
 
 export function TextLink({ to, children, light = false }) {
   return (
-    <Link to={to} className={`group inline-flex min-h-[44px] items-center gap-2 text-[13px] font-medium uppercase tracking-[0.2em] ${light ? 'text-gold-light' : 'text-wine-800'}`}>
+    <Link to={to} className={`group inline-flex min-h-[44px] items-center gap-2 text-[11px] font-medium uppercase tracking-[0.2em] ${light ? 'text-gold-light' : 'text-wine-800'}`}>
       <span className="link-underline">{children}</span>
       <IconArrow size={14} className="transition-transform duration-500 ease-luxe group-hover:translate-x-1" />
     </Link>
@@ -45,7 +45,7 @@ export function ProductCard({ product, priority = false }) {
         <div className="relative aspect-square overflow-hidden bg-cream">
           <img
             src={product.images[0]}
-            alt={`${product.name} — ${product.short}`}
+            alt={`${product.name} - ${product.short}`}
             loading={priority ? 'eager' : 'lazy'}
             decoding="async"
             data-placeholder={product.placeholder ? 'true' : undefined}
@@ -55,7 +55,7 @@ export function ProductCard({ product, priority = false }) {
             <img src={second} alt="" loading="eager" decoding="async" onError={(e) => { e.currentTarget.style.display = 'none' }} className="absolute inset-0 h-full w-full bg-cream object-cover opacity-0 transition-[opacity,transform] duration-700 ease-luxe group-hover:scale-[1.04] [@media(hover:hover)]:group-hover:opacity-100" />
           )}
           {product.badge && (
-            <span className="absolute left-2.5 top-2.5 bg-ivory/90 px-2 py-0.5 text-[12.5px] font-semibold uppercase tracking-[0.16em] text-wine-900">{product.badge}</span>
+            <span className="absolute left-2.5 top-2.5 bg-ivory/90 px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-wine-900">{product.badge}</span>
           )}
         </div>
       </Link>
@@ -70,12 +70,12 @@ export function ProductCard({ product, priority = false }) {
       {/* name and price stack below lg (narrow grid columns); side by side on desktop */}
       <div className="mt-2.5 sm:mt-3 lg:flex lg:items-start lg:justify-between lg:gap-3">
         <div className="min-w-0">
-          <p className="text-[11.5px] font-semibold uppercase tracking-[0.14em] text-gold-deep sm:text-[13px] sm:tracking-[0.16em]">{getCategory(product.category)?.name}</p>
-          <h3 className="mt-0.5 line-clamp-2 font-display text-[17px] leading-snug sm:text-[20px] lg:text-[21px]">
+          <p className="text-[11.5px] font-semibold uppercase tracking-[0.14em] text-gold-deep sm:text-[11px] sm:tracking-[0.16em]">{getCategory(product.category)?.name}</p>
+          <h3 className="mt-0.5 line-clamp-2 font-display text-[13px] leading-snug sm:text-[16px] lg:text-[17px]">
             <Link to={`/product/${product.slug}`}>{product.name}</Link>
           </h3>
         </div>
-        <p className="num mt-1 shrink-0 text-[15px] font-semibold sm:text-[16px] lg:mt-0 lg:pt-4">{formatPrice(product.price)}</p>
+        <p className="num mt-1 shrink-0 text-[12px] font-semibold sm:text-[13px] lg:mt-0 lg:pt-4">{formatPrice(product.price)}</p>
       </div>
     </motion.article>
   )
@@ -87,7 +87,7 @@ export function FinishDot({ finish, size = 12 }) {
 }
 
 // Page header in the Corporate Gifting style: plain burgundy satin behind the (transparent) site header,
-// copy on the left, framed photography on the right — so nothing busy ever sits under the navigation.
+// copy on the left, framed photography on the right - so nothing busy ever sits under the navigation.
 export function PageHero({ eyebrow, title, intro, image, imageAlt = '', position = 'center', detail, detailAlt = '', children }) {
   const ref = useRef(null)
   const reduce = useReducedMotion()
@@ -113,7 +113,7 @@ export function PageHero({ eyebrow, title, intro, image, imageAlt = '', position
             {title}
           </motion.h1>
           {intro && (
-            <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.4, ease: EASE }} className="mt-5 max-w-md text-[15px] leading-relaxed text-ivory/75">
+            <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.4, ease: EASE }} className="mt-5 max-w-md text-[12px] leading-relaxed text-ivory/75">
               {intro}
             </motion.p>
           )}
@@ -136,15 +136,15 @@ export function PageHero({ eyebrow, title, intro, image, imageAlt = '', position
   )
 }
 
-// Numbered "on this page" list for page heroes — fills the copy column with useful jump links.
+// Numbered "on this page" list for page heroes - fills the copy column with useful jump links.
 export function HeroIndex({ items }) {
   return (
     <ol className="mt-9 max-w-md border-t border-ivory/15">
       {items.map((it, i) => (
         <li key={it.href} className="border-b border-ivory/15">
           <a href={it.href} className="flex min-h-[52px] items-center gap-4 py-2.5 hover:text-gold-light">
-            <span className="num w-6 text-[13px] text-gold">0{i + 1}</span>
-            <span className="flex-1 font-display text-[22px] font-medium leading-tight">{it.label}</span>
+            <span className="num w-6 text-[11px] text-gold">0{i + 1}</span>
+            <span className="flex-1 font-display text-[18px] font-medium leading-tight">{it.label}</span>
             <IconArrow size={15} className="rotate-90 text-gold" />
           </a>
         </li>
@@ -156,7 +156,7 @@ export function HeroIndex({ items }) {
 export function Breadcrumbs({ items }) {
   return (
     <nav aria-label="Breadcrumb">
-      <ol className="flex flex-wrap items-center gap-1.5 text-[13px] uppercase tracking-[0.16em] text-wine-900/55">
+      <ol className="flex flex-wrap items-center gap-1.5 text-[11px] uppercase tracking-[0.16em] text-wine-900/55">
         {items.map((it, i) => (
           <li key={i} className="flex items-center gap-1.5">
             {it.to ? <Link to={it.to} className="link-underline inline-block py-2.5 hover:text-gold-deep">{it.label}</Link> : <span aria-current="page" className="text-wine-900">{it.label}</span>}

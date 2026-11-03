@@ -31,7 +31,7 @@ export const PRODUCTS = [
     slug: 'double-strand-infinity-necklace', name: 'Double Strand Infinity Necklace', category: 'necklaces', price: 5600,
     finishes: ['Gold', 'Rose Gold', 'Silver'], badge: 'New',
     images: [e('double-strand-gold-satin'), p('double-strand-infinity-necklace-a87280cc'), e('double-strand-rose-satin'), p('double-strand-infinity-necklace-31169cda')],
-    short: 'Two delicate strands — a solitaire drop above, an infinity drop below.',
+    short: 'Two delicate strands - a solitaire drop above, an infinity drop below.',
   }),
   base({
     slug: 'eternal-love-infinity-necklace', name: 'Eternal Love Infinity Necklace', category: 'necklaces', price: 4800,
@@ -59,7 +59,7 @@ export const PRODUCTS = [
     slug: 'granthi', name: 'Granthi', category: 'pendants', price: 5100,
     finishes: ['Silver'],
     images: [p('granthi-78bcb8aa'), p('granthi-detail')],
-    short: 'A softly knotted loop — simple, symbolic, everyday.',
+    short: 'A softly knotted loop - simple, symbolic, everyday.',
   }),
   base({
     slug: 'sandhya', name: 'Sandhyā', category: 'pendants', price: 5600,
@@ -199,7 +199,7 @@ export const byCategory = (slug) => PRODUCTS.filter((x) => x.category === slug)
 
 // "Jewellery Highlights" (Home). Hand-picked pieces; the first is shown large. Edit slugs / lines here.
 export const HIGHLIGHTS = [
-  { slug: 'infinity-heart-necklace', tag: 'Bestseller', line: 'A pavé heart held in an endless loop — the piece most often chosen as a gift.' },
+  { slug: 'infinity-heart-necklace', tag: 'Bestseller', line: 'A pavé heart held in an endless loop - the piece most often chosen as a gift.' },
   { slug: 'double-strand-infinity-necklace', tag: 'New', line: 'Two fine strands, one quiet statement.' },
   { slug: 'ananta-gulabi', tag: 'Cuff', line: 'Rose-pink stones traced along an open infinity.' },
   { slug: 'ashta-studs', tag: 'Everyday studs', line: 'Figure-eight studs with a peach pear stone.' },

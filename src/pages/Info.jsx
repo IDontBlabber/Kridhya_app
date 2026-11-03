@@ -6,7 +6,7 @@ import useDocumentMeta from '../hooks/useDocumentMeta'
 
 const FAQS = [
   { q: 'How do I place an order?', a: 'Add pieces to your bag, choose Proceed to checkout and share your delivery details. If you would rather order by chat, message us on WhatsApp and we will help.' },
-  { q: 'Can I choose a finish?', a: 'Yes. Where a design is offered in more than one finish — gold, rose gold or silver — you can choose it on the product page before adding to your bag.' },
+  { q: 'Can I choose a finish?', a: 'Yes. Where a design is offered in more than one finish - gold, rose gold or silver - you can choose it on the product page before adding to your bag.' },
   { q: 'Do you offer gifting and bulk orders?', a: 'We do. Visit the Corporate Gifting page and send an enquiry, or message us on WhatsApp with your occasion and approximate quantity.' },
   { q: 'How do I look after my jewellery?', a: 'Our Jewellery Care page has simple everyday guidance for wearing, cleaning and storing your pieces.' },
   { q: 'How can I contact you about an order?', a: `Call or WhatsApp ${CONTACT.phoneDisplay}, or write to ${CONTACT.email}. Studio hours are ${CONTACT.hours}.` },
@@ -26,12 +26,12 @@ export function Faq() {
             return (
               <li key={f.q}>
                 <h2>
-                  <button type="button" aria-expanded={on} aria-controls={`faq-${i}`} onClick={() => setOpen(on ? -1 : i)} className="flex min-h-[64px] w-full items-center justify-between gap-6 py-4 text-left font-display text-[clamp(1.4rem,2.4vw,1.8rem)] font-medium leading-snug">
+                  <button type="button" aria-expanded={on} aria-controls={`faq-${i}`} onClick={() => setOpen(on ? -1 : i)} className="flex min-h-[64px] w-full items-center justify-between gap-6 py-4 text-left font-display text-[clamp(calc(1.4rem_-_5px),calc(2.4vw_-_5px),calc(1.8rem_-_5px))] font-medium leading-snug">
                     {f.q}
                     <IconChevronDown size={20} className={`shrink-0 text-gold-deep transition-transform duration-300 ${on ? 'rotate-180' : ''}`} />
                   </button>
                 </h2>
-                {on && <p id={`faq-${i}`} className="pb-5 pr-8 text-[16px] leading-[1.75] text-wine-900/80">{f.a}</p>}
+                {on && <p id={`faq-${i}`} className="pb-5 pr-8 text-[13px] leading-[1.75] text-wine-900/80">{f.a}</p>}
               </li>
             )
           })}

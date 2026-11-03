@@ -24,7 +24,7 @@ export default function Mandala({ className = '', strokeWidth = 0.6 }) {
       {ring(12, (a) => <path key={`lc${a}`} transform={`rotate(${a + 15})`} d="M0 -80 C 6 -70 6 -60 0 -54 C -6 -60 -6 -70 0 -80 Z" />)}
 
       <circle r="40" />
-      {/* inner star of interlaced loops — a nod to the infinity motif */}
+      {/* inner star of interlaced loops - a nod to the infinity motif */}
       {ring(8, (a) => <ellipse key={`e${a}`} transform={`rotate(${a})`} cx="0" cy="-22" rx="7" ry="16" />)}
       <circle r="9" />
       <circle r="3.5" />

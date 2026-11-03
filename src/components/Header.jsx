@@ -5,7 +5,7 @@ import { NAV, WHATSAPP_MESSAGES, whatsappLink } from '../data/site'
 import { useCart } from '../context/CartContext'
 import { IconBag, IconChevron, IconClose, IconMenu, IconSearch, IconWhatsApp } from './Icons'
 
-// Pages whose first section is dark — header text is beige there, burgundy on light pages.
+// Pages whose first section is dark - header text is beige there, burgundy on light pages.
 const DARK_TOP = ['/', '/corporate-gifting', '/our-story', '/about', '/collections', '/checkout', '/order-confirmed', '/faq', '/jewellery-care', '/shipping-returns', '/privacy-policy', '/terms']
 
 // Nested routes light up their section: products → Shop, category archives → Collections, posts → Journal.
@@ -15,7 +15,7 @@ function isSection(path, to) {
 }
 
 // Sticky navbar: transparent over the top of the page; once scrolled it stays pinned as a solid burgundy bar
-// (readable over any section). No hide/slide motion — only a short colour fade.
+// (readable over any section). No hide/slide motion - only a short colour fade.
 export default function Header() {
   const { pathname } = useLocation()
   const { count, setOpen } = useCart()
@@ -50,7 +50,7 @@ export default function Header() {
       >
         <div className="container-hero">
           <div className={`flex h-[68px] items-center justify-between gap-6 xl:grid xl:grid-cols-[auto_1fr_auto] xl:gap-x-10 2xl:gap-x-16 ${tone}`}>
-            <Link to="/" aria-label="Kridhya by Devanshi Agarwal — home" className="shrink-0">
+            <Link to="/" aria-label="Kridhya by Devanshi Agarwal - home" className="shrink-0">
               <Logo />
             </Link>
 
@@ -63,7 +63,7 @@ export default function Header() {
                       <Link
                         to={n.to}
                         aria-current={active ? 'page' : undefined}
-                        className={`inline-flex min-h-[44px] items-center whitespace-nowrap border-b text-[12.5px] font-medium uppercase tracking-[0.14em] hover:text-gold 2xl:text-[13px] 2xl:tracking-[0.18em] ${active ? 'border-gold text-gold' : 'border-transparent'}`}
+                        className={`inline-flex min-h-[44px] items-center whitespace-nowrap border-b text-[10.5px] font-medium uppercase tracking-[0.14em] hover:text-gold 2xl:text-[11px] 2xl:tracking-[0.18em] ${active ? 'border-gold text-gold' : 'border-transparent'}`}
                       >
                         {n.label}
                       </Link>
@@ -97,7 +97,7 @@ export default function Header() {
           {/* phones: full-screen sheet; tablets: right-hand drawer */}
           <div id="mobile-menu" role="dialog" aria-modal="true" aria-label="Menu" className="fixed inset-0 z-[61] flex flex-col bg-wine-950 pt-[env(safe-area-inset-top)] text-ivory sm:left-auto sm:w-[86%] sm:max-w-sm xl:hidden">
             <div className="flex h-[68px] shrink-0 items-center justify-between border-b border-gold/15 px-5 sm:px-8">
-              <Link to="/" aria-label="Kridhya by Devanshi Agarwal — home" onClick={() => setMenu(false)}>
+              <Link to="/" aria-label="Kridhya by Devanshi Agarwal - home" onClick={() => setMenu(false)}>
                 <Logo />
               </Link>
               <button type="button" className="-mr-2 inline-flex h-11 w-11 items-center justify-center hover:text-gold" aria-label="Close menu" onClick={() => setMenu(false)}>
@@ -110,7 +110,7 @@ export default function Header() {
                   const active = isSection(pathname, n.to)
                   return (
                     <li key={n.to}>
-                      <Link to={n.to} aria-current={active ? 'page' : undefined} className={`flex min-h-[56px] items-center justify-between border-b border-ivory/10 font-display text-[21px] transition-colors hover:text-gold ${active ? 'text-gold' : ''}`}>
+                      <Link to={n.to} aria-current={active ? 'page' : undefined} className={`flex min-h-[56px] items-center justify-between border-b border-ivory/10 font-display text-[17px] transition-colors hover:text-gold ${active ? 'text-gold' : ''}`}>
                         {n.label}
                         <IconChevron size={18} className={active ? 'text-gold' : 'text-ivory/45'} />
                       </Link>
