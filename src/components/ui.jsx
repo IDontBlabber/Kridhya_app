@@ -122,7 +122,7 @@ export function PageHero({ eyebrow, title, intro, image, imageAlt = '', position
         {image && !detail && (
           <motion.div style={{ y: back }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.2, delay: 0.2 }} className={`w-full md:col-span-6 ${square ? '' : 'lg:col-span-5 lg:col-start-8'}`}>
             <div className={`mx-auto border border-gold/50 p-1.5 ${square ? 'max-w-[400px] sm:max-w-[480px] md:mr-0 lg:max-w-[540px]' : 'max-w-[460px] md:mr-0'}`}>
-              <img src={image} srcSet={srcSetFor(image)} sizes="(min-width: 1024px) 34vw, (min-width: 768px) 50vw, 100vw" alt={imageAlt} data-placeholder={image.includes('/brand/') ? undefined : 'true'} className={`${square ? 'aspect-square' : 'aspect-[4/5]'} w-full object-cover`} style={{ objectPosition: position }} />
+              <img src={image} srcSet={srcSetFor(image)} sizes={square ? '(min-width: 1024px) 72vw, (min-width: 768px) 100vw, 200vw' : '(min-width: 1024px) 34vw, (min-width: 768px) 50vw, 100vw'} alt={imageAlt} data-placeholder={image.includes('/brand/') ? undefined : 'true'} className={`${square ? 'aspect-square' : 'aspect-[4/5]'} w-full object-cover`} style={{ objectPosition: position }} />
             </div>
           </motion.div>
         )}

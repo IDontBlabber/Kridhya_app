@@ -8,6 +8,7 @@ const g = (name) => `/images/generated/${name}.webp`
 
 // Responsive sources for the enhanced editorial images (800 / 1600px wide).
 const HIRES = ['hero-banner', 'story-still-life', 'model-portrait', 'design-sketch', 'artisan-detail', 'necklace-closeup', 'collection-still-life', 'woman-wearing', 'ring-still-life']
+const UPSCALED_4K = ['woman-wearing', 'story-still-life', 'hero-banner', 'design-sketch', 'model-portrait']
 const AI_4K = ['gift-box', 'gift-banner', 'gifting-hero']
 export function srcSetFor(src) {
   // 4K hero banners: /images/hero/hero-<name>-<width>.webp
@@ -22,6 +23,8 @@ export function srcSetFor(src) {
   // composed gift-curation banner: 1080 / 1920 / 2560px
   if (m[1] === 'gift-curation') return `${base}-1080.webp 1080w, ${base}-1920.webp 1920w, ${base}.webp 2560w`
   if (!HIRES.includes(m[1])) return undefined
+  // Real-ESRGAN x4plus upscales (Our Story set) also ship a 3840px 4K file
+  if (UPSCALED_4K.includes(m[1])) return `${base}-800.webp 800w, ${base}.webp 1600w, ${base}-3840.webp 3840w`
   return `${base}-800.webp 800w, ${base}.webp 1600w`
 }
 
@@ -50,9 +53,9 @@ export const IMG = {
   womanWearing: { src: e('woman-wearing'), alt: 'Woman in a burgundy saree wearing fine jewellery', placeholder: true },
   ringStill: { src: e('ring-still-life'), alt: 'Lotus cocktail ring on textured stone', placeholder: true },
   giftBox: { src: e('gift-box'), alt: 'Lotus ring presented in a burgundy velvet gift box', placeholder: true },
-  // Home 'Corporate gifting & bulk orders' banner - burgundy satin with one gold-framed photograph on the right
-  // (lotus ring in its velvet gift box); the copy sits on the darker, plain left half
-  giftBanner: { src: e('gift-curation'), alt: 'Gold lotus ring in an open burgundy velvet gift box, framed in gold on burgundy satin', position: '72% 50%' },
+  // Home 'Corporate gifting & bulk orders' banner - burgundy satin with one unframed photograph on the right
+  // (lotus ring in its velvet gift box, soft shadow); the copy sits on the darker, plain left half
+  giftBanner: { src: e('gift-curation'), alt: 'Gold lotus ring in an open burgundy velvet gift box on burgundy satin', position: '72% 50%' },
   // Corporate Gifting hero - 'Golden Floral Ring in Velvet Box' (4K), mirrored so the gift box sits left and the copy reads on the right
   giftingHero: { src: e('gifting-hero'), alt: 'Floral gold ring in an open burgundy velvet gift box on draped velvet among dried flowers', position: '35% 55%', mobilePosition: '28% 55%' },
   heartRose: { src: e('heart-necklace-rose-satin'), alt: 'Rose gold infinity heart necklace on satin', placeholder: true },
