@@ -59,14 +59,14 @@ export function ProductCard({ product, priority = false }) {
           )}
         </div>
       </Link>
-      <button
+      {!product.soldOut && <button
         type="button"
-        onClick={() => add(product, product.finishes[0])}
+        onClick={() => add(product, product.finishes.find((f) => !product.stock || product.stock[f] > 0) ?? product.finishes[0])}
         className="absolute right-2 top-2 inline-flex h-11 w-11 items-center justify-center bg-wine-900/90 text-ivory transition-all duration-500 ease-luxe hover:bg-gold hover:text-wine-950 focus-visible:opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100"
         aria-label={`Add ${product.name} to bag`}
       >
         <IconBag size={16} />
-      </button>
+      </button>}
       {/* name and price stack below lg (narrow grid columns); side by side on desktop */}
       <div className="mt-2.5 sm:mt-3 lg:flex lg:items-start lg:justify-between lg:gap-3">
         <div className="min-w-0">
@@ -121,7 +121,7 @@ export function PageHero({ eyebrow, title, intro, image, imageAlt = '', position
         </motion.div>
         {image && !detail && (
           <motion.div style={{ y: back }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.2, delay: 0.2 }} className={`w-full md:col-span-6 ${square ? '' : 'lg:col-span-5 lg:col-start-8'}`}>
-            <div className={`mx-auto border border-gold/50 p-1.5 ${square ? 'max-w-[400px] sm:max-w-[480px] md:mr-0 lg:max-w-[540px]' : 'max-w-[460px] md:mr-0'}`}>
+            <div className={`mx-auto ${square ? 'max-w-[400px] sm:max-w-[480px] md:mr-0 lg:max-w-[540px]' : 'max-w-[460px] border border-gold/50 p-1.5 md:mr-0'}`}>
               <img src={image} srcSet={srcSetFor(image)} sizes={square ? '(min-width: 1024px) 72vw, (min-width: 768px) 100vw, 200vw' : '(min-width: 1024px) 34vw, (min-width: 768px) 50vw, 100vw'} alt={imageAlt} data-placeholder={image.includes('/brand/') ? undefined : 'true'} className={`${square ? 'aspect-square' : 'aspect-[4/5]'} w-full object-cover`} style={{ objectPosition: position }} />
             </div>
           </motion.div>

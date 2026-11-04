@@ -27,7 +27,9 @@ export default function ContactEnquiry({
     const err = {}
     if (!form.name.trim()) err.name = 'Please share your name.'
     if (!/^\S+@\S+\.\S+$/.test(form.email)) err.email = 'Please enter a valid email address.'
-    if (form.phone.replace(/\D/g, '').length < 10) err.phone = 'Please enter a valid phone number.'
+    const digits = form.phone.replace(/\D/g, '')
+    if (!digits) err.phone = 'Please share your phone number so we can reach you.'
+    else if (digits.length < 10 || digits.length > 13) err.phone = 'Please enter a valid 10-digit phone number.'
     setErrors(err)
     if (!Object.keys(err).length) setSent(true)
   }
@@ -75,7 +77,7 @@ export default function ContactEnquiry({
               <p className="font-display text-[22px] font-normal leading-tight sm:col-span-2 sm:text-[24px]">Send us a message</p>
               <Field id={`${id}-name`} label="Full name" required value={form.name} onChange={set('name')} error={errors.name} autoComplete="name" />
               <Field id={`${id}-email`} label="Email" type="email" required value={form.email} onChange={set('email')} error={errors.email} autoComplete="email" />
-              <Field id={`${id}-phone`} label="Phone" type="tel" required value={form.phone} onChange={set('phone')} error={errors.phone} autoComplete="tel" />
+              <Field id={`${id}-phone`} label="Phone" type="tel" inputMode="tel" required maxLength={16} placeholder="+91 98765 43210" value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value.replace(/[^\d+\s-]/g, '') }))} error={errors.phone} autoComplete="tel" />
               {showQuantity ? (
                 <Field id={`${id}-quantity`} label="Approx. quantity" inputMode="numeric" value={form.quantity} onChange={set('quantity')} helper="An estimate is fine." />
               ) : (

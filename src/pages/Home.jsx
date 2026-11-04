@@ -128,7 +128,7 @@ function Bestsellers() {
   const tabs = [{ slug: 'all', name: 'All' }, ...COLLECTIONS.slice(0, 3)]
   const [tab, setTab] = useState('all')
   const list = useMemo(
-    () => (tab === 'all' ? [...PRODUCTS].sort((a, b) => !!b.badge - !!a.badge) : PRODUCTS.filter((p) => p.category === tab)).slice(0, 8),
+    () => (tab === 'all' ? [...PRODUCTS].filter((p) => !p.soldOut).sort((a, b) => !!b.badge - !!a.badge) : PRODUCTS.filter((p) => p.category === tab)).slice(0, 8),
     [tab],
   )
   return (

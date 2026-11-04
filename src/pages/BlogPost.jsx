@@ -24,7 +24,7 @@ function Article({ post }) {
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
   const y = useTransform(scrollYProgress, [0, 1], reduce ? ['0%', '0%'] : ['0%', '20%'])
   const others = POSTS.filter((p) => p.slug !== post.slug).slice(0, 3)
-  const shop = PRODUCTS.filter((p) => p.badge).slice(0, 4)
+  const shop = PRODUCTS.filter((p) => p.badge && !p.soldOut).slice(0, 4)
 
   return (
     <>

@@ -65,7 +65,7 @@ export default function Shop() {
               {cat ? <span className="font-collection tracking-[0.08em]">{cat.name}</span> : <>The Collection</>}
             </motion.h1>
             <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3, duration: 1 }} className="max-w-sm text-[14px] font-medium text-wine-900/75 lg:col-span-5 lg:justify-self-end">
-              {cat ? cat.blurb : 'Pendants, Earrings, Bracelets and Rings - designed for everyday elegance and the moments you’ll remember.'}
+              {cat ? cat.blurb : 'Pendants, Earrings, Bracelets and Rings - designed for Everyday elegance and the moments you’ll remember.'}
             </motion.p>
           </div>
         </div>

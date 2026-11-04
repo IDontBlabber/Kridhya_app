@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { Suspense, lazy, useEffect, useState } from 'react'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import { AnimatePresence, MotionConfig, motion, useReducedMotion } from 'framer-motion'
 import Lenis from 'lenis'
@@ -24,12 +24,17 @@ import OrderConfirmed from './pages/OrderConfirmed'
 import { Faq, JewelleryCare, ShippingReturns, Privacy, Terms } from './pages/Info'
 import FontPicker from './components/FontPicker'
 import { SHOW_FONT_PICKER } from './data/site'
+import { onCatalogueChange } from './admin/store'
+
+// Admin portal is code-split: shoppers never download it.
+const AdminApp = lazy(() => import('./admin/AdminApp'))
 
 let lenis
 
-function useSmoothScroll() {
+function useSmoothScroll(enabled) {
   const reduce = useReducedMotion()
   useEffect(() => {
+    if (!enabled) return
     // Touch devices already have native momentum scrolling - skip the extra rAF loop there.
     if (reduce || window.matchMedia('(pointer: coarse)').matches) return
     lenis = new Lenis({ lerp: 0.1, smoothWheel: true })
@@ -44,14 +49,27 @@ function useSmoothScroll() {
       lenis.destroy()
       lenis = undefined
     }
-  }, [reduce])
+  }, [reduce, enabled])
 }
 
 const scrollTop = () => (lenis ? lenis.scrollTo(0, { immediate: true }) : window.scrollTo(0, 0))
 
 export default function App() {
   const location = useLocation()
-  useSmoothScroll()
+  const isAdmin = location.pathname === '/admin' || location.pathname.startsWith('/admin/')
+  useSmoothScroll(!isAdmin)
+  // when the admin publishes in another tab, re-render the shop/journal with the new catalogue
+  const [catalogueVersion, setCatalogueVersion] = useState(0)
+  useEffect(() => onCatalogueChange(() => setCatalogueVersion((v) => v + 1)), [])
+
+  if (isAdmin)
+    return (
+      <Suspense fallback={<p className="p-10 text-center font-sans text-[14px] text-wine-900/60">Loading admin…</p>}>
+        <Routes>
+          <Route path="/admin/*" element={<AdminApp />} />
+        </Routes>
+      </Suspense>
+    )
 
   return (
     <MotionConfig reducedMotion="user">
@@ -63,7 +81,7 @@ export default function App() {
         <Header />
         <AnimatePresence mode="wait" onExitComplete={scrollTop}>
           <motion.div
-            key={location.pathname}
+            key={`${location.pathname}:${catalogueVersion}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transition: { duration: 0.6, ease: EASE } }}
             exit={{ opacity: 0, transition: { duration: 0.35, ease: EASE } }}

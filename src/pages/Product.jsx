@@ -21,7 +21,8 @@ function ProductView({ product }) {
   const { add } = useCart()
   const cat = getCategory(product.category)
   const [img, setImg] = useState(0)
-  const [finish, setFinish] = useState(product.finishes[0])
+  const inStock = (f) => !product.stock || (product.stock[f] ?? 1) > 0
+  const [finish, setFinish] = useState(product.finishes.find(inStock) ?? product.finishes[0])
   const [qty, setQty] = useState(1)
   const [stickyBar, setStickyBar] = useState(false)
   const buyRef = useRef(null)
@@ -95,7 +96,10 @@ function ProductView({ product }) {
               <div className="lg:sticky lg:top-28">
                 <p className="eyebrow text-gold-deep">{cat.name}</p>
                 <h1 className="mt-3 text-[clamp(calc(1.9rem_-_2px),calc(3.2vw_-_2px),calc(2.6rem_-_2px))] leading-[1.05]">{product.name}</h1>
-                <p className="num mt-3 text-[21px] font-light">{formatPrice(product.price)}</p>
+                <p className="num mt-3 text-[21px] font-light">
+                  {formatPrice(product.price)}
+                  {product.comparePrice > product.price && <span className="ml-3 text-[16px] text-wine-900/45 line-through">{formatPrice(product.comparePrice)}</span>}
+                </p>
                 <div className="hairline my-6" />
                 <p className="text-[15px] leading-relaxed text-wine-900/75">{product.short}</p>
 
@@ -108,13 +112,18 @@ function ProductView({ product }) {
                         type="button"
                         aria-pressed={finish === f}
                         onClick={() => setFinish(f)}
-                        className={`inline-flex min-h-[44px] items-center gap-2 border px-4 text-[15px] transition-colors ${finish === f ? 'border-wine-900 bg-wine-900 text-ivory' : 'border-wine-900/20 hover:border-wine-900/50'}`}
+                        className={`inline-flex min-h-[44px] items-center gap-2 border px-4 text-[15px] transition-colors ${finish === f ? 'border-wine-900 bg-wine-900 text-ivory' : 'border-wine-900/20 hover:border-wine-900/50'} ${inStock(f) ? '' : 'opacity-50 line-through decoration-1'}`}
                       >
                         <FinishDot finish={f} size={14} /> {f}
                       </button>
                     ))}
                   </div>
                 </fieldset>
+                {product.stock && (
+                  <p className="mt-3 text-[13px] font-medium" role="status">
+                    {!inStock(finish) ? <span className="text-wine-600">Sold out in {finish} - ask us about the next batch.</span> : product.stock[finish] <= 3 ? <span className="text-gold-deep">Only {product.stock[finish]} left in {finish}</span> : <span className="text-wine-900/60">In stock</span>}
+                  </p>
+                )}
 
                 <div ref={buyRef} className="mt-6 flex gap-3">
                   <div className="flex items-center border border-wine-900/20">
@@ -122,8 +131,8 @@ function ProductView({ product }) {
                     <span className="w-8 text-center" aria-live="polite" aria-label={`Quantity ${qty}`}>{qty}</span>
                     <button type="button" className="inline-flex h-11 w-10 items-center justify-center" onClick={() => setQty((q) => q + 1)} aria-label="Increase quantity"><IconPlus size={14} /></button>
                   </div>
-                  <motion.button whileTap={{ scale: 0.98 }} type="button" onClick={() => add(product, finish, qty)} className="btn btn-wine flex-1">
-                    <IconBag size={18} /> Add to bag
+                  <motion.button whileTap={{ scale: 0.98 }} type="button" disabled={!inStock(finish)} onClick={() => add(product, finish, qty)} className="btn btn-wine flex-1 disabled:cursor-not-allowed disabled:opacity-50">
+                    <IconBag size={18} /> {inStock(finish) ? 'Add to bag' : 'Sold out'}
                   </motion.button>
                 </div>
                 <a href={whatsappLink(WHATSAPP_MESSAGES.product(`${product.name} (${finish})`))} target="_blank" rel="noreferrer" className="btn btn-outline-dark mt-3 w-full">
@@ -133,8 +142,14 @@ function ProductView({ product }) {
                 <div className="mt-8 divide-y divide-wine-900/10 border-y border-wine-900/10">
                   <Accordion title="Details" defaultOpen>
                     {/* PENDING: materials, dimensions and stone details from approved WooCommerce data */}
-                    <p>{product.short} Available in {product.finishes.join(', ').toLowerCase()}.</p>
-                    <p className="mt-2 text-wine-900/55">Material and size specifications to be confirmed.</p>
+                    {product.description ? (
+                      product.description.split(/\n\s*\n/).map((para, i) => <p key={i} className={i ? 'mt-2' : ''}>{para}</p>)
+                    ) : (
+                      <>
+                        <p>{product.short} Available in {product.finishes.join(', ').toLowerCase()}.</p>
+                        <p className="mt-2 text-wine-900/55">Material and size specifications to be confirmed.</p>
+                      </>
+                    )}
                   </Accordion>
                   <Accordion title="Care">
                     <p>Store separately in a soft pouch. Avoid perfume, lotions and water. Wipe gently with a soft dry cloth after wearing.</p>
@@ -175,7 +190,7 @@ function ProductView({ product }) {
               <p className="truncate font-display text-[19px] leading-tight">{product.name}</p>
               <p className="num text-[15px]">{formatPrice(product.price)}</p>
             </div>
-            <button type="button" onClick={() => add(product, finish, qty)} className="btn btn-wine">Add</button>
+            <button type="button" disabled={!inStock(finish)} onClick={() => add(product, finish, qty)} className="btn btn-wine disabled:opacity-50">{inStock(finish) ? 'Add' : 'Sold out'}</button>
           </motion.div>
         )}
       </AnimatePresence>

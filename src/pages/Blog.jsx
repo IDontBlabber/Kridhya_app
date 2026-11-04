@@ -78,14 +78,14 @@ export default function Blog() {
 function PostRow({ post, featured, flip }) {
   return (
     <motion.article variants={blurChild} className={featured ? '' : 'border-t border-wine-900/10 pt-10 lg:pt-12'}>
-      <Link to={`/blog/${post.slug}`} className="group grid items-center gap-5 md:grid-cols-12 md:gap-8 lg:gap-12">
-        <div className={`border border-gold/40 bg-ivory p-1.5 md:col-span-5 lg:col-span-4 ${flip ? 'md:order-2' : ''}`}>
+      <Link to={`/blog/${post.slug}`} className="group grid items-center gap-5 md:grid-cols-[repeat(12,minmax(0,1fr))] md:gap-8 lg:gap-12">
+        <div className={`min-w-0 border border-gold/40 bg-ivory p-1.5 md:col-span-5 lg:col-span-4 ${flip ? 'md:order-2' : 'md:order-1'}`}>
           <div className="aspect-[3/2] overflow-hidden bg-cream">
           <img src={post.cover} srcSet={srcSetFor(post.cover)} sizes="(min-width: 1024px) 30vw, (min-width: 768px) 42vw, 90vw" alt={post.coverAlt} loading={featured ? 'eager' : 'lazy'} className="h-full w-full object-cover transition-transform duration-[1.6s] ease-luxe group-hover:scale-105" />
           </div>
         </div>
-        <div className={`md:col-span-7 lg:col-span-8 ${flip ? 'md:order-1 lg:pl-6 lg:pr-10' : 'lg:pl-10 lg:pr-6'}`}>
-          <p className="eyebrow text-gold-deep">{featured ? `Featured · ${post.category}` : post.category}</p>
+        <div className={`min-w-0 break-words [overflow-wrap:anywhere] md:col-span-7 lg:col-span-8 ${flip ? 'md:order-1 lg:pl-6 lg:pr-10' : 'md:order-2 lg:pl-10 lg:pr-6'}`}>
+          <p className="eyebrow text-gold-deep">{post.category}</p>
           <h2 className="mt-4 text-[clamp(calc(1.6rem_-_4px),calc(2.8vw_-_4px),calc(2.3rem_-_4px))] leading-[1.1] transition-colors group-hover:text-wine-600">{post.title}</h2>
           <p className="mt-3 max-w-[62ch] text-[14px] leading-relaxed text-wine-900/70">{post.excerpt}</p>
           <p className="mt-4 text-[13px] text-wine-900/55">{fmtDate(post.date)} · {post.readTime}</p>
