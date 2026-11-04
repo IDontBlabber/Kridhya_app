@@ -9,13 +9,13 @@ import { IconArrow, IconBag, IconChevron } from './Icons'
 import { EASE, FadeUp, blurChild } from './motion'
 import { LotusMark } from './Logo'
 
-export function SectionHeading({ eyebrow, title, intro, align = 'left', light = false, action }) {
+export function SectionHeading({ eyebrow, title, intro, align = 'left', light = false, action, compact = false }) {
   const center = align === 'center'
   return (
     <div className={`flex flex-col gap-5 ${center ? 'items-center text-center' : 'md:flex-row md:items-end md:justify-between'}`}>
       <div className={center ? 'max-w-2xl' : 'max-w-xl'}>
         {eyebrow && <FadeUp as="p" className={`eyebrow ${light ? 'text-gold' : 'text-gold-deep'}`}>{eyebrow}</FadeUp>}
-        <FadeUp as="h2" delay={0.05} className={`h-section mt-3 ${light ? 'text-ivory' : 'text-wine-900'}`}>{title}</FadeUp>
+        <FadeUp as="h2" delay={0.05} className={`${compact ? 'h-section-sm' : 'h-section'} mt-3 ${light ? 'text-ivory' : 'text-wine-900'}`}>{title}</FadeUp>
         {intro && (
           <FadeUp as="p" delay={0.1} className={`mt-3 text-[15px] leading-relaxed ${center ? 'mx-auto' : ''} ${light ? 'text-ivory/70' : 'text-wine-900/65'}`}>
             {intro}

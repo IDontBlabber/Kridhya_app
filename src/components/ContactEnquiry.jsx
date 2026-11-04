@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { CONTACT, WHATSAPP_MESSAGES, whatsappLink } from '../data/site'
-import { IconArrow, IconInstagram, IconWhatsApp } from './Icons'
+import { IconArrow, IconWhatsApp } from './Icons'
 import { LotusMark } from './Logo'
 import Mandala from './Mandala'
 
@@ -50,9 +50,7 @@ export default function ContactEnquiry({
               <a href={`mailto:${CONTACT.email}`} className="hover:text-gold-light">{CONTACT.email}</a>
             </Detail>
             <Detail label="Instagram">
-              <a href={CONTACT.instagram.href} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2.5 hover:text-gold-light">
-                <IconInstagram size={20} /> {CONTACT.instagram.handle}
-              </a>
+              <a href={CONTACT.instagram.href} target="_blank" rel="noreferrer" className="hover:text-gold-light">{CONTACT.instagram.handle}</a>
             </Detail>
             <Detail label="Studio hours">
               <span>{CONTACT.hours}</span>
@@ -109,7 +107,8 @@ function Detail({ label, children }) {
   return (
     <div>
       <dt className="text-[12px] font-semibold uppercase tracking-[0.2em] text-gold">{label}</dt>
-      <dd className="num mt-1.5 break-words text-[15px] font-normal leading-snug tracking-[0.005em] sm:text-[17px]">{children}</dd>
+      {/* every value (phone, email, handle, hours) in one identical style: body font, regular weight, proportional lining figures */}
+      <dd className="mt-1.5 break-words font-sans text-[15px] font-normal leading-snug text-ivory sm:text-[17px]">{children}</dd>
     </div>
   )
 }

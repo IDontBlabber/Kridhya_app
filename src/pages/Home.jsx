@@ -5,7 +5,7 @@ import HeroSlideshow from '../components/HeroSlideshow'
 import PanoramicSpreadHero from '@/components/ui/panoramic-spread-hero'
 import { SectionHeading, TextLink } from '../components/ui'
 import CoverflowCarousel from '../components/CoverflowCarousel'
-import { ExpandFrame, FadeUp, ParallaxImage, Stagger, TiltCard, VelocityMarquee, blurChild } from '../components/motion'
+import { FadeUp, ParallaxImage, Stagger, TiltCard, VelocityMarquee, blurChild } from '../components/motion'
 import { IMG, srcSetFor } from '../data/images'
 import { CATEGORIES, COLLECTIONS, HIGHLIGHTS, byCategory, PRODUCTS, getProduct } from '../data/products'
 import { POSTS } from '../data/blog'
@@ -41,7 +41,7 @@ function Categories() {
   return (
     <section className="section bg-ivory">
       <div className="container-site">
-        <SectionHeading eyebrow="Shop by category" title="Find your signature" action={<TextLink to="/collections">All collections</TextLink>} />
+        <SectionHeading eyebrow="Shop by category" title="Find your signature" compact action={<TextLink to="/collections">All collections</TextLink>} />
         {/* phones & tablets: compact 3-up tiles (name + count); full cards with blurb from md */}
         <Stagger className="mt-7 grid grid-cols-3 gap-2.5 sm:mt-10 sm:gap-4 lg:gap-5">
           {COLLECTIONS.map((c, i) => (
@@ -91,7 +91,7 @@ function Highlights() {
   return (
     <section className="section bg-cream" aria-labelledby="highlights-title">
       <div className="container-site">
-        <SectionHeading eyebrow="Handpicked for you" title={<span id="highlights-title">Jewellery Highlights</span>} intro="The pieces we reach for first - loved for gifting, layering and everyday wear." action={<TextLink to="/shop">Shop all jewellery</TextLink>} />
+        <SectionHeading eyebrow="Handpicked for you" title={<span id="highlights-title">Jewellery Highlights</span>} compact intro="The pieces we reach for first - loved for gifting, layering and everyday wear." action={<TextLink to="/shop">Shop all jewellery</TextLink>} />
         <Stagger className="mt-7 grid grid-cols-2 gap-2.5 sm:mt-10 sm:gap-4 lg:grid-cols-4 lg:grid-rows-2">
           <motion.div variants={blurChild} className="col-span-2 lg:row-span-2">
             <HighlightCard item={lead} big />
@@ -134,7 +134,7 @@ function Bestsellers() {
   return (
     <section className="section overflow-hidden bg-ivory">
       <div className="container-site">
-        <SectionHeading eyebrow="Most loved" title="Pieces our clients return to" action={<TextLink to="/shop">Shop all</TextLink>} />
+        <SectionHeading eyebrow="Most loved" title="Pieces our clients return to" compact action={<TextLink to="/shop">Shop all</TextLink>} />
         <div className="scrollbar-none -mx-5 mt-8 flex gap-6 overflow-x-auto border-b border-wine-900/10 px-5 sm:mx-0 sm:px-0" role="tablist" aria-label="Filter bestsellers">
           {tabs.map((t) => (
             <button
@@ -204,24 +204,36 @@ function ParallaxColumns() {
   )
 }
 
-/* Gifting - framed window opens to full bleed on scroll */
+/* Gifting - one static banner image, copy on its plain left half (no scroll animation) */
 function Gifting() {
   return (
-    <ExpandFrame src={IMG.giftBanner.src} alt={IMG.giftBanner.alt} position={IMG.giftBanner.position} className="bg-wine-950 text-ivory">
-      <div className="container-site flex min-h-[64svh] items-center py-12">
+    <section className="relative isolate overflow-hidden bg-wine-950 text-ivory">
+      <img
+        src={IMG.giftBanner.src}
+        srcSet={srcSetFor(IMG.giftBanner.src)}
+        sizes="100vw"
+        alt={IMG.giftBanner.alt}
+        loading="lazy"
+        decoding="async"
+        className="absolute inset-0 -z-10 h-full w-full object-cover"
+        style={{ objectPosition: IMG.giftBanner.position }}
+      />
+      {/* phones: the framed photo sits behind the copy, so darken it; from md the banner's own dark left half carries the text */}
+      <div className="absolute inset-0 -z-10 bg-wine-950/70 md:hidden" />
+      <div className="container-site flex min-h-[64svh] items-center py-14 md:min-h-[56vw] lg:min-h-[min(56.25vw,720px)]">
         <div className="max-w-md">
-          <FadeUp as="p" className="eyebrow text-gold">Corporate gifting &amp; bulk orders</FadeUp>
-          <FadeUp as="h2" delay={0.05} className="h-section mt-3">Gifting, made meaningful.</FadeUp>
-          <FadeUp as="p" delay={0.1} className="mt-4 text-[15px] leading-relaxed text-ivory/75">
+          <p className="eyebrow text-gold">Corporate gifting &amp; bulk orders</p>
+          <h2 className="h-section mt-3">Gifting, made meaningful.</h2>
+          <p className="mt-4 text-[15px] leading-relaxed text-ivory/75">
             Celebrate teams, clients and milestones with jewellery chosen to be kept. Tell us about your occasion and we’ll share the options available.
-          </FadeUp>
-          <FadeUp delay={0.15} className="mt-7 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
+          </p>
+          <div className="mt-7 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
             <Link to="/corporate-gifting" className="btn btn-gold">Explore gifting <IconArrow size={14} /></Link>
             <a href={whatsappLink(WHATSAPP_MESSAGES.gifting)} target="_blank" rel="noreferrer" className="btn btn-outline-light"><IconWhatsApp size={16} /> Enquire</a>
-          </FadeUp>
+          </div>
         </div>
       </div>
-    </ExpandFrame>
+    </section>
   )
 }
 
@@ -229,7 +241,7 @@ function Journal() {
   return (
     <section className="section bg-ivory">
       <div className="container-site">
-        <SectionHeading eyebrow="The Journal" title="Notes on style, care & gifting" action={<TextLink to="/blog">Read the journal</TextLink>} />
+        <SectionHeading eyebrow="The Journals" title="Notes on style, care & gifting" action={<TextLink to="/blog">Read the journal</TextLink>} />
         {/* phones/tablets: swipeable row with the next card peeking; 3-up grid from md */}
         <Stagger className="scrollbar-none -mx-5 mt-7 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-1 sm:-mx-8 sm:px-8 md:mx-0 md:mt-10 md:grid md:grid-cols-3 md:gap-5 md:overflow-visible md:px-0 md:pb-0">
           {POSTS.slice(0, 3).map((p) => (

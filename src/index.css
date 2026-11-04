@@ -45,6 +45,8 @@
   .eyebrow { @apply font-sans text-[12px] font-medium uppercase tracking-[0.26em]; }
   .h-display { @apply text-[clamp(calc(2.25rem_-_4px),calc(4.6vw_-_4px),calc(3.75rem_-_4px))] leading-[1.02]; }
   .h-section { @apply text-[clamp(calc(1.75rem_-_2px),calc(3vw_-_2px),calc(2.6rem_-_2px))] leading-[1.08]; }
+  /* home section titles (Find your signature, Jewellery Highlights, Pieces our clients return to): 2px smaller, tighter line height */
+  .h-section-sm { @apply text-[clamp(24px,2.6vw,30px)] leading-[1.1]; }
   .hairline { @apply h-px w-full bg-gradient-to-r from-transparent via-gold/50 to-transparent; }
   .btn {
     @apply relative inline-flex min-h-[44px] items-center justify-center gap-2.5 px-5 text-center font-sans text-[12px] font-medium uppercase tracking-[0.18em] transition-colors duration-300 ease-luxe sm:whitespace-nowrap;

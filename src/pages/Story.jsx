@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { HeroIndex, PageHero } from '../components/ui'
-import { ExpandFrame, FadeUp, ParallaxImage, ParallaxLayer } from '../components/motion'
-import { IMG } from '../data/images'
+import { FadeUp, ParallaxImage, ParallaxLayer } from '../components/motion'
+import { IMG, srcSetFor } from '../data/images'
 import { IconArrow } from '../components/Icons'
 import useDocumentMeta from '../hooks/useDocumentMeta'
 
@@ -45,13 +45,16 @@ export default function Story() {
         ]}
       />
 
-      <ExpandFrame src={IMG.heroBanner.src} alt={IMG.heroBanner.alt} placeholder className="bg-wine-950 text-ivory">
+      {/* static banner - no scroll animation */}
+      <section className="relative isolate overflow-hidden bg-wine-950 text-ivory">
+        <img src={IMG.heroBanner.src} srcSet={srcSetFor(IMG.heroBanner.src)} sizes="100vw" alt={IMG.heroBanner.alt} loading="lazy" decoding="async" className="absolute inset-0 -z-10 h-full w-full object-cover" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-wine-950/80 via-wine-950/35 to-transparent" />
         <div className="container-site flex min-h-[52svh] items-center py-10">
-          <FadeUp as="blockquote" className="max-w-md font-display text-[clamp(calc(1.75rem_+_1px),calc(3.2vw_+_1px),calc(2.6rem_+_1px))] italic leading-tight">
+          <blockquote className="max-w-md font-display text-[clamp(calc(1.75rem_+_1px),calc(3.2vw_+_1px),calc(2.6rem_+_1px))] italic leading-tight">
             “Jewellery is more than something we wear.”
-          </FadeUp>
+          </blockquote>
         </div>
-      </ExpandFrame>
+      </section>
 
       <Chapter
         id="design"
