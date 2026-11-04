@@ -199,9 +199,9 @@ export default function PanoramicSpreadHero({
           className="pointer-events-none absolute z-[5] flex flex-col items-center px-6 text-center"
           style={{ y: textY, scale: textScale, opacity: textOpacity }}
         >
-          <span className="mb-3 font-sans text-[11px] font-medium uppercase tracking-[0.32em] text-gold">{eyebrow}</span>
-          <h2 className="font-display text-[33px] font-light leading-none md:text-[3.4vw]">{title}</h2>
-          <p className="mt-4 max-w-[46ch] text-[13px] leading-relaxed text-ivory/70 md:text-[13px]">{description}</p>
+          <span className="mb-3 font-sans text-[12px] font-medium uppercase tracking-[0.32em] text-gold">{eyebrow}</span>
+          <h2 className="font-display text-[37px] font-light leading-none md:text-[3.4vw]">{title}</h2>
+          <p className="mt-4 max-w-[46ch] text-[15px] leading-relaxed text-ivory/70 md:text-[15px]">{description}</p>
         </motion.div>
 
         {children && (

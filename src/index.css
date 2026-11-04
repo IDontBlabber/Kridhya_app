@@ -24,7 +24,7 @@
   .lenis.lenis-smooth { scroll-behavior: auto !important; }
   body {
     @apply bg-ivory font-sans text-wine-900;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.65;
   }
   ::selection { @apply bg-wine-700 text-ivory; }
@@ -40,12 +40,12 @@
   .container-hero { @apply mx-auto w-full max-w-[1500px] px-5 sm:px-8 lg:px-12; }
   .container-site { @apply mx-auto w-full max-w-site px-5 sm:px-8 lg:px-10; }
   .section { @apply py-10 sm:py-12 lg:py-14; }
-  .eyebrow { @apply font-sans text-[11px] font-medium uppercase tracking-[0.26em]; }
-  .h-display { @apply text-[clamp(calc(2.25rem_-_5px),calc(4.6vw_-_5px),calc(3.75rem_-_5px))] leading-[1.02]; }
-  .h-section { @apply text-[clamp(calc(1.75rem_-_3px),calc(3vw_-_3px),calc(2.6rem_-_3px))] leading-[1.08]; }
+  .eyebrow { @apply font-sans text-[12px] font-medium uppercase tracking-[0.26em]; }
+  .h-display { @apply text-[clamp(calc(2.25rem_-_1px),calc(4.6vw_-_1px),calc(3.75rem_-_1px))] leading-[1.02]; }
+  .h-section { @apply text-[clamp(calc(1.75rem_+_1px),calc(3vw_+_1px),calc(2.6rem_+_1px))] leading-[1.08]; }
   .hairline { @apply h-px w-full bg-gradient-to-r from-transparent via-gold/50 to-transparent; }
   .btn {
-    @apply relative inline-flex min-h-[44px] items-center justify-center gap-2.5 px-5 text-center font-sans text-[11px] font-medium uppercase tracking-[0.18em] transition-colors duration-300 ease-luxe sm:whitespace-nowrap;
+    @apply relative inline-flex min-h-[44px] items-center justify-center gap-2.5 px-5 text-center font-sans text-[12px] font-medium uppercase tracking-[0.18em] transition-colors duration-300 ease-luxe sm:whitespace-nowrap;
   }
   .btn-gold { @apply bg-gold text-wine-950 hover:bg-gold-light; }
   .btn-wine { @apply bg-wine-800 text-ivory hover:bg-wine-700; }
@@ -75,7 +75,7 @@
 
 /* Phones: 17px form text (16px or more) stops iOS Safari from zooming the page on focus */
 @media (max-width: 767px) {
-  input, select, textarea { font-size: 17px !important; }
+  input, select, textarea { font-size: 16px !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {

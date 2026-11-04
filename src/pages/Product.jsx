@@ -85,7 +85,7 @@ function ProductView({ product }) {
                       className="absolute inset-0 h-full w-full cursor-grab object-cover mix-blend-multiply active:cursor-grabbing"
                     />
                   </AnimatePresence>
-                  {product.badge && <span className="absolute left-4 top-4 bg-ivory/90 px-3 py-1 text-[10px] uppercase tracking-[0.2em]">{product.badge}</span>}
+                  {product.badge && <span className="absolute left-4 top-4 bg-ivory/90 px-3 py-1 text-[11px] uppercase tracking-[0.2em]">{product.badge}</span>}
                 </div>
               </div>
             </div>
@@ -94,10 +94,10 @@ function ProductView({ product }) {
             <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: EASE }} className="lg:col-span-5 lg:col-start-8">
               <div className="lg:sticky lg:top-28">
                 <p className="eyebrow text-gold-deep">{cat.name}</p>
-                <h1 className="mt-3 text-[clamp(calc(1.9rem_-_3px),calc(3.2vw_-_3px),calc(2.6rem_-_3px))] leading-[1.05]">{product.name}</h1>
-                <p className="num mt-3 text-[18px] font-light">{formatPrice(product.price)}</p>
+                <h1 className="mt-3 text-[clamp(calc(1.9rem_+_1px),calc(3.2vw_+_1px),calc(2.6rem_+_1px))] leading-[1.05]">{product.name}</h1>
+                <p className="num mt-3 text-[21px] font-light">{formatPrice(product.price)}</p>
                 <div className="hairline my-6" />
-                <p className="text-[13px] leading-relaxed text-wine-900/75">{product.short}</p>
+                <p className="text-[15px] leading-relaxed text-wine-900/75">{product.short}</p>
 
                 <fieldset className="mt-6">
                   <legend className="eyebrow mb-3">Finish - <span className="normal-case tracking-normal text-wine-900/70">{finish}</span></legend>
@@ -108,7 +108,7 @@ function ProductView({ product }) {
                         type="button"
                         aria-pressed={finish === f}
                         onClick={() => setFinish(f)}
-                        className={`inline-flex min-h-[44px] items-center gap-2 border px-4 text-[13px] transition-colors ${finish === f ? 'border-wine-900 bg-wine-900 text-ivory' : 'border-wine-900/20 hover:border-wine-900/50'}`}
+                        className={`inline-flex min-h-[44px] items-center gap-2 border px-4 text-[15px] transition-colors ${finish === f ? 'border-wine-900 bg-wine-900 text-ivory' : 'border-wine-900/20 hover:border-wine-900/50'}`}
                       >
                         <FinishDot finish={f} size={14} /> {f}
                       </button>
@@ -172,8 +172,8 @@ function ProductView({ product }) {
           >
             <img src={product.images[0]} alt="" className="h-12 w-12 object-cover" />
             <div className="min-w-0 flex-1">
-              <p className="truncate font-display text-[16px] leading-tight">{product.name}</p>
-              <p className="num text-[13px]">{formatPrice(product.price)}</p>
+              <p className="truncate font-display text-[19px] leading-tight">{product.name}</p>
+              <p className="num text-[15px]">{formatPrice(product.price)}</p>
             </div>
             <button type="button" onClick={() => add(product, finish, qty)} className="btn btn-wine">Add</button>
           </motion.div>
@@ -194,7 +194,7 @@ function Accordion({ title, children, defaultOpen = false }) {
       <AnimatePresence initial={false}>
         {open && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.4, ease: EASE }} className="overflow-hidden">
-            <div className="pb-6 text-[13px] leading-relaxed text-wine-900/75">{children}</div>
+            <div className="pb-6 text-[15px] leading-relaxed text-wine-900/75">{children}</div>
           </motion.div>
         )}
       </AnimatePresence>

@@ -10,7 +10,7 @@ export function InfoHero({ eyebrow, title, intro }) {
       <div className="container-hero pb-10 pt-36 lg:pb-14 lg:pt-44">
         <p className="eyebrow font-semibold text-gold">{eyebrow}</p>
         <h1 className="h-display mt-4 max-w-2xl font-normal">{title}</h1>
-        {intro && <p className="mt-5 max-w-xl text-[13px] leading-relaxed text-ivory/80">{intro}</p>}
+        {intro && <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-ivory/80">{intro}</p>}
       </div>
     </section>
   )
@@ -18,7 +18,7 @@ export function InfoHero({ eyebrow, title, intro }) {
 
 export function DraftNote() {
   return (
-    <p className="mb-8 border-l-2 border-gold pl-4 text-[12px] leading-relaxed text-wine-900/70">
+    <p className="mb-8 border-l-2 border-gold pl-4 text-[14px] leading-relaxed text-wine-900/70">
       Draft text for review - final wording is pending approval from Kridhya by Devanshi Agarwal.
     </p>
   )
@@ -31,8 +31,8 @@ export function InfoBody({ children, aside }) {
         <div className="lg:col-span-8">{children}</div>
         <aside className="lg:col-span-3 lg:col-start-10">
           <div className="border border-gold/40 bg-cream/60 p-6">
-            <p className="font-display text-[19px] leading-tight">Still have a question?</p>
-            <p className="mt-2 text-[13px] text-wine-900/75">Write to us and we’ll help you choose, care for or send a piece.</p>
+            <p className="font-display text-[23px] leading-tight">Still have a question?</p>
+            <p className="mt-2 text-[15px] text-wine-900/75">Write to us and we’ll help you choose, care for or send a piece.</p>
             <Link to="/contact" className="btn btn-wine mt-5 w-full">Contact us</Link>
             {aside}
           </div>
@@ -45,8 +45,8 @@ export function InfoBody({ children, aside }) {
 export function Block({ title, children, delay = 0 }) {
   return (
     <FadeUp delay={delay} className="mb-10">
-      <h2 className="font-display text-[clamp(calc(1.7rem_-_5px),calc(3vw_-_5px),calc(2.2rem_-_5px))] font-medium leading-tight">{title}</h2>
-      <div className="mt-3 space-y-3 text-[13px] leading-[1.75] text-wine-900/80">{children}</div>
+      <h2 className="font-display text-[clamp(calc(1.7rem_-_1px),calc(3vw_-_1px),calc(2.2rem_-_1px))] font-medium leading-tight">{title}</h2>
+      <div className="mt-3 space-y-3 text-[15px] leading-[1.75] text-wine-900/80">{children}</div>
     </FadeUp>
   )
 }

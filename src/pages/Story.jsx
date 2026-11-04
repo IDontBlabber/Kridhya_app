@@ -48,7 +48,7 @@ export default function Story() {
 
       <ExpandFrame src={IMG.heroBanner.src} alt={IMG.heroBanner.alt} placeholder className="bg-wine-950 text-ivory">
         <div className="container-site flex min-h-[52svh] items-center py-10">
-          <FadeUp as="blockquote" className="max-w-md font-display text-[clamp(calc(1.75rem_-_3px),calc(3.2vw_-_3px),calc(2.6rem_-_3px))] italic leading-tight">
+          <FadeUp as="blockquote" className="max-w-md font-display text-[clamp(calc(1.75rem_+_1px),calc(3.2vw_+_1px),calc(2.6rem_+_1px))] italic leading-tight">
             “Jewellery is more than something we wear.”
           </FadeUp>
         </div>
@@ -75,7 +75,7 @@ export default function Story() {
           <div className="md:col-span-6 md:col-start-7">
             <FadeUp as="p" className="eyebrow text-gold">III · Your story</FadeUp>
             <FadeUp as="h2" delay={0.05} className="h-section mt-3">Made to be part of your story</FadeUp>
-            <FadeUp as="p" delay={0.1} className="mt-4 max-w-[54ch] text-[13px] leading-[1.8] text-ivory/75">
+            <FadeUp as="p" delay={0.1} className="mt-4 max-w-[54ch] text-[15px] leading-[1.8] text-ivory/75">
               Whether it’s a gift chosen for someone you love, or a piece you choose for yourself, we hope Kridhya becomes part of the moments you remember.
             </FadeUp>
             <FadeUp delay={0.15} className="mt-7 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
@@ -97,7 +97,7 @@ function Chapter({ id, n, label, title, paras, img, flip = false }) {
           <FadeUp as="p" className="eyebrow text-gold-deep">{n} · {label}</FadeUp>
           <FadeUp as="h2" delay={0.05} className="h-section mt-3">{title}</FadeUp>
           {paras.map((p, i) => (
-            <FadeUp key={i} as="p" delay={0.1 + i * 0.05} className="mt-4 max-w-[58ch] text-[13px] leading-[1.8] text-wine-900/75">{p}</FadeUp>
+            <FadeUp key={i} as="p" delay={0.1 + i * 0.05} className="mt-4 max-w-[58ch] text-[15px] leading-[1.8] text-wine-900/75">{p}</FadeUp>
           ))}
         </div>
         <ParallaxLayer distance={30} className={`md:col-span-5 ${flip ? 'md:order-1' : 'md:col-start-8'}`}>

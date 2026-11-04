@@ -13,7 +13,7 @@ export default function Contact() {
         <div className="container-site pb-10 pt-32 lg:pb-12 lg:pt-36">
           <p className="eyebrow font-semibold text-gold">Contact</p>
           <h1 className="h-display mt-4 max-w-2xl font-normal">We’d love to hear from you</h1>
-          <p className="mt-5 max-w-xl text-[15px] font-medium leading-relaxed text-ivory/80">
+          <p className="mt-5 max-w-xl text-[18px] font-medium leading-relaxed text-ivory/80">
             Questions about a piece, help choosing a gift, or a bulk order for your team - reach us however suits you.
             For larger orders, see <Link to="/corporate-gifting" className="text-gold-light underline decoration-gold/50 underline-offset-4 hover:decoration-gold">Corporate Gifting</Link>.
           </p>

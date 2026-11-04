@@ -42,8 +42,8 @@ export default function Gifting() {
               ['Effortless', 'One point of contact from first enquiry through to dispatch.'],
             ].map(([t, b]) => (
               <motion.div key={t} variants={blurChild} className="border-t border-gold/60 pt-5">
-                <h3 className="font-display text-[21px]">{t}</h3>
-                <p className="mt-2 text-[13px] leading-relaxed text-wine-900/65">{b}</p>
+                <h3 className="font-display text-[25px]">{t}</h3>
+                <p className="mt-2 text-[15px] leading-relaxed text-wine-900/65">{b}</p>
               </motion.div>
             ))}
           </Stagger>
@@ -59,10 +59,10 @@ export default function Gifting() {
               <article key={o.title} className="flex flex-col border border-gold/40 bg-ivory p-2">
                 <img src={o.img.src} srcSet={srcSetFor(o.img.src)} sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw" alt={o.img.alt} loading="lazy" data-placeholder="true" className="aspect-[4/3] w-full object-cover" />
                 <div className="flex flex-1 flex-col p-4 pt-5">
-                  <p className="num text-[11px] font-semibold text-gold-deep">0{i + 1}</p>
-                  <h3 className="mt-1 font-display text-[21px] font-semibold leading-tight">{o.title}</h3>
-                  <p className="mt-2 flex-1 text-[13px] font-medium leading-relaxed text-wine-900/75">{o.body}</p>
-                  <a href={whatsappLink(WHATSAPP_MESSAGES.gifting)} target="_blank" rel="noreferrer" className="mt-4 inline-flex min-h-[44px] items-center gap-2 self-start text-[11px] font-semibold uppercase tracking-[0.18em] text-wine-800 hover:text-wine-600">
+                  <p className="num text-[12px] font-semibold text-gold-deep">0{i + 1}</p>
+                  <h3 className="mt-1 font-display text-[25px] font-semibold leading-tight">{o.title}</h3>
+                  <p className="mt-2 flex-1 text-[15px] font-medium leading-relaxed text-wine-900/75">{o.body}</p>
+                  <a href={whatsappLink(WHATSAPP_MESSAGES.gifting)} target="_blank" rel="noreferrer" className="mt-4 inline-flex min-h-[44px] items-center gap-2 self-start text-[12px] font-semibold uppercase tracking-[0.18em] text-wine-800 hover:text-wine-600">
                     Enquire for this occasion <IconArrow size={13} />
                   </a>
                 </div>
@@ -91,10 +91,10 @@ export default function Gifting() {
               <motion.div key={title} variants={blurChild} className="bg-wine-900 p-6">
                 <div className="flex items-center justify-between">
                   <I size={20} className="text-gold" />
-                  <span className="num text-[11px] text-ivory/40">0{i + 1}</span>
+                  <span className="num text-[12px] text-ivory/40">0{i + 1}</span>
                 </div>
-                <h3 className="mt-6 font-display text-[21px]">{title}</h3>
-                <p className="mt-2 text-[13px] leading-relaxed text-ivory/65">{body}</p>
+                <h3 className="mt-6 font-display text-[25px]">{title}</h3>
+                <p className="mt-2 text-[15px] leading-relaxed text-ivory/65">{body}</p>
               </motion.div>
             ))}
           </Stagger>
@@ -131,7 +131,7 @@ function Hero() {
           <motion.h1 initial={{ opacity: 0, y: 16, filter: 'blur(12px)' }} animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }} transition={{ duration: 1.1, delay: 0.15, ease: EASE }} className="h-display mt-4">
             Gifts that are kept, not forgotten.
           </motion.h1>
-          <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 1, ease: EASE }} className="mt-5 max-w-md text-[12px] leading-relaxed text-ivory/75">
+          <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 1, ease: EASE }} className="mt-5 max-w-md text-[14px] leading-relaxed text-ivory/75">
             Thoughtfully designed jewellery to celebrate your people - for festive seasons, milestones, clients and celebrations.
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55, duration: 1, ease: EASE }} className="mt-8 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">

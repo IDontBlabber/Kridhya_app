@@ -22,11 +22,11 @@ export default function OrderConfirmed() {
       <div className="container-site max-w-2xl text-center">
         <LogoStacked withTagline className="mx-auto" />
         <h1 className="h-display mt-10">{first ? `Thank you, ${first}.` : 'Thank you.'}</h1>
-        <p className="mx-auto mt-4 max-w-md text-[13px] leading-relaxed text-ivory/80">
+        <p className="mx-auto mt-4 max-w-md text-[15px] leading-relaxed text-ivory/80">
           We’ve received your order and will be in touch shortly to confirm delivery and payment.
         </p>
         {order?.id && (
-          <dl className="mx-auto mt-8 grid max-w-sm grid-cols-2 gap-y-2 border-y border-ivory/15 py-5 text-left text-[13px]">
+          <dl className="mx-auto mt-8 grid max-w-sm grid-cols-2 gap-y-2 border-y border-ivory/15 py-5 text-left text-[15px]">
             <dt className="text-ivory/60">Order number</dt>
             <dd className="num text-right">{order.id}</dd>
             <dt className="text-ivory/60">Items</dt>

@@ -24,8 +24,8 @@ export default function Footer() {
         {/* brand + newsletter */}
         <div className="mb-8 md:col-span-4 md:mb-0 lg:col-span-3">
           <Link to="/" aria-label="Kridhya by Devanshi Agarwal - home"><Logo /></Link>
-          <p className="mt-4 font-display text-[18px] leading-snug text-gold-light">{TAGLINE}</p>
-          <p className="mt-3 max-w-xs text-[12px] leading-relaxed text-ivory/60">
+          <p className="mt-4 font-display text-[21px] leading-snug text-gold-light">{TAGLINE}</p>
+          <p className="mt-3 max-w-xs text-[14px] leading-relaxed text-ivory/60">
             Thoughtfully designed jewellery for everyday elegance, meaningful gifting and the moments that matter.
           </p>
           <form
@@ -35,7 +35,7 @@ export default function Footer() {
               if (email) setSent(true)
             }}
           >
-            <label htmlFor="newsletter" className="text-[11px] font-medium uppercase tracking-[0.2em] text-gold">The Kridhya Letter</label>
+            <label htmlFor="newsletter" className="text-[12px] font-medium uppercase tracking-[0.2em] text-gold">The Kridhya Letter</label>
             <div className="mt-2 flex border border-ivory/30 focus-within:border-gold md:border-0 md:border-b md:border-ivory/25">
               <input
                 id="newsletter"
@@ -44,13 +44,13 @@ export default function Footer() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Your email address"
-                className="h-12 min-w-0 flex-1 bg-transparent px-4 text-[12px] text-ivory placeholder:text-ivory/40 focus:outline-none md:h-10 md:px-0"
+                className="h-12 min-w-0 flex-1 bg-transparent px-4 text-[14px] text-ivory placeholder:text-ivory/40 focus:outline-none md:h-10 md:px-0"
               />
               <button type="submit" className="inline-flex h-12 w-12 shrink-0 items-center justify-center bg-gold text-wine-950 hover:bg-gold-light md:h-10 md:w-10 md:bg-transparent md:text-gold md:hover:bg-transparent md:hover:text-gold-light" aria-label="Subscribe">
                 <IconArrow size={15} />
               </button>
             </div>
-            <p role="status" className="mt-2 h-4 text-[11px] text-gold-light">{sent ? 'Thank you - you’re on the list.' : ''}</p>
+            <p role="status" className="mt-2 h-4 text-[12px] text-gold-light">{sent ? 'Thank you - you’re on the list.' : ''}</p>
           </form>
         </div>
 
@@ -95,7 +95,7 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-ivory/10">
-        <div className="container-site flex flex-col gap-2 py-5 text-[11px] text-ivory/45 sm:flex-row sm:items-center sm:justify-between">
+        <div className="container-site flex flex-col gap-2 py-5 text-[12px] text-ivory/45 sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} Kridhya by Devanshi Agarwal. All rights reserved.</p>
           <p>Prices shown are indicative in this preview.</p>
         </div>
@@ -110,18 +110,18 @@ function FooterCol({ title, className = '', children }) {
   const id = `footer-${title.toLowerCase()}`
   return (
     <div className={`border-b border-ivory/15 md:border-b-0 ${className}`}>
-      <p className="hidden text-[11px] font-medium uppercase tracking-[0.2em] text-gold md:block">{title}</p>
+      <p className="hidden text-[12px] font-medium uppercase tracking-[0.2em] text-gold md:block">{title}</p>
       <button
         type="button"
         aria-expanded={open}
         aria-controls={id}
         onClick={() => setOpen((o) => !o)}
-        className="flex min-h-[52px] w-full items-center justify-between text-[11px] font-semibold uppercase tracking-[0.2em] text-ivory md:hidden"
+        className="flex min-h-[52px] w-full items-center justify-between text-[13px] font-semibold uppercase tracking-[0.2em] text-ivory md:hidden"
       >
         {title}
         <IconPlus size={18} className={`text-gold transition-transform duration-300 ${open ? 'rotate-45' : ''}`} />
       </button>
-      <ul id={id} className={`${open ? 'block' : 'hidden'} pb-3 text-[13px] md:mt-4 md:block md:space-y-2.5 md:pb-0 md:text-[12px]`}>{children}</ul>
+      <ul id={id} className={`${open ? 'block' : 'hidden'} pb-3 text-[15px] md:mt-4 md:block md:space-y-2.5 md:pb-0 md:text-[14px]`}>{children}</ul>
     </div>
   )
 }

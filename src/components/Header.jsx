@@ -6,7 +6,7 @@ import { useCart } from '../context/CartContext'
 import { IconBag, IconChevron, IconClose, IconMenu, IconSearch, IconWhatsApp } from './Icons'
 
 // Pages whose first section is dark - header text is beige there, burgundy on light pages.
-const DARK_TOP = ['/', '/corporate-gifting', '/our-story', '/about', '/collections', '/checkout', '/order-confirmed', '/faq', '/jewellery-care', '/shipping-returns', '/privacy-policy', '/terms']
+const DARK_TOP = ['/', '/contact', '/corporate-gifting', '/our-story', '/about', '/collections', '/checkout', '/order-confirmed', '/faq', '/jewellery-care', '/shipping-returns', '/privacy-policy', '/terms']
 
 // Nested routes light up their section: products → Shop, category archives → Collections, posts → Journal.
 function isSection(path, to) {
@@ -63,7 +63,7 @@ export default function Header() {
                       <Link
                         to={n.to}
                         aria-current={active ? 'page' : undefined}
-                        className={`inline-flex min-h-[44px] items-center whitespace-nowrap border-b text-[10.5px] font-medium uppercase tracking-[0.14em] hover:text-gold 2xl:text-[11px] 2xl:tracking-[0.18em] ${active ? 'border-gold text-gold' : 'border-transparent'}`}
+                        className={`inline-flex min-h-[44px] items-center whitespace-nowrap border-b text-[11.5px] font-medium uppercase tracking-[0.14em] hover:text-gold 2xl:text-[12px] 2xl:tracking-[0.18em] ${active ? 'border-gold text-gold' : 'border-transparent'}`}
                       >
                         {n.label}
                       </Link>
@@ -80,7 +80,7 @@ export default function Header() {
               <button type="button" onClick={() => setOpen(true)} className="relative inline-flex h-10 w-10 items-center justify-center hover:text-gold" aria-label={`Open shopping bag, ${count} items`}>
                 <IconBag size={18} />
                 {count > 0 && (
-                  <span className="absolute right-0.5 top-1 flex h-4 min-w-4 items-center justify-center bg-gold px-1 text-[11px] font-semibold text-wine-950 num">{count}</span>
+                  <span className="absolute right-0.5 top-1 flex h-4 min-w-4 items-center justify-center bg-gold px-1 text-[10px] font-semibold text-wine-950 num">{count}</span>
                 )}
               </button>
               <button type="button" className="inline-flex h-10 w-10 items-center justify-center xl:hidden" aria-label="Open menu" aria-expanded={menu} aria-controls="mobile-menu" onClick={() => setMenu(true)}>
@@ -110,7 +110,7 @@ export default function Header() {
                   const active = isSection(pathname, n.to)
                   return (
                     <li key={n.to}>
-                      <Link to={n.to} aria-current={active ? 'page' : undefined} className={`flex min-h-[56px] items-center justify-between border-b border-ivory/10 font-display text-[17px] transition-colors hover:text-gold ${active ? 'text-gold' : ''}`}>
+                      <Link to={n.to} aria-current={active ? 'page' : undefined} className={`flex min-h-[56px] items-center justify-between border-b border-ivory/10 font-display text-[20px] transition-colors hover:text-gold ${active ? 'text-gold' : ''}`}>
                         {n.label}
                         <IconChevron size={18} className={active ? 'text-gold' : 'text-ivory/45'} />
                       </Link>

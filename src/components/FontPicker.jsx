@@ -56,8 +56,8 @@ export default function FontPicker() {
         >
           <div className="flex items-center justify-between border-b border-wine-900/10 px-4 py-3">
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-gold-deep">Typeface options</p>
-              <p className="text-[11px] text-wine-900/60">Tap one to preview it across the site.</p>
+              <p className="text-[13px] font-semibold uppercase tracking-[0.18em] text-gold-deep">Typeface options</p>
+              <p className="text-[13px] text-wine-900/60">Tap one to preview it across the site.</p>
             </div>
             <button type="button" onClick={() => setOpen(false)} aria-label="Close typeface options" className="-mr-2 inline-flex h-10 w-10 items-center justify-center">
               <IconClose size={18} />
@@ -75,13 +75,13 @@ export default function FontPicker() {
                     className={`block w-full px-4 py-3 text-left transition-colors ${on ? 'bg-cream' : 'hover:bg-cream/60'}`}
                   >
                     <span className="flex items-baseline justify-between gap-3">
-                      <span className="text-[21px] leading-tight" style={{ fontFamily: f.display, fontVariantNumeric: 'lining-nums' }}>{f.name}</span>
-                      {on && <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-gold-deep">In use</span>}
+                      <span className="text-[26px] leading-tight" style={{ fontFamily: f.display, fontVariantNumeric: 'lining-nums' }}>{f.name}</span>
+                      {on && <span className="text-[12px] font-semibold uppercase tracking-[0.16em] text-gold-deep">In use</span>}
                     </span>
-                    <span className="mt-0.5 block text-[11px] leading-snug text-wine-900/70" style={{ fontFamily: f.sans, fontVariantNumeric: 'lining-nums' }}>
+                    <span className="mt-0.5 block text-[14px] leading-snug text-wine-900/70" style={{ fontFamily: f.sans, fontVariantNumeric: 'lining-nums' }}>
                       {f.note}
                     </span>
-                    <span className="mt-1 block text-[11px] text-wine-900" style={{ fontFamily: f.sans, fontVariantNumeric: 'lining-nums tabular-nums' }}>
+                    <span className="mt-1 block text-[14px] text-wine-900" style={{ fontFamily: f.sans, fontVariantNumeric: 'lining-nums tabular-nums' }}>
                       ₹3,450 · +91 98869 21568
                     </span>
                   </button>
@@ -95,9 +95,9 @@ export default function FontPicker() {
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className="inline-flex h-11 items-center gap-2 border border-gold/50 bg-wine-950/90 px-4 text-[11px] font-medium uppercase tracking-[0.16em] text-gold-light backdrop-blur hover:border-gold hover:text-gold"
+        className="inline-flex h-11 items-center gap-2 border border-gold/50 bg-wine-950/90 px-4 text-[13px] font-medium uppercase tracking-[0.16em] text-gold-light backdrop-blur hover:border-gold hover:text-gold"
       >
-        <span className="text-[13px] normal-case leading-none" style={{ fontFamily: 'var(--font-display)' }}>Aa</span>
+        <span className="text-[17px] normal-case leading-none" style={{ fontFamily: 'var(--font-display)' }}>Aa</span>
         {getFontPair(active).name}
       </button>
     </div>

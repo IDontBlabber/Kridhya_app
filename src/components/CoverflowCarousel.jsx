@@ -109,11 +109,11 @@ export default function CoverflowCarousel({ products }) {
               >
                 <div className="relative aspect-[4/5] overflow-hidden bg-cream">
                   <img src={p.images[0]} alt={p.name} loading="lazy" draggable={false} data-placeholder="true" className="h-full w-full object-cover mix-blend-multiply transition-transform duration-700 group-hover:scale-[1.04]" />
-                  {p.badge && <span className="absolute left-2 top-2 bg-ivory/90 px-2 py-0.5 text-[10.5px] font-medium uppercase tracking-[0.16em] text-wine-900">{p.badge}</span>}
+                  {p.badge && <span className="absolute left-2 top-2 bg-ivory/90 px-2 py-0.5 text-[11.5px] font-medium uppercase tracking-[0.16em] text-wine-900">{p.badge}</span>}
                 </div>
                 <div className="flex items-center justify-between gap-2 px-1 pb-1 pt-2.5">
-                  <span className="truncate font-display text-[13px] font-semibold">{p.name}</span>
-                  <span className="num shrink-0 text-[12px] font-semibold">{formatPrice(p.price)}</span>
+                  <span className="truncate font-display text-[15px] font-semibold">{p.name}</span>
+                  <span className="num shrink-0 text-[14px] font-semibold">{formatPrice(p.price)}</span>
                 </div>
               </button>
             </motion.div>
@@ -126,9 +126,9 @@ export default function CoverflowCarousel({ products }) {
         <div className="min-h-[56px] text-center sm:text-left" aria-live="polite">
           <AnimatePresence mode="wait">
             <motion.div key={current.slug} initial={{ opacity: 0, y: 8, filter: 'blur(6px)' }} animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.45, ease: EASE }}>
-              <p className="text-[11px] uppercase tracking-[0.18em] text-gold-deep">{getCategory(current.category)?.name}</p>
-              <Link to={`/product/${current.slug}`} className="link-underline mt-1 font-display text-[21px]">{current.name}</Link>
-              <p className="num mt-0.5 text-[12px] text-wine-900/70">{formatPrice(current.price)}</p>
+              <p className="text-[12px] uppercase tracking-[0.18em] text-gold-deep">{getCategory(current.category)?.name}</p>
+              <Link to={`/product/${current.slug}`} className="link-underline mt-1 font-display text-[25px]">{current.name}</Link>
+              <p className="num mt-0.5 text-[14px] text-wine-900/70">{formatPrice(current.price)}</p>
             </motion.div>
           </AnimatePresence>
         </div>
@@ -136,7 +136,7 @@ export default function CoverflowCarousel({ products }) {
           <button type="button" onClick={() => add(current, current.finishes[0])} className="btn btn-wine">
             <IconBag size={15} /> Add to bag
           </button>
-          <span className="mx-2 font-display text-[13px] tabular-nums text-wine-900/60">
+          <span className="mx-2 font-display text-[15px] tabular-nums text-wine-900/60">
             {String(active + 1).padStart(2, '0')} / {String(n).padStart(2, '0')}
           </span>
           <button type="button" onClick={() => go(-1)} aria-label="Previous piece" className="icon-btn h-11 w-11 border-wine-900/20 hover:border-wine-900 hover:bg-wine-900 hover:text-ivory"><IconArrowLeft size={15} /></button>

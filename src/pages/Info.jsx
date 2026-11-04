@@ -26,12 +26,12 @@ export function Faq() {
             return (
               <li key={f.q}>
                 <h2>
-                  <button type="button" aria-expanded={on} aria-controls={`faq-${i}`} onClick={() => setOpen(on ? -1 : i)} className="flex min-h-[64px] w-full items-center justify-between gap-6 py-4 text-left font-display text-[clamp(calc(1.4rem_-_5px),calc(2.4vw_-_5px),calc(1.8rem_-_5px))] font-medium leading-snug">
+                  <button type="button" aria-expanded={on} aria-controls={`faq-${i}`} onClick={() => setOpen(on ? -1 : i)} className="flex min-h-[64px] w-full items-center justify-between gap-6 py-4 text-left font-display text-[clamp(calc(1.4rem_-_1px),calc(2.4vw_-_1px),calc(1.8rem_-_1px))] font-medium leading-snug">
                     {f.q}
                     <IconChevronDown size={20} className={`shrink-0 text-gold-deep transition-transform duration-300 ${on ? 'rotate-180' : ''}`} />
                   </button>
                 </h2>
-                {on && <p id={`faq-${i}`} className="pb-5 pr-8 text-[13px] leading-[1.75] text-wine-900/80">{f.a}</p>}
+                {on && <p id={`faq-${i}`} className="pb-5 pr-8 text-[15px] leading-[1.75] text-wine-900/80">{f.a}</p>}
               </li>
             )
           })}

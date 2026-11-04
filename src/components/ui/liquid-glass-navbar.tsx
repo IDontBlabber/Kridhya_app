@@ -81,7 +81,7 @@ const NIMBUS_CSS = `
   box-shadow:inset 0 1px 1px rgba(241,230,211,.9),inset 0 -2px 6px rgba(201,164,106,.3),inset 0 0 0 1px rgba(231,209,162,.5),0 6px 16px -6px rgba(43,9,18,.4)}
 .nimbus-nav[data-gl="off"] .nimbus-drop{display:block}
 .nimbus-item{position:relative;z-index:1;display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 14px;border:0;border-radius:999px;background:none;color:var(--n-fg-soft);
-  font-family:inherit;font-weight:500;font-size:11px;line-height:1;letter-spacing:.01em;text-decoration:none;cursor:pointer;transition:color .25s;white-space:nowrap}
+  font-family:inherit;font-weight:500;font-size:12px;line-height:1;letter-spacing:.01em;text-decoration:none;cursor:pointer;transition:color .25s;white-space:nowrap}
 .nimbus-item:hover,.nimbus-item[aria-current="page"]{color:var(--n-fg)}
 .nimbus-item:focus-visible{outline:2px solid #C9A46A;outline-offset:2px}
 .nv-ico{position:relative;display:inline-flex;flex:none}
