@@ -44,7 +44,7 @@ export default function CartDrawer() {
             transition={{ duration: 0.6, ease: EASE }}
           >
             <div className="flex items-center justify-between border-b border-wine-900/10 px-6 py-5">
-              <h2 className="text-[31px]">Your Bag</h2>
+              <h2 className="text-[28px]">Your Bag</h2>
               <button ref={closeRef} type="button" onClick={() => setOpen(false)} className="-mr-2 inline-flex h-11 w-11 items-center justify-center" aria-label="Close bag">
                 <IconClose size={22} />
               </button>

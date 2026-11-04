@@ -27,6 +27,7 @@ export default function ContactEnquiry({
     const err = {}
     if (!form.name.trim()) err.name = 'Please share your name.'
     if (!/^\S+@\S+\.\S+$/.test(form.email)) err.email = 'Please enter a valid email address.'
+    if (form.phone.replace(/\D/g, '').length < 10) err.phone = 'Please enter a valid phone number.'
     setErrors(err)
     if (!Object.keys(err).length) setSent(true)
   }
@@ -38,7 +39,7 @@ export default function ContactEnquiry({
         <div className="grain relative isolate bg-wine-900 p-7 text-ivory sm:p-10 lg:col-span-5">
           <Mandala className="pointer-events-none absolute -bottom-40 -right-40 -z-10 h-[420px] w-[420px] text-gold/[0.14]" />
           <p className="eyebrow font-semibold text-gold">{eyebrow}</p>
-          <h2 className="mt-3 font-display text-[clamp(calc(2.2rem_+_1px),calc(4vw_+_1px),calc(3.2rem_+_1px))] font-normal leading-[1.05]">{title}</h2>
+          <h2 className="mt-3 font-display text-[clamp(1.6rem,2.6vw,2.1rem)] font-normal leading-[1.15]">{title}</h2>
           <p className="mt-4 max-w-sm text-[15px] font-medium leading-relaxed text-ivory/80">{intro}</p>
 
           <dl className="mt-9 divide-y divide-ivory/10 [&>div]:py-4 first:[&>div]:pt-0">
@@ -68,15 +69,15 @@ export default function ContactEnquiry({
           {sent ? (
             <div role="status" className="flex h-full flex-col items-start justify-center">
               <LotusMark className="h-12 w-12 text-gold-deep" />
-              <h3 className="mt-5 font-display text-[37px] font-medium">Thank you, {form.name.split(' ')[0]}.</h3>
+              <h3 className="mt-5 font-display text-[28px] font-normal">Thank you, {form.name.split(' ')[0]}.</h3>
               <p className="mt-3 text-[15px] font-medium text-wine-900/80">We’ve received your enquiry and will be in touch soon.</p>
             </div>
           ) : (
             <form noValidate onSubmit={submit} className="grid gap-x-7 gap-y-7 sm:grid-cols-2">
-              <p className="font-display text-[29px] font-medium leading-tight sm:col-span-2">Send us a message</p>
+              <p className="font-display text-[22px] font-normal leading-tight sm:col-span-2 sm:text-[24px]">Send us a message</p>
               <Field id={`${id}-name`} label="Full name" required value={form.name} onChange={set('name')} error={errors.name} autoComplete="name" />
               <Field id={`${id}-email`} label="Email" type="email" required value={form.email} onChange={set('email')} error={errors.email} autoComplete="email" />
-              <Field id={`${id}-phone`} label="Phone" type="tel" value={form.phone} onChange={set('phone')} autoComplete="tel" />
+              <Field id={`${id}-phone`} label="Phone" type="tel" required value={form.phone} onChange={set('phone')} error={errors.phone} autoComplete="tel" />
               {showQuantity ? (
                 <Field id={`${id}-quantity`} label="Approx. quantity" inputMode="numeric" value={form.quantity} onChange={set('quantity')} helper="An estimate is fine." />
               ) : (
@@ -108,7 +109,7 @@ function Detail({ label, children }) {
   return (
     <div>
       <dt className="text-[12px] font-semibold uppercase tracking-[0.2em] text-gold">{label}</dt>
-      <dd className="num mt-1.5 break-words text-[15px] font-normal leading-snug tracking-[0.005em] sm:text-[20px]">{children}</dd>
+      <dd className="num mt-1.5 break-words text-[15px] font-normal leading-snug tracking-[0.005em] sm:text-[17px]">{children}</dd>
     </div>
   )
 }

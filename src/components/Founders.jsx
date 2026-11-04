@@ -21,7 +21,7 @@ export default function Founders({ variant = 'full' }) {
               <div className={`relative isolate md:col-span-7 ${i % 2 ? 'md:order-1' : 'md:col-start-7 md:col-span-6'}`}>
                 {/* light mandala centred behind the name, role and bio */}
                 <Mandala className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[460px] w-[460px] -translate-x-1/2 -translate-y-1/2 text-gold/[0.18] sm:h-[540px] sm:w-[540px]" strokeWidth={0.7} />
-                <h2 className="text-[clamp(calc(2.3rem_+_1px),calc(4.4vw_+_1px),calc(3.6rem_+_1px))] font-medium leading-[1.02]">{f.name}</h2>
+                <h2 className="text-[clamp(calc(2.3rem_-_2px),calc(4.4vw_-_2px),calc(3.6rem_-_2px))] font-medium leading-[1.02]">{f.name}</h2>
                 <p className="mt-3 text-[12px] font-semibold uppercase tracking-[0.22em] text-gold-deep">Small joys worn close to heart</p>
                 <p className="mt-3 text-[12px] font-semibold uppercase tracking-[0.22em] text-gold-deep">{f.role}</p>
                 <div className="hairline my-6 max-w-sm" />

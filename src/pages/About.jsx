@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { HeroIndex, Ornament, PageHero, SectionHeading } from '../components/ui'
-import { FadeUp, ParallaxImage, ParallaxLayer, Stagger, blurChild } from '../components/motion'
+import { FadeUp, ParallaxImage, Stagger, blurChild } from '../components/motion'
 import { IMG } from '../data/images'
 import { WHATSAPP_MESSAGES, whatsappLink } from '../data/site'
 import { IconArrow, IconWhatsApp } from '../components/Icons'
@@ -26,11 +26,9 @@ export default function About() {
         eyebrow="About Us"
         title="Jewellery for the moments that matter"
         intro="Thoughtful design, timeless elegance and pieces that feel personal - meet the people and the ideas behind Kridhya."
-        image={IMG.necklaceCloseup.src}
-        imageAlt={IMG.necklaceCloseup.alt}
-        position="50% 40%"
-        detail={IMG.storyStill.src}
-        detailAlt={IMG.storyStill.alt}
+        image="/images/brand/kridhya-logo-square.webp"
+        imageAlt="Kridhya by Devanshi Agarwal logo - a lotus within a gold square frame"
+        square
       >
         <div className="mt-8 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
           <a href="#founder" className="btn btn-gold font-semibold">Meet the founder</a>
@@ -58,13 +56,8 @@ export default function About() {
               Jewellery is more than something we wear - it can reflect our individuality, mark a special moment, or become part of a story we carry with us.
             </FadeUp>
           </div>
-          <div className="grid grid-cols-2 gap-3 md:col-span-6">
-            <ParallaxLayer distance={40} className="mt-10">
-              <ParallaxImage src={IMG.modelPortrait.src} alt={IMG.modelPortrait.alt} placeholder ratio="3/4" strength={8} />
-            </ParallaxLayer>
-            <ParallaxLayer distance={-20}>
-              <ParallaxImage src={IMG.storyStill.src} alt={IMG.storyStill.alt} placeholder ratio="3/4" strength={8} />
-            </ParallaxLayer>
+          <div className="md:col-span-5 md:col-start-8">
+            <ParallaxImage src={IMG.modelPortrait.src} alt={IMG.modelPortrait.alt} placeholder ratio="4/5" position="50% 30%" strength={8} className="mx-auto max-w-[460px] md:mr-0" />
           </div>
         </div>
       </section>
@@ -110,7 +103,7 @@ export default function About() {
             <div className="hairline" />
             <div>
               <FadeUp as="p" className="eyebrow text-gold-deep">What we want you to feel</FadeUp>
-              <FadeUp as="p" delay={0.05} className="mt-3 font-display text-[clamp(calc(1.5rem_+_1px),calc(2.4vw_+_1px),calc(2rem_+_1px))] italic leading-snug text-wine-700">Seen, celebrated, and a little more yourself.</FadeUp>
+              <FadeUp as="h2" delay={0.05} className="h-section mt-3">Seen, celebrated, and a little more yourself.</FadeUp>
               <FadeUp as="p" delay={0.1} className="mt-4 max-w-[54ch] text-[15px] leading-[1.8] text-wine-900/75">
                 We invite you to discover jewellery that feels uniquely yours - a piece that speaks to your style, your story, and the moments you want to remember.
               </FadeUp>
@@ -134,3 +127,4 @@ export default function About() {
     </>
   )
 }
+

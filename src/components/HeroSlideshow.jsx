@@ -9,7 +9,7 @@ const COPY = [
   { label: 'Aevum', eyebrow: 'Small joys worn close to heart', title: ['Jewellery for the', 'moments that matter.'] },
   { label: 'Bracelets & Cuffs', eyebrow: 'Small joys worn close to heart', title: ['Made to move', 'with you.'] },
   { label: 'Everyday Gold', eyebrow: 'Small joys worn close to heart', title: ['Quiet details,', 'lasting meaning.'] },
-  { label: 'Gifting', eyebrow: ' Small joys worn close to heart', title: ['Gifts that are kept,', 'not forgotten.'] },
+  { label: 'Gifting', eyebrow: 'Small joys worn close to heart', title: ['Gifts that are kept,', 'not forgotten.'] },
 ]
 const SLIDES = IMG.heroSlides.map((s, i) => ({ ...s, ...COPY[i] }))
 const INTERVAL = 6500
@@ -155,15 +155,15 @@ export default function HeroSlideshow() {
             <motion.div key={index} initial="hidden" animate="show" exit="exit">
               <motion.p
                 variants={{ hidden: { opacity: 0, x: -12 }, show: { opacity: 1, x: 0, transition: { duration: 0.7, delay: 0.35, ease: EASE } }, exit: { opacity: 0, transition: { duration: 0.25 } } }}
-                className="eyebrow flex items-center gap-3 text-gold"
+                className="eyebrow text-[14px] text-gold"
               >
-                <span className="h-px w-6 bg-gold" /> {slide.eyebrow}
+                {slide.eyebrow}
               </motion.p>
-              <h1 className="mt-4 font-display text-[clamp(calc(2.4rem_+_1px),calc(5.6vw_+_1px),calc(4.6rem_+_1px))] font-medium leading-[1.02]">
+              <h1 className="mt-4 font-display text-[clamp(1.6rem,7.6vw,calc(2.4rem_-_3px))] sm:text-[clamp(calc(2.4rem_-_3px),calc(5.6vw_-_3px),calc(4.6rem_-_3px))] font-medium leading-[1.02]">
                 {slide.title.map((line, i) => (
                   <motion.span
                     key={line}
-                    className={`block ${i === 1 ? 'text-gold-light' : ''}`}
+                    className={`block whitespace-nowrap ${i === 1 ? 'text-gold-light' : ''}`}
                     variants={{
                       hidden: { opacity: 0, y: 24, filter: 'blur(12px)' },
                       show: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 1, delay: 0.45 + i * 0.12, ease: EASE } },

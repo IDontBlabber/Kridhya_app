@@ -88,7 +88,7 @@ export function FinishDot({ finish, size = 12 }) {
 
 // Page header in the Corporate Gifting style: plain burgundy satin behind the (transparent) site header,
 // copy on the left, framed photography on the right - so nothing busy ever sits under the navigation.
-export function PageHero({ eyebrow, title, intro, image, imageAlt = '', position = 'center', detail, detailAlt = '', children }) {
+export function PageHero({ eyebrow, title, intro, image, imageAlt = '', position = 'center', square = false, detail, detailAlt = '', children }) {
   const ref = useRef(null)
   const reduce = useReducedMotion()
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
@@ -101,8 +101,8 @@ export function PageHero({ eyebrow, title, intro, image, imageAlt = '', position
     <section ref={ref} className="grain relative isolate overflow-hidden bg-wine-900 text-ivory">
       <motion.img style={{ y: bg }} src="/images/generated/satin-wine-gold.webp" alt="" aria-hidden="true" className="absolute inset-0 -z-10 h-full w-full object-cover opacity-40" />
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-wine-950/70 to-wine-900" />
-      <div className="container-hero grid items-center gap-10 pb-10 pt-32 md:grid-cols-12 lg:min-h-[72svh] lg:pb-12 lg:pt-36">
-        <motion.div style={{ y: textY, opacity: o }} className="md:col-span-6 lg:col-span-5">
+      <div className={`${square ? 'container-site lg:gap-14' : 'container-hero'} grid items-center gap-10 pb-10 pt-32 md:grid-cols-12 lg:min-h-[72svh] lg:pb-12 lg:pt-36`}>
+        <motion.div style={{ y: textY, opacity: o }} className={`md:col-span-6 ${square ? '' : 'lg:col-span-5'}`}>
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.1 }} className="eyebrow text-gold">{eyebrow}</motion.p>
           <motion.h1
             initial={{ opacity: 0, y: 16, filter: 'blur(12px)' }}
@@ -119,7 +119,14 @@ export function PageHero({ eyebrow, title, intro, image, imageAlt = '', position
           )}
           {children}
         </motion.div>
-        {image && (
+        {image && !detail && (
+          <motion.div style={{ y: back }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.2, delay: 0.2 }} className={`w-full md:col-span-6 ${square ? '' : 'lg:col-span-5 lg:col-start-8'}`}>
+            <div className={`mx-auto border border-gold/50 p-1.5 ${square ? 'max-w-[400px] sm:max-w-[480px] md:mr-0 lg:max-w-[540px]' : 'max-w-[460px] md:mr-0'}`}>
+              <img src={image} srcSet={srcSetFor(image)} sizes="(min-width: 1024px) 34vw, (min-width: 768px) 50vw, 100vw" alt={imageAlt} data-placeholder={image.includes('/brand/') ? undefined : 'true'} className={`${square ? 'aspect-square' : 'aspect-[4/5]'} w-full object-cover`} style={{ objectPosition: position }} />
+            </div>
+          </motion.div>
+        )}
+        {image && detail && (
           <div className="relative h-[340px] sm:h-[440px] md:col-span-6 lg:col-span-6 lg:col-start-7 lg:h-[520px]">
             <motion.div style={{ y: back }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.2, delay: 0.2 }} className="absolute right-0 top-0 w-[68%]">
               <img src={image} srcSet={srcSetFor(image)} sizes="(min-width: 1024px) 34vw, 70vw" alt={imageAlt} data-placeholder="true" className="aspect-[4/5] w-full object-cover" style={{ objectPosition: position }} />

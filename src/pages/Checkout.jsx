@@ -114,7 +114,7 @@ export default function Checkout() {
               {/* order summary */}
               <aside className="lg:col-span-5" aria-label="Order summary">
                 <div className="border border-gold/40 bg-cream/60 p-6 sm:p-8 lg:sticky lg:top-24">
-                  <h2 className="font-display text-[29px] font-medium">Order summary</h2>
+                  <h2 className="font-display text-[26px] font-medium">Order summary</h2>
                   <ul className="mt-5 divide-y divide-wine-900/10">
                     {items.map((i) => (
                       <li key={i.id} className="flex gap-4 py-4">

@@ -94,7 +94,7 @@ function ProductView({ product }) {
             <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: EASE }} className="lg:col-span-5 lg:col-start-8">
               <div className="lg:sticky lg:top-28">
                 <p className="eyebrow text-gold-deep">{cat.name}</p>
-                <h1 className="mt-3 text-[clamp(calc(1.9rem_+_1px),calc(3.2vw_+_1px),calc(2.6rem_+_1px))] leading-[1.05]">{product.name}</h1>
+                <h1 className="mt-3 text-[clamp(calc(1.9rem_-_2px),calc(3.2vw_-_2px),calc(2.6rem_-_2px))] leading-[1.05]">{product.name}</h1>
                 <p className="num mt-3 text-[21px] font-light">{formatPrice(product.price)}</p>
                 <div className="hairline my-6" />
                 <p className="text-[15px] leading-relaxed text-wine-900/75">{product.short}</p>

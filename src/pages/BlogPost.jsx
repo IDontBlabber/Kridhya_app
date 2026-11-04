@@ -59,7 +59,7 @@ function Article({ post }) {
               <FadeUp as="p" className="border-l-2 border-gold/60 pl-5 font-display text-[clamp(calc(1.3rem_-_1px),calc(2vw_-_1px),calc(1.6rem_-_1px))] font-light italic leading-snug text-wine-700">{post.excerpt}</FadeUp>
               <div className="mt-8 space-y-5 text-[13px] leading-[1.8] text-wine-900/80">
                 {post.body.map((b, i) => {
-                  if (b.h2) return <h2 key={i} className="!mt-9 text-[clamp(calc(1.5rem_-_1px),calc(2.4vw_-_1px),calc(1.9rem_-_1px))] leading-tight text-wine-900">{b.h2}</h2>
+                  if (b.h2) return <h2 key={i} className="!mt-9 text-[clamp(calc(1.5rem_-_4px),calc(2.4vw_-_4px),calc(1.9rem_-_4px))] leading-tight text-wine-900">{b.h2}</h2>
                   if (b.h3) return <h3 key={i} className="!mt-8 font-display text-[23px] text-wine-900">{b.h3}</h3>
                   if (b.img)
                     return (

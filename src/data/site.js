@@ -20,12 +20,13 @@ export const TAGLINE = 'Small joys worn close to heart'
 export const SHOW_FONT_PICKER = true
 
 export const NAV = [
+  { label: 'Home', to: '/' },
   { label: 'Shop', to: '/shop' },
   { label: 'Collections', to: '/collections' },
   { label: 'Corporate Gifting', to: '/corporate-gifting' },
   { label: 'Our Story', to: '/our-story' },
   { label: 'About', to: '/about' },
-  { label: 'Journal', to: '/blog' },
+  { label: 'Journals', to: '/blog' },
   { label: 'Contact', to: '/contact' },
 ]
 

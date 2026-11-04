@@ -17,9 +17,8 @@ export default function Story() {
         intro="How a simple belief - that jewellery can carry the moments we want to keep close - became Kridhya."
         image={IMG.womanWearing.src}
         imageAlt={IMG.womanWearing.alt}
-        position="65% 30%"
-        detail={IMG.designSketch.src}
-        detailAlt={IMG.designSketch.alt}
+        position="62% 28%"
+        square
       >
         <div className="mt-8 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
           <a href="#beginning" className="btn btn-gold font-semibold">Read our story</a>

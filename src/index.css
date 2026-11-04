@@ -6,7 +6,7 @@
   :root {
     --ease-luxe: cubic-bezier(0.22, 1, 0.36, 1);
     /* typeface pairing - swapped live by components/FontPicker.jsx; defaults match data/fonts.js */
-    --font-display: Fraunces, Georgia, serif;
+    --font-display: 'Gilda Display', Georgia, serif;
     --font-sans: 'Nunito Sans', system-ui, sans-serif;
     --font-brand: Cinzel, Georgia, serif;
     --font-collection: Cinzel, Georgia, serif;
@@ -29,6 +29,8 @@
   }
   ::selection { @apply bg-wine-700 text-ivory; }
   h1, h2, h3, h4 { @apply font-display font-light; letter-spacing: -0.01em; text-wrap: balance; }
+  /* the display face ships in one weight: never fake-bold it (italic may still be synthesised) */
+  h1, h2, h3, h4, .font-display { font-synthesis: style; }
   p { text-wrap: pretty; }
   img { @apply select-none; }
   :focus-visible { outline: 2px solid #C9A46A; outline-offset: 3px; border-radius: 2px; }
@@ -41,8 +43,8 @@
   .container-site { @apply mx-auto w-full max-w-site px-5 sm:px-8 lg:px-10; }
   .section { @apply py-10 sm:py-12 lg:py-14; }
   .eyebrow { @apply font-sans text-[12px] font-medium uppercase tracking-[0.26em]; }
-  .h-display { @apply text-[clamp(calc(2.25rem_-_1px),calc(4.6vw_-_1px),calc(3.75rem_-_1px))] leading-[1.02]; }
-  .h-section { @apply text-[clamp(calc(1.75rem_+_1px),calc(3vw_+_1px),calc(2.6rem_+_1px))] leading-[1.08]; }
+  .h-display { @apply text-[clamp(calc(2.25rem_-_4px),calc(4.6vw_-_4px),calc(3.75rem_-_4px))] leading-[1.02]; }
+  .h-section { @apply text-[clamp(calc(1.75rem_-_2px),calc(3vw_-_2px),calc(2.6rem_-_2px))] leading-[1.08]; }
   .hairline { @apply h-px w-full bg-gradient-to-r from-transparent via-gold/50 to-transparent; }
   .btn {
     @apply relative inline-flex min-h-[44px] items-center justify-center gap-2.5 px-5 text-center font-sans text-[12px] font-medium uppercase tracking-[0.18em] transition-colors duration-300 ease-luxe sm:whitespace-nowrap;

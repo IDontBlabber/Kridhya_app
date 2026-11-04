@@ -116,7 +116,7 @@ function HighlightCard({ item, big = false }) {
       </div>
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-wine-950/85 via-wine-950/45 to-transparent p-3 pt-12 text-ivory sm:p-5 sm:pt-16">
         <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-gold-light sm:text-[12px] sm:tracking-[0.18em]">{item.tag}</p>
-        <h3 className={`mt-1 font-display font-medium leading-tight ${big ? 'text-[23px] sm:text-[33px]' : 'text-[15px] sm:text-[20px]'}`}>{product.name}</h3>
+        <h3 className={`mt-1 font-display font-medium leading-tight ${big ? 'text-[20px] sm:text-[30px]' : 'text-[15px] sm:text-[20px]'}`}>{product.name}</h3>
         {big && <p className="mt-1.5 max-w-sm text-[13.5px] leading-snug text-ivory/80 sm:text-[15px]">{item.line}</p>}
         <p className="num mt-1 text-[13px] text-ivory/90 sm:mt-1.5 sm:text-[15px]">{formatPrice(product.price)}</p>
       </div>
@@ -185,10 +185,10 @@ function ParallaxColumns() {
       <div className="container-site grid items-center gap-8 py-10 sm:py-12 lg:grid-cols-12 lg:py-0">
         <div className="lg:col-span-4">
           <FadeUp as="p" className="eyebrow text-[12px] font-semibold text-gold-deep">The collection</FadeUp>
-          <FadeUp as="h2" delay={0.05} className="font-collection tracking-[0.1em] mt-3 text-[clamp(calc(2.6rem_+_1px),calc(6vw_+_1px),calc(5rem_+_1px))] font-medium leading-[1]">Aevum</FadeUp>
+          <FadeUp as="h2" delay={0.05} className="font-collection tracking-[0.1em] mt-3 text-[clamp(calc(2.6rem_-_2px),calc(6vw_-_2px),calc(5rem_-_2px))] font-medium leading-[1]">Aevum</FadeUp>
           <FadeUp as="p" delay={0.08} className="mt-2 font-display text-[clamp(calc(1.5rem_-_1px),calc(2.4vw_-_1px),calc(2rem_-_1px))] italic leading-tight text-wine-700">The Infinity Edit</FadeUp>
           <FadeUp as="p" delay={0.1} className="mt-5 max-w-sm text-[15px] font-medium leading-relaxed text-wine-900/75">
-            A line with no beginning and no end - an endless loop reimagined in gold, rose gold and silver, for bonds, promises and everyday rituals.
+            A line with no beginning and no end - an endless loop reimagined in Gold, Rose Gold and Silver, for bonds, promises and everyday rituals.
           </FadeUp>
           <FadeUp delay={0.15} className="mt-6">
             <Link to="/shop" className="btn btn-wine">Discover Aevum <IconArrow size={14} /></Link>

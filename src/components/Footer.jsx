@@ -10,7 +10,7 @@ const HOUSE = [
   { label: 'Our Story', to: '/our-story' },
   { label: 'About Us', to: '/about' },
   { label: 'Corporate Gifting', to: '/corporate-gifting' },
-  { label: 'Journal', to: '/blog' },
+  { label: 'Journals', to: '/blog' },
 ]
 
 export default function Footer() {
@@ -77,7 +77,8 @@ export default function Footer() {
           </li>
           <li>
             <a href={whatsappLink(WHATSAPP_MESSAGES.gifting)} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 py-2 text-ivory/70 transition-colors hover:text-gold-light md:py-0">
-              <IconWhatsApp size={14} /> <span className="link-underline">Bulk &amp; gifting enquiries</span>
+              <IconWhatsApp size={14} />
+               <span className="link-underline">Bulk  gifting enquiries</span>
             </a>
           </li>
           <li>
@@ -90,13 +91,12 @@ export default function Footer() {
               <IconFacebook size={14} /> <span className="link-underline">Facebook</span>
             </a>
           </li>
-          <li className="py-2 text-ivory/45 md:py-0 md:pt-1">kridhyabydevanshi.com</li>
         </FooterCol>
       </div>
 
       <div className="border-t border-ivory/10">
         <div className="container-site flex flex-col gap-2 py-5 text-[12px] text-ivory/45 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} Kridhya by Devanshi Agarwal. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Kridhya by Devanshi Agarwal. All rights reserved. Powered by VrewKriya</p>
           <p>Prices shown are indicative in this preview.</p>
         </div>
       </div>

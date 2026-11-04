@@ -114,40 +114,65 @@ export default function Gifting() {
   )
 }
 
+// Full-bleed banner like the home hero: the gift box sits on the left of the photograph, the copy on the right.
 function Hero() {
   const ref = useRef(null)
   const reduce = useReducedMotion()
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
-  const bg = useTransform(scrollYProgress, [0, 1], reduce ? ['0%', '0%'] : ['0%', '25%'])
-  const back = useTransform(scrollYProgress, [0, 1], reduce ? ['0px', '0px'] : ['0px', '60px'])
-  const front = useTransform(scrollYProgress, [0, 1], reduce ? ['0px', '0px'] : ['0px', '-90px'])
+  const bannerY = useTransform(scrollYProgress, [0, 1], reduce ? ['0%', '0%'] : ['0%', '22%'])
+  const copyY = useTransform(scrollYProgress, [0, 1], reduce ? ['0px', '0px'] : ['0px', '-110px'])
+  const fade = useTransform(scrollYProgress, [0, 0.55], [1, 0])
+  const img = IMG.giftingHero
   return (
-    <section ref={ref} className="grain relative isolate overflow-hidden bg-wine-900 text-ivory">
-      <motion.img style={{ y: bg }} src={IMG.satinWineGold.src} alt="" className="absolute inset-0 -z-10 h-full w-full object-cover opacity-40" />
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-wine-950/70 to-wine-900" />
-      <div className="container-hero grid items-center gap-10 pb-16 pt-32 md:grid-cols-12 lg:min-h-[86svh] lg:pt-32">
-        <div className="md:col-span-6 lg:col-span-5">
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1, duration: 0.8 }} className="eyebrow text-gold">Corporate gifting &amp; bulk orders</motion.p>
-          <motion.h1 initial={{ opacity: 0, y: 16, filter: 'blur(12px)' }} animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }} transition={{ duration: 1.1, delay: 0.15, ease: EASE }} className="h-display mt-4">
-            Gifts that are kept, not forgotten.
-          </motion.h1>
-          <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 1, ease: EASE }} className="mt-5 max-w-md text-[14px] leading-relaxed text-ivory/75">
+    <section ref={ref} className="relative h-[100svh] min-h-[560px] w-full overflow-hidden bg-wine-950 text-ivory">
+      <motion.div style={{ y: bannerY }} className="absolute inset-0">
+        <motion.img
+          src={img.src}
+          srcSet={srcSetFor(img.src)}
+          sizes="100vw"
+          alt={img.alt}
+          fetchpriority="high"
+          initial={{ scale: reduce ? 1 : 1.1 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 2.4, ease: EASE }}
+          className="h-full w-full object-cover [object-position:var(--pos-m)] md:[object-position:var(--pos)]"
+          style={{ '--pos': img.position, '--pos-m': img.mobilePosition }}
+        />
+      </motion.div>
+
+      {/* brand grade: burgundy tint, copy-side gradient (right) and a soft foot for phones */}
+      <div className="pointer-events-none absolute inset-0 bg-wine-800/15 mix-blend-multiply" />
+      <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-l from-wine-950/85 via-wine-950/35 to-transparent md:block" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-wine-950/95 via-wine-950/55 to-transparent md:h-2/5 md:from-wine-950/60 md:via-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-wine-950/55 to-transparent" />
+
+      <motion.div style={{ y: copyY, opacity: fade }} className="container-hero relative flex h-full flex-col justify-end pb-16 sm:pb-20 md:items-end md:justify-center md:pb-0 md:pt-20">
+        <div className="max-w-xl md:w-[46%] md:max-w-[560px]">
+          <motion.p initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.3, ease: EASE }} className="eyebrow text-gold">
+            Corporate gifting &amp; bulk orders
+          </motion.p>
+          <h1 className="mt-4 font-display text-[clamp(1.6rem,7.6vw,calc(2.4rem_-_3px))] font-medium leading-[1.04] sm:text-[clamp(calc(2.4rem_-_3px),calc(5vw_-_3px),calc(4.2rem_-_3px))]">
+            {['Gifts that are kept,', 'not forgotten.'].map((line, i) => (
+              <motion.span
+                key={line}
+                className={`block whitespace-nowrap ${i === 1 ? 'text-gold-light' : ''}`}
+                initial={{ opacity: 0, y: 24, filter: 'blur(12px)' }}
+                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                transition={{ duration: 1, delay: 0.45 + i * 0.12, ease: EASE }}
+              >
+                {line}
+              </motion.span>
+            ))}
+          </h1>
+          <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7, duration: 1, ease: EASE }} className="mt-5 max-w-md text-[15px] leading-relaxed text-ivory/80">
             Thoughtfully designed jewellery to celebrate your people - for festive seasons, milestones, clients and celebrations.
           </motion.p>
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55, duration: 1, ease: EASE }} className="mt-8 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.85, duration: 1, ease: EASE }} className="mt-8 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
             <a href={whatsappLink(WHATSAPP_MESSAGES.gifting)} target="_blank" rel="noreferrer" className="btn btn-gold"><IconWhatsApp size={16} /> Enquire on WhatsApp</a>
-            <a href="#enquire" className="btn btn-outline-light">Send an enquiry</a>
+            <a href="#enquire" className="btn btn-outline-light backdrop-blur-sm">Send an enquiry</a>
           </motion.div>
         </div>
-        <div className="relative h-[380px] sm:h-[460px] md:col-span-6 lg:col-span-6 lg:col-start-7 lg:h-[540px]">
-          <motion.div style={{ y: back }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.2, delay: 0.2 }} className="absolute right-0 top-0 w-[68%]">
-            <img src={IMG.giftBox.src} srcSet={srcSetFor(IMG.giftBox.src)} sizes="(min-width: 1024px) 34vw, 70vw" alt={IMG.giftBox.alt} data-placeholder="true" className="aspect-[4/5] w-full object-cover" />
-          </motion.div>
-          <motion.div style={{ y: front }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.2, delay: 0.45 }} className="absolute bottom-0 left-0 w-[46%] border-[6px] border-wine-900">
-            <img src={IMG.ringStill.src} srcSet={srcSetFor(IMG.ringStill.src)} sizes="(min-width: 1024px) 24vw, 46vw" alt={IMG.ringStill.alt} data-placeholder="true" className="aspect-square w-full object-cover" />
-          </motion.div>
-        </div>
-      </div>
+      </motion.div>
     </section>
   )
 }

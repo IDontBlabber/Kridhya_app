@@ -18,12 +18,12 @@ export default function Blog() {
   const term = q.trim().toLowerCase()
   const byCat = cat === 'All' ? POSTS : POSTS.filter((p) => p.category === cat)
   const list = term ? byCat.filter((p) => `${p.title} ${p.excerpt} ${p.category}`.toLowerCase().includes(term)) : byCat
-  const [featured, ...rest] = list
+  const featured = list[0]
 
   return (
     <>
       <section className="bg-ivory pb-8 pt-32 sm:pt-36">
-        <div className="container-hero">
+        <div className="mx-auto w-[90%]">
           <Breadcrumbs items={[{ label: 'Home', to: '/' }, { label: 'Journal' }]} />
           <motion.h1 initial={{ opacity: 0, y: 14, filter: 'blur(10px)' }} animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }} transition={{ duration: 1, ease: EASE }} className="h-display mt-5">
             The Journal
@@ -53,7 +53,7 @@ export default function Blog() {
       </section>
 
       <section className="bg-ivory pb-12">
-        <div className="container-hero">
+        <div className="mx-auto w-[90%]">
           <AnimatePresence mode="wait">
             <motion.div key={`${cat}-${term}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
               {!featured && (
@@ -62,24 +62,9 @@ export default function Blog() {
                 </p>
               )}
               {featured && (
-                <Link to={`/blog/${featured.slug}`} className="group grid items-center gap-6 md:grid-cols-12 lg:gap-10">
-                  <div className="aspect-[3/2] overflow-hidden bg-cream md:col-span-7">
-                    <img src={featured.cover} srcSet={srcSetFor(featured.cover)} sizes="(min-width: 768px) 60vw, 100vw" alt={featured.coverAlt} className="h-full w-full object-cover transition-transform duration-[1.6s] ease-luxe group-hover:scale-105" />
-                  </div>
-                  <div className="md:col-span-5">
-                    <p className="eyebrow text-gold-deep">Featured · {featured.category}</p>
-                    <h2 className="mt-4 text-[clamp(calc(1.6rem_-_1px),calc(2.8vw_-_1px),calc(2.3rem_-_1px))] leading-[1.1] transition-colors group-hover:text-wine-600">{featured.title}</h2>
-                    <p className="mt-3 text-[13px] leading-relaxed text-wine-900/70">{featured.excerpt}</p>
-                    <p className="mt-6 text-[13px] text-wine-900/55">{fmtDate(featured.date)} · {featured.readTime}</p>
-                    <span className="mt-8 inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.22em] text-wine-800">
-                      <span className="link-underline">Read more</span> <IconArrow size={14} className="transition-transform group-hover:translate-x-1" />
-                    </span>
-                  </div>
-                </Link>
-              )}
-              {rest.length > 0 && (
-                <Stagger className="mt-10 grid gap-x-5 gap-y-10 border-t border-wine-900/10 pt-8 sm:grid-cols-2 lg:grid-cols-3">
-                  {rest.map((p) => <PostCard key={p.slug} post={p} />)}
+                // every post uses the featured layout; image and copy swap sides down the page
+                <Stagger className="flex flex-col gap-10 lg:gap-14">
+                  {list.map((p, i) => <PostRow key={p.slug} post={p} featured={i === 0} flip={i % 2 === 1} />)}
                 </Stagger>
               )}
             </motion.div>
@@ -87,6 +72,29 @@ export default function Blog() {
         </div>
       </section>
     </>
+  )
+}
+
+function PostRow({ post, featured, flip }) {
+  return (
+    <motion.article variants={blurChild} className={featured ? '' : 'border-t border-wine-900/10 pt-10 lg:pt-12'}>
+      <Link to={`/blog/${post.slug}`} className="group grid items-center gap-5 md:grid-cols-12 md:gap-8 lg:gap-12">
+        <div className={`border border-gold/40 bg-ivory p-1.5 md:col-span-5 lg:col-span-4 ${flip ? 'md:order-2' : ''}`}>
+          <div className="aspect-[3/2] overflow-hidden bg-cream">
+          <img src={post.cover} srcSet={srcSetFor(post.cover)} sizes="(min-width: 1024px) 30vw, (min-width: 768px) 42vw, 90vw" alt={post.coverAlt} loading={featured ? 'eager' : 'lazy'} className="h-full w-full object-cover transition-transform duration-[1.6s] ease-luxe group-hover:scale-105" />
+          </div>
+        </div>
+        <div className={`md:col-span-7 lg:col-span-8 ${flip ? 'md:order-1 lg:pl-6 lg:pr-10' : 'lg:pl-10 lg:pr-6'}`}>
+          <p className="eyebrow text-gold-deep">{featured ? `Featured · ${post.category}` : post.category}</p>
+          <h2 className="mt-4 text-[clamp(calc(1.6rem_-_4px),calc(2.8vw_-_4px),calc(2.3rem_-_4px))] leading-[1.1] transition-colors group-hover:text-wine-600">{post.title}</h2>
+          <p className="mt-3 max-w-[62ch] text-[14px] leading-relaxed text-wine-900/70">{post.excerpt}</p>
+          <p className="mt-4 text-[13px] text-wine-900/55">{fmtDate(post.date)} · {post.readTime}</p>
+          <span className="mt-6 inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.22em] text-wine-800">
+            <span className="link-underline">Read more</span> <IconArrow size={14} className="transition-transform group-hover:translate-x-1" />
+          </span>
+        </div>
+      </Link>
+    </motion.article>
   )
 }
 

@@ -8,6 +8,16 @@ const gf = (...fams) =>
 
 export const FONT_PAIRS = [
   {
+    id: 'gilda-nunito',
+    name: 'Gilda Display + Nunito Sans',
+    note: 'Refined high-contrast Gilda Display headings - straight, upright J and f - with Nunito Sans. Default.',
+    display: '"Gilda Display", Georgia, serif',
+    sans: '"Nunito Sans", system-ui, sans-serif',
+    brand: 'Cinzel, Georgia, serif',
+    collection: 'Cinzel, Georgia, serif',
+    url: gf('Gilda+Display', 'Nunito+Sans:wght@300;400;500;600', 'Cinzel:wght@400;500;600'),
+  },
+  {
     id: 'playfair-nunito',
     name: 'Playfair + Nunito Sans',
     note: 'Playfair Display headings with regular Nunito Sans body - soft, elegant, very readable.',
@@ -50,7 +60,7 @@ export const FONT_PAIRS = [
   {
     id: 'fraunces-nunito',
     name: 'Fraunces + Nunito Sans',
-    note: 'Soft, friendly luxury: Fraunces with Nunito Sans. Default.',
+    note: 'Soft, friendly luxury: Fraunces with Nunito Sans.',
     display: 'Fraunces, Georgia, serif',
     sans: '"Nunito Sans", system-ui, sans-serif',
     brand: 'Cinzel, Georgia, serif',
@@ -69,8 +79,9 @@ export const FONT_PAIRS = [
   },
 ]
 
-export const DEFAULT_FONT = 'fraunces-nunito'
-export const FONT_KEY = 'kridhya-font-v2'
+// key bumped so earlier saved picks (Fraunces, with its curled J/f) don't override the new default
+export const DEFAULT_FONT = 'gilda-nunito'
+export const FONT_KEY = 'kridhya-font-v3'
 export const getFontPair = (id) => FONT_PAIRS.find((f) => f.id === id) ?? FONT_PAIRS[0]
 
 // Applies a pairing: loads its stylesheet once, then sets the CSS variables the Tailwind font families read.

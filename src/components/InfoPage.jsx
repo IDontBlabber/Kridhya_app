@@ -45,7 +45,7 @@ export function InfoBody({ children, aside }) {
 export function Block({ title, children, delay = 0 }) {
   return (
     <FadeUp delay={delay} className="mb-10">
-      <h2 className="font-display text-[clamp(calc(1.7rem_-_1px),calc(3vw_-_1px),calc(2.2rem_-_1px))] font-medium leading-tight">{title}</h2>
+      <h2 className="font-display text-[clamp(calc(1.7rem_-_4px),calc(3vw_-_4px),calc(2.2rem_-_4px))] font-medium leading-tight">{title}</h2>
       <div className="mt-3 space-y-3 text-[15px] leading-[1.75] text-wine-900/80">{children}</div>
     </FadeUp>
   )

@@ -55,7 +55,7 @@ export default function Header() {
             </Link>
 
             <nav aria-label="Primary" className="hidden justify-self-center xl:block">
-              <ul className="flex items-center gap-5 2xl:gap-9">
+              <ul className="flex items-center gap-4 2xl:gap-8">
                 {NAV.map((n) => {
                   const active = isSection(pathname, n.to)
                   return (
