@@ -44,7 +44,7 @@ export default function AdminApp() {
 }
 
 function Shell({ user, onSignOut }) {
-  const { data, saving, loadError, reload } = useAdmin()
+  const { data, saving, saveError, loadError, reload } = useAdmin()
   const [menu, setMenu] = useState(false)
   const { pathname } = useLocation()
   useEffect(() => setMenu(false), [pathname])
@@ -92,6 +92,11 @@ function Shell({ user, onSignOut }) {
             </span>
           </div>
         </header>
+        {saveError && (
+          <p role="alert" className="border-b border-[#e8b9c0] bg-[#fdf2f4] px-4 py-2.5 text-[13.5px] font-medium text-[#9b2335] sm:px-8">
+            Your last change was NOT saved to the website: {saveError}. Check your connection and save again.
+          </p>
+        )}
         <main className="mx-auto w-full max-w-[1200px] px-4 py-6 sm:px-8 sm:py-8">
           {!data ? (
             loadError ? (
@@ -130,7 +135,7 @@ function SaveState({ state }) {
     idle: ['bg-wine-900/25', 'All changes saved'],
     saved: ['bg-[#2f8a52]', 'All changes saved'],
     saving: ['bg-gold animate-pulse', 'Saving…'],
-    error: ['bg-[#9b2335]', 'Could not save - storage full?'],
+    error: ['bg-[#9b2335]', 'Not saved - see message'],
   }[state]
   return (
     <span className="inline-flex items-center gap-2 text-[12.5px] font-medium text-wine-900/65" role="status">

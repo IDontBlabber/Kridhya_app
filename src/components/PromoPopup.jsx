@@ -47,7 +47,7 @@ export default function PromoPopup() {
       if (!preview) markSeen(p)
     }, preview ? 400 : Math.max(0, Number(p.delay) || 0) * 1000)
     return () => clearTimeout(t)
-  }, [pathname, p])
+  }, [pathname, p, p.image, p.enabled])
 
   useEffect(() => {
     if (!open) return

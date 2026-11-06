@@ -116,6 +116,15 @@ export function applyToSite(data) {
   POSTS.splice(0, POSTS.length, ...data.posts.filter(isLive).sort((a, b) => publishTime(b) - publishTime(a)).map(postToSite))
   Object.assign(POPUP, DEFAULT_POPUP, upgradePopup(data.popup))
 }
+// Database mode: each part comes from the database as soon as it has content there; until the catalogue is
+// imported, products/posts fall back to the shipped ones (but a saved pop-up is always used).
+function applyLive(d) {
+  const imported = d.products.length > 0 || d.posts.length > 0
+  PRODUCTS.splice(0, PRODUCTS.length, ...(d.products.length ? d.products.filter((p) => p.status === 'published').map(productToSite) : structuredClone(DEFAULT_PRODUCTS)))
+  POSTS.splice(0, POSTS.length, ...(imported ? d.posts.filter(isLive).sort((a, b) => publishTime(b) - publishTime(a)).map(postToSite) : structuredClone(DEFAULT_POSTS)))
+  Object.assign(POPUP, DEFAULT_POPUP, d.popup ? upgradePopup(d.popup) : {})
+}
+
 function applyDefaults() {
   PRODUCTS.splice(0, PRODUCTS.length, ...structuredClone(DEFAULT_PRODUCTS))
   POSTS.splice(0, POSTS.length, ...structuredClone(DEFAULT_POSTS))
@@ -150,11 +159,11 @@ export async function hydrateSite(onFresh) {
   const fresh = fetchLive().then((d) => {
     const changed = JSON.stringify(d) !== JSON.stringify(cached)
     writeCache(d)
-    if (d.products.length) applyToSite(d)
+    applyLive(d)
     return changed
   })
-  if (cached?.products?.length) {
-    applyToSite(cached)
+  if (cached?.products) {
+    applyLive(cached)
     fresh.then((changed) => changed && onFresh?.()).catch(() => {})
     return
   }
@@ -179,6 +188,7 @@ export function AdminStoreProvider({ children, initialData = null }) {
   const [data, setData] = useState(initialData)
   const [loadError, setLoadError] = useState('')
   const [saving, setSaving] = useState('idle') // idle | saving | saved | error
+  const [saveError, setSaveError] = useState('')
   const first = useRef(true)
   const latest = useRef(null)
   const pending = useRef(false)
@@ -217,8 +227,8 @@ export function AdminStoreProvider({ children, initialData = null }) {
   // mirror to the site in this tab; in preview mode also persist the whole blob
   useEffect(() => {
     if (!data) return
+    if (hasBackend) return applyLive(data)
     applyToSite(data)
-    if (hasBackend) return
     if (first.current) { first.current = false; return }
     latest.current = data
     pending.current = true
@@ -235,10 +245,11 @@ export function AdminStoreProvider({ children, initialData = null }) {
     try {
       await fn(await loadRemote())
       inflight.current -= 1
-      if (!inflight.current) { setSaving('saved'); announce() }
+      if (!inflight.current) { setSaving('saved'); setSaveError(''); announce() }
     } catch (e) {
       inflight.current -= 1
       setSaving('error')
+      setSaveError(e?.message || 'Unknown error')
       console.error('[admin] save failed', e)
     }
   }, [])
@@ -254,7 +265,7 @@ export function AdminStoreProvider({ children, initialData = null }) {
   const api = useMemo(() => {
     const upsertLocal = (list, item) => (list.some((x) => x.id === item.id) ? list.map((x) => (x.id === item.id ? item : x)) : [{ ...item, createdAt: Date.now() }, ...list])
     return {
-      data, saving, loadError, reload, backend: hasBackend,
+      data, saving, saveError, loadError, reload, backend: hasBackend,
       saveProduct: (p) => {
         const next = { ...p, updatedAt: Date.now() }
         mutate((d) => ({ ...d, products: upsertLocal(d.products, next) }))
@@ -325,7 +336,7 @@ export function AdminStoreProvider({ children, initialData = null }) {
       // what this browser saved in preview mode, for copying into the database
       localCatalogue: async () => (await dbGet(KEY)) || null,
     }
-  }, [data, saving, loadError, reload, mutate, remoteWrite, debounced])
+  }, [data, saving, saveError, loadError, reload, mutate, remoteWrite, debounced])
 
   return createElement(Ctx.Provider, { value: api }, children)
 }
