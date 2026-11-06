@@ -5,7 +5,8 @@
   "outputDirectory": "dist",
   "rewrites": [
     {
-      "source": "/((?!assets/|images/|favicon|robots.txt|sitemap.xml|llms.txt).*)"
+      "source": "/((?!assets/|images/|favicon|robots\\.txt|sitemap\\.xml|llms\\.txt).*)",
+      "destination": "/index.html"
     }
   ],
   "headers": [
