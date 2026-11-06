@@ -1,15 +1,16 @@
-import { useEffect, useRef, useState } from 'react'
+import { forwardRef, useEffect, useRef, useState } from 'react'
 import { ChevronDown, ChevronUp, ImagePlus, Images, Trash2, Upload, X } from 'lucide-react'
-import { IMAGE_LIBRARY, fileToImage } from './store'
+import { IMAGE_LIBRARY, fileToImage, useAdmin } from './store'
 
 export const cx = (...c) => c.filter(Boolean).join(' ')
 
 export function PageHeader({ title, subtitle, children }) {
   return (
-    <div className="flex flex-col gap-4 border-b border-wine-900/10 pb-5 sm:flex-row sm:items-end sm:justify-between">
+    <div className="flex flex-col gap-4 border-b border-gold/40 pb-5 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <h1 className="font-display text-[28px] font-normal leading-tight text-wine-900">{title}</h1>
-        {subtitle && <p className="mt-1 text-[14px] text-wine-900/60">{subtitle}</p>}
+        <p className="eyebrow text-[11px] text-gold-deep">Kridhya admin</p>
+        <h1 className="mt-2 font-display text-[clamp(26px,2.6vw,32px)] font-normal leading-tight text-wine-900">{title}</h1>
+        {subtitle && <p className="mt-1.5 text-[14px] text-wine-900/60">{subtitle}</p>}
       </div>
       {children && <div className="flex flex-wrap items-center gap-2">{children}</div>}
     </div>
@@ -20,20 +21,20 @@ export function Button({ variant = 'primary', size = 'md', className = '', child
   const v = {
     primary: 'bg-wine-800 text-ivory hover:bg-wine-700',
     gold: 'bg-gold text-wine-950 hover:bg-gold-light',
-    ghost: 'border border-wine-900/15 bg-white/60 text-wine-900 hover:border-wine-900/40 hover:bg-white',
-    danger: 'bg-[#9b2335] text-white hover:bg-[#b02a3e]',
-    quiet: 'text-wine-900/70 hover:bg-wine-900/5 hover:text-wine-900',
+    ghost: 'border border-wine-900/25 bg-transparent text-wine-900 hover:border-wine-900 hover:bg-wine-900 hover:text-ivory',
+    danger: 'bg-[#9b2335] text-ivory hover:bg-[#b02a3e]',
+    quiet: 'text-wine-900/70 hover:bg-wine-900/[0.06] hover:text-wine-900',
   }[variant]
-  const s = { sm: 'h-8 gap-1.5 px-2.5 text-[12.5px]', md: 'h-10 gap-2 px-4 text-[13.5px]' }[size]
+  const s = { sm: 'h-8 gap-1.5 px-2.5 text-[11px] tracking-[0.12em]', md: 'h-11 gap-2 px-5 text-[11.5px] tracking-[0.16em]' }[size]
   return (
-    <button type="button" className={cx('inline-flex shrink-0 items-center justify-center rounded-md font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50', v, s, className)} {...rest}>
+    <button type="button" className={cx('inline-flex shrink-0 items-center justify-center font-sans font-semibold uppercase transition-colors duration-300 ease-luxe disabled:cursor-not-allowed disabled:opacity-50', v, s, className)} {...rest}>
       {children}
     </button>
   )
 }
 
 export function Card({ className = '', children }) {
-  return <div className={cx('rounded-xl border border-wine-900/10 bg-white/80 shadow-[0_1px_2px_rgba(43,9,18,0.04)]', className)}>{children}</div>
+  return <div className={cx('border border-gold/35 bg-[#f8f1e4] shadow-[0_18px_40px_-34px_rgba(43,9,18,0.45)]', className)}>{children}</div>
 }
 
 export function Section({ title, hint, children, aside }) {
@@ -41,7 +42,7 @@ export function Section({ title, hint, children, aside }) {
     <Card className="p-5 sm:p-6">
       <div className="mb-4 flex items-start justify-between gap-3">
         <div>
-          <h2 className="text-[15px] font-semibold text-wine-900">{title}</h2>
+          <h2 className="font-display text-[20px] font-normal leading-tight text-wine-900">{title}</h2>
           {hint && <p className="mt-0.5 text-[13px] text-wine-900/55">{hint}</p>}
         </div>
         {aside}
@@ -54,9 +55,9 @@ export function Section({ title, hint, children, aside }) {
 export function Field({ label, hint, error, required, children, className = '' }) {
   return (
     <label className={cx('block', className)}>
-      <span className="mb-1.5 flex items-baseline justify-between gap-2 text-[13px] font-semibold text-wine-900">
+      <span className="mb-1.5 flex items-baseline justify-between gap-2 text-[11.5px] font-semibold uppercase tracking-[0.14em] text-wine-900">
         <span>{label} {required && <span className="text-wine-600">*</span>}</span>
-        {hint && <span className="text-[12px] font-normal text-wine-900/50">{hint}</span>}
+        {hint && <span className="text-[12px] font-normal normal-case tracking-normal text-wine-900/50">{hint}</span>}
       </span>
       {children}
       {error && <span className="mt-1 block text-[12.5px] font-medium text-[#9b2335]">{error}</span>}
@@ -64,9 +65,9 @@ export function Field({ label, hint, error, required, children, className = '' }
   )
 }
 
-const control = 'w-full rounded-md border border-wine-900/15 bg-white px-3 text-[14px] text-wine-900 placeholder:text-wine-900/35 focus:border-wine-700 focus:outline-none focus:ring-2 focus:ring-gold/30'
+const control = 'w-full border border-wine-900/20 bg-ivory/60 px-3 text-[14px] text-wine-900 placeholder:text-wine-900/35 focus:border-wine-700 focus:bg-ivory focus:outline-none focus:ring-2 focus:ring-gold/25'
 export const Input = (p) => <input {...p} className={cx(control, 'h-10', p.className)} />
-export const Textarea = (p) => <textarea {...p} className={cx(control, 'py-2.5 leading-relaxed', p.className)} />
+export const Textarea = forwardRef((p, ref) => <textarea ref={ref} {...p} className={cx(control, 'py-2.5 leading-relaxed', p.className)} />)
 export const Select = ({ children, ...p }) => (
   <select {...p} className={cx(control, 'h-10 cursor-pointer pr-8', p.className)}>
     {children}
@@ -90,7 +91,7 @@ export function Pill({ tone = 'neutral', children }) {
     gold: 'bg-gold/20 text-gold-deep',
     draft: 'bg-wine-900/[0.06] text-wine-900/60',
   }[tone]
-  return <span className={cx('inline-flex items-center whitespace-nowrap rounded-full px-2 py-0.5 text-[11.5px] font-semibold', t)}>{children}</span>
+  return <span className={cx('inline-flex items-center whitespace-nowrap px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.12em]', t)}>{children}</span>
 }
 
 export const StockPill = ({ state }) =>
@@ -108,8 +109,8 @@ export function Confirm({ open, title, body, confirmLabel = 'Delete', onConfirm,
   if (!open) return null
   return (
     <div className="fixed inset-0 z-[90] flex items-center justify-center bg-wine-950/50 p-4" onClick={onClose}>
-      <div role="alertdialog" aria-modal="true" className="w-full max-w-sm rounded-xl bg-white p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
-        <h3 className="text-[17px] font-semibold text-wine-900">{title}</h3>
+      <div role="alertdialog" aria-modal="true" className="w-full max-w-sm border border-gold/40 bg-ivory p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+        <h3 className="font-display text-[22px] font-normal leading-tight text-wine-900">{title}</h3>
         <p className="mt-2 text-[14px] leading-relaxed text-wine-900/65">{body}</p>
         <div className="mt-6 flex justify-end gap-2">
           <Button variant="ghost" onClick={onClose}>Cancel</Button>
@@ -138,14 +139,14 @@ function Library({ open, onPick, onClose, multiple }) {
   const toggle = (src) => setSel((s) => (s.includes(src) ? s.filter((x) => x !== src) : multiple ? [...s, src] : [src]))
   return (
     <div className="fixed inset-0 z-[90] flex items-center justify-center bg-wine-950/50 p-4" onClick={onClose}>
-      <div className="flex max-h-[85vh] w-full max-w-3xl flex-col rounded-xl bg-white shadow-2xl" onClick={(e) => e.stopPropagation()}>
+      <div className="flex max-h-[85vh] w-full max-w-3xl flex-col border border-gold/40 bg-ivory shadow-2xl" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between border-b border-wine-900/10 px-5 py-4">
-          <h3 className="text-[16px] font-semibold text-wine-900">Choose from site photos</h3>
+          <h3 className="font-display text-[20px] font-normal text-wine-900">Choose from site photos</h3>
           <button type="button" onClick={onClose} className="rounded p-1 hover:bg-wine-900/5" aria-label="Close"><X size={18} /></button>
         </div>
         <div className="grid flex-1 grid-cols-3 gap-2 overflow-y-auto p-4 sm:grid-cols-5">
           {IMAGE_LIBRARY.map((src) => (
-            <button key={src} type="button" onClick={() => toggle(src)} className={cx('relative aspect-square overflow-hidden rounded-md border-2', sel.includes(src) ? 'border-wine-700' : 'border-transparent hover:border-gold')}>
+            <button key={src} type="button" onClick={() => toggle(src)} className={cx('relative aspect-square overflow-hidden border-2', sel.includes(src) ? 'border-wine-700' : 'border-transparent hover:border-gold')}>
               <img src={src} alt="" loading="lazy" className="h-full w-full object-cover" />
               {sel.includes(src) && <span className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-wine-800 text-[11px] font-bold text-white">{multiple ? sel.indexOf(src) + 1 : '✓'}</span>}
             </button>
@@ -162,6 +163,7 @@ function Library({ open, onPick, onClose, multiple }) {
 
 // Ordered image list: first image is the cover. Upload (resized in-browser) or pick from the site library.
 export function ImageManager({ images, onChange, multiple = true, label = 'Images' }) {
+  const store = useAdmin()
   const fileRef = useRef(null)
   const [lib, setLib] = useState(false)
   const [busy, setBusy] = useState(false)
@@ -172,10 +174,10 @@ export function ImageManager({ images, onChange, multiple = true, label = 'Image
     setBusy(true)
     try {
       const out = []
-      for (const f of files) out.push(await fileToImage(f))
+      for (const f of files) out.push(await store.uploadImage(await fileToImage(f)))
       add(out)
-    } catch {
-      setErr('That file could not be read as an image.')
+    } catch (e) {
+      setErr(e?.message === 'Not an image' ? 'That file could not be read as an image.' : `Upload failed: ${e?.message || 'please try again.'}`)
     } finally {
       setBusy(false)
     }
@@ -190,7 +192,7 @@ export function ImageManager({ images, onChange, multiple = true, label = 'Image
       {images.length > 0 && (
         <ul className={cx('mb-3 grid gap-3', multiple ? 'grid-cols-3 sm:grid-cols-4' : 'grid-cols-1 sm:max-w-xs')}>
           {images.map((src, i) => (
-            <li key={src.slice(0, 80) + i} className="group relative overflow-hidden rounded-lg border border-wine-900/10 bg-cream">
+            <li key={src.slice(0, 80) + i} className="group relative overflow-hidden border border-wine-900/10 bg-cream">
               <img src={src} alt="" className="aspect-square w-full object-cover" />
               {multiple && i === 0 && <span className="absolute left-1.5 top-1.5 rounded bg-wine-900/85 px-1.5 py-0.5 text-[10.5px] font-semibold text-ivory">Cover</span>}
               <div className="absolute inset-x-0 bottom-0 flex justify-between bg-gradient-to-t from-black/60 to-transparent p-1.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100">
@@ -205,7 +207,7 @@ export function ImageManager({ images, onChange, multiple = true, label = 'Image
         </ul>
       )}
       <div className="flex flex-wrap gap-2">
-        <Button variant="ghost" onClick={() => fileRef.current?.click()} disabled={busy}><Upload size={15} /> {busy ? 'Processing…' : `Upload ${label.toLowerCase()}`}</Button>
+        <Button variant="ghost" onClick={() => fileRef.current?.click()} disabled={busy}><Upload size={15} /> {busy ? 'Uploading…' : `Upload ${label.toLowerCase()}`}</Button>
         <Button variant="ghost" onClick={() => setLib(true)}><Images size={15} /> From site photos</Button>
       </div>
       {!images.length && <p className="mt-2 flex items-center gap-1.5 text-[12.5px] text-wine-900/50"><ImagePlus size={14} /> JPG, PNG or WebP. Large photos are resized to 1600px automatically.</p>}

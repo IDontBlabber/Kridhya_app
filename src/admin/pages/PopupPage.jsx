@@ -98,7 +98,7 @@ export default function PopupPage() {
         <div className="space-y-5 lg:sticky lg:top-20 lg:self-start">
           <Card className="p-5">
             <p className="mb-3 text-[12px] font-semibold uppercase tracking-[0.08em] text-wine-900/50">Preview</p>
-            <div className="rounded-lg bg-wine-950/80 p-4">
+            <div className=" bg-wine-950/80 p-4">
               <div className={`border border-gold/50 bg-wine-950 p-1 ${p.enabled ? '' : 'opacity-50'}`}>
                 {p.image ? <img src={p.image} alt="" className="block w-full object-contain" /> : <div className="flex aspect-video items-center justify-center text-[12.5px] text-ivory/50">No image yet</div>}
                 {p.buttonLabel && <p className="border-t border-gold/25 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.18em] text-gold-light">{p.buttonLabel} →</p>}
@@ -112,7 +112,7 @@ export default function PopupPage() {
         </div>
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-wine-900/10 bg-white/95 backdrop-blur lg:left-[248px]">
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-gold/30 bg-ivory/95 backdrop-blur lg:left-[248px]">
         <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-3 px-4 py-3 sm:px-8">
           <p className={`text-[13px] ${err ? 'font-medium text-[#9b2335]' : 'text-wine-900/60'}`}>{err || (dirty ? 'You have unsaved changes' : 'No unsaved changes')}</p>
           <Button onClick={save}>Save pop-up</Button>

@@ -1,12 +1,18 @@
-// Admin catalogue store: products + journal posts, persisted in the browser (see db.js), and mirrored into the
-// public site's PRODUCTS / POSTS arrays so the shop and journal show the client's edits immediately.
+// Admin catalogue store: products, journal posts and the pop-up banner.
+// Two modes, same API for every admin screen:
+//  - DATABASE (VITE_SUPABASE_URL + VITE_SUPABASE_ANON_KEY set): reads/writes Supabase; every visitor sees published changes.
+//  - PREVIEW (no keys): saved in this browser only (IndexedDB, see db.js).
+// The public site's PRODUCTS / POSTS / POPUP are mirrored in place so existing pages just re-render.
 import { createContext, createElement, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { PRODUCTS, CATEGORIES } from '../data/products'
 import { POSTS } from '../data/blog'
 import { DEFAULT_POPUP, POPUP, POPUP_LIBRARY } from '../data/popup'
+import { hasBackend, rest } from '../lib/backend'
 import { dbDel, dbGet, dbSet } from './db'
 
+export { hasBackend }
 const KEY = 'catalogue-v1'
+const CACHE = 'kridhya-catalogue-cache'
 // Tells other open tabs of the site that the catalogue changed, so they refresh without a reload.
 const CHANNEL = 'kridhya-catalogue'
 const announce = () => { try { const c = new BroadcastChannel(CHANNEL); c.postMessage('changed'); c.close() } catch { /* unsupported */ } }
@@ -31,44 +37,26 @@ function productFromSite(p, i) {
     VARIANTS.map((v) => [v, { enabled: p.finishes.includes(v), stock: p.finishes.includes(v) ? (i % 6 === 0 ? 2 : 8 + (i % 5)) : 0, sku: '' }]),
   )
   return {
-    id: uid(),
-    slug: p.slug,
-    name: p.name,
-    category: p.category,
-    price: p.price,
-    comparePrice: '',
-    ribbon: p.badge || '',
-    short: p.short || '',
-    description: '',
-    images: [...p.images],
-    variants,
-    lowStock: 3,
-    status: 'published',
-    placeholder: !!p.placeholder,
-    createdAt: Date.now() - (DEFAULT_PRODUCTS.length - i) * 86400000,
-    updatedAt: Date.now() - (DEFAULT_PRODUCTS.length - i) * 86400000,
+    id: uid(), slug: p.slug, name: p.name, category: p.category, price: p.price, comparePrice: '',
+    ribbon: p.badge || '', short: p.short || '', description: '', images: [...p.images], variants, lowStock: 3,
+    status: 'published', placeholder: !!p.placeholder,
+    createdAt: Date.now() - (DEFAULT_PRODUCTS.length - i) * 86400000, updatedAt: Date.now() - (DEFAULT_PRODUCTS.length - i) * 86400000,
   }
 }
 
 function postFromSite(p) {
   const body = p.body.map((b) =>
-    b.h2 ? { id: uid(), type: 'h2', text: b.h2 } : b.h3 ? { id: uid(), type: 'h3', text: b.h3 } : b.img ? { id: uid(), type: 'img', src: b.img, text: b.caption || '' } : { id: uid(), type: 'p', text: b.p },
+    b.h2 ? { id: uid(), type: 'h2', text: b.h2 }
+      : b.h3 ? { id: uid(), type: 'h3', text: b.h3 }
+        : b.img ? { id: uid(), type: 'img', src: b.img, text: b.caption || '', alt: b.alt || b.caption || '' }
+          : b.quote ? { id: uid(), type: 'quote', text: b.quote, cite: b.cite || '' }
+            : { id: uid(), type: 'p', text: b.p, size: b.size || 'md' },
   )
   return {
-    id: uid(),
-    slug: p.slug,
-    title: p.title,
-    category: p.category,
-    date: p.date,
-    excerpt: p.excerpt,
-    cover: p.cover,
-    coverAlt: p.coverAlt || '',
-    body,
-    seoTitle: p.seo?.title || '',
-    seoDescription: p.seo?.description || '',
-    status: 'published',
-    createdAt: new Date(p.date).getTime(),
-    updatedAt: new Date(p.date).getTime(),
+    id: uid(), slug: p.slug, title: p.title, category: p.category, date: p.date, publishAt: `${p.date}T09:00`,
+    excerpt: p.excerpt, cover: p.cover, coverAlt: p.coverAlt || '', body,
+    seoTitle: p.seo?.title || '', seoDescription: p.seo?.description || '', status: 'published',
+    createdAt: new Date(p.date).getTime(), updatedAt: new Date(p.date).getTime(),
   }
 }
 
@@ -83,117 +71,155 @@ export function readTime(post) {
   const words = [post.excerpt, ...post.body.map((b) => b.text || '')].join(' ').split(/\s+/).filter(Boolean).length
   return `${Math.max(1, Math.round(words / 200))} min read`
 }
+// publish moment of a post (scheduling); old records only have a date
+export const publishTime = (p) => new Date(p.publishAt || `${p.date}T00:00`).getTime()
+export const isScheduled = (p) => p.status === 'published' && publishTime(p) > Date.now()
+const isLive = (p) => p.status === 'published' && publishTime(p) <= Date.now()
 
 function productToSite(p) {
   const finishes = enabledVariants(p)
   const soldOut = stockOf(p) === 0
   return {
-    priceStatus: 'listed',
-    slug: p.slug,
-    name: p.name,
-    category: p.category,
-    price: Number(p.price) || 0,
-    comparePrice: Number(p.comparePrice) || undefined,
+    priceStatus: 'listed', slug: p.slug, name: p.name, category: p.category,
+    price: Number(p.price) || 0, comparePrice: Number(p.comparePrice) || undefined,
     finishes: finishes.length ? finishes : ['Gold'],
     stock: Object.fromEntries(finishes.map((v) => [v, Number(p.variants[v].stock) || 0])),
-    soldOut,
-    badge: soldOut ? 'Sold out' : p.ribbon || undefined,
+    soldOut, badge: soldOut ? 'Sold out' : p.ribbon || undefined,
     images: p.images.length ? p.images : ['/images/generated/satin-beige.webp'],
-    short: p.short,
-    description: p.description,
-    placeholder: p.placeholder,
+    short: p.short, description: p.description, placeholder: p.placeholder,
   }
 }
 
 function postToSite(p) {
   return {
-    slug: p.slug,
-    title: p.title,
-    excerpt: p.excerpt,
-    category: p.category,
-    date: p.date,
-    readTime: readTime(p),
-    cover: p.cover || '/images/generated/satin-beige.webp',
-    coverAlt: p.coverAlt || p.title,
+    slug: p.slug, title: p.title, excerpt: p.excerpt, category: p.category,
+    date: (p.publishAt || p.date || '').slice(0, 10), readTime: readTime(p),
+    cover: p.cover || '/images/generated/satin-beige.webp', coverAlt: p.coverAlt || p.title,
     seo: { title: p.seoTitle || `${p.title} | Kridhya Journal`, description: p.seoDescription || p.excerpt },
-    body: p.body.map((b) => (b.type === 'img' ? { img: b.src, caption: b.text } : { [b.type]: b.text })),
+    body: p.body.map((b) =>
+      b.type === 'img' ? { img: b.src, caption: b.text, alt: b.alt || b.text }
+        : b.type === 'quote' ? { quote: b.text, cite: b.cite }
+          : b.type === 'p' ? { p: b.text, size: b.size || 'md' }
+            : { [b.type]: b.text },
+    ),
   }
 }
 
-// Mirror published items into the live arrays (in place, so every existing import sees the change).
-// Browsers that stored an earlier default Diwali image (and never edited the pop-up) get the current one; other settings carry over.
+// Browsers that stored an earlier default Diwali image (and never edited the pop-up) get the current one.
 const OLD_DEFAULTS = ['/images/popups/diwali-2026.webp', '/images/popups/diwali-kridhya.webp']
 const upgradePopup = (p) => (!p ? { ...DEFAULT_POPUP } : OLD_DEFAULTS.includes(p.image) && p.id === DEFAULT_POPUP.id && !p.updatedAt ? { ...p, image: DEFAULT_POPUP.image, alt: DEFAULT_POPUP.alt } : p)
 
+// Mirror live items into the site's arrays (in place, so every existing import sees the change).
 export function applyToSite(data) {
   if (!data) return
   PRODUCTS.splice(0, PRODUCTS.length, ...data.products.filter((p) => p.status === 'published').map(productToSite))
-  POSTS.splice(0, POSTS.length, ...data.posts.filter((p) => p.status === 'published').sort((a, b) => b.date.localeCompare(a.date)).map(postToSite))
+  POSTS.splice(0, POSTS.length, ...data.posts.filter(isLive).sort((a, b) => publishTime(b) - publishTime(a)).map(postToSite))
   Object.assign(POPUP, DEFAULT_POPUP, upgradePopup(data.popup))
+}
+function applyDefaults() {
+  PRODUCTS.splice(0, PRODUCTS.length, ...structuredClone(DEFAULT_PRODUCTS))
+  POSTS.splice(0, POSTS.length, ...structuredClone(DEFAULT_POSTS))
+  Object.assign(POPUP, DEFAULT_POPUP)
 }
 
 export const seedData = () => ({ products: DEFAULT_PRODUCTS.map(productFromSite), posts: DEFAULT_POSTS.map(postFromSite), popup: { ...DEFAULT_POPUP }, updatedAt: Date.now() })
 
-// Called once before the site renders: if the client has saved edits in this browser, show them.
-export async function hydrateSite() {
-  const saved = await dbGet(KEY)
-  if (saved?.products) applyToSite(saved)
-  else {
-    // nothing saved (or the admin reset): the shipped catalogue, untouched
-    PRODUCTS.splice(0, PRODUCTS.length, ...structuredClone(DEFAULT_PRODUCTS))
-    POSTS.splice(0, POSTS.length, ...structuredClone(DEFAULT_POSTS))
-    Object.assign(POPUP, DEFAULT_POPUP)
+/* ---------- public site ---------- */
+
+// Database mode: what every visitor sees (row-level security only returns published / live rows).
+async function fetchLive() {
+  const [products, posts, settings] = await Promise.all([
+    rest('products?select=id,slug,status,data'),
+    rest('posts?select=id,slug,status,publish_at,data'),
+    rest('settings?select=value&key=eq.popup'),
+  ])
+  const row = (r) => ({ ...r.data, id: r.id, slug: r.slug, status: r.status })
+  return { products: products.map(row), posts: posts.map(row), popup: settings[0]?.value || null }
+}
+const readCache = () => { try { return JSON.parse(localStorage.getItem(CACHE)) } catch { return null } }
+const writeCache = (d) => { try { localStorage.setItem(CACHE, JSON.stringify(d)) } catch { /* full or blocked */ } }
+
+// Called before the first render. Database mode: show the last copy instantly, refresh in the background
+// (onFresh re-renders when it arrives). First ever visit waits up to ~2.5 s for the database, then falls back.
+export async function hydrateSite(onFresh) {
+  if (!hasBackend) {
+    const saved = await dbGet(KEY)
+    return saved?.products ? applyToSite(saved) : applyDefaults()
   }
+  const cached = readCache()
+  const fresh = fetchLive().then((d) => {
+    const changed = JSON.stringify(d) !== JSON.stringify(cached)
+    writeCache(d)
+    if (d.products.length) applyToSite(d)
+    return changed
+  })
+  if (cached?.products?.length) {
+    applyToSite(cached)
+    fresh.then((changed) => changed && onFresh?.()).catch(() => {})
+    return
+  }
+  await Promise.race([fresh.catch(() => {}), new Promise((r) => setTimeout(r, 2500))])
+  fresh.then((changed) => changed && onFresh?.()).catch(() => {})
 }
 
-// Site side: re-read the catalogue whenever the admin saves in any tab, then call onChange to re-render.
+// Re-read the catalogue whenever the admin saves (another tab), then call onChange to re-render.
 export function onCatalogueChange(onChange) {
   let c
   try { c = new BroadcastChannel(CHANNEL) } catch { return () => {} }
-  c.onmessage = () => hydrateSite().then(onChange)
+  c.onmessage = () => hydrateSite(onChange).then(onChange)
   return () => c.close()
 }
 
-/* ---------- React store ---------- */
+/* ---------- React store (admin) ---------- */
 
 const Ctx = createContext(null)
+const loadRemote = () => import('./remote')
 
 export function AdminStoreProvider({ children, initialData = null }) {
   const [data, setData] = useState(initialData)
+  const [loadError, setLoadError] = useState('')
   const [saving, setSaving] = useState('idle') // idle | saving | saved | error
   const first = useRef(true)
   const latest = useRef(null)
   const pending = useRef(false)
+  const inflight = useRef(0)
+  const timers = useRef({})
 
+  /* preview mode: whole catalogue saved to IndexedDB (debounced) */
   const persist = useCallback((d) => {
     pending.current = false
-    return dbSet(KEY, d)
-      .then(() => { setSaving('saved'); announce() })
-      .catch(() => setSaving('error'))
+    return dbSet(KEY, d).then(() => { setSaving('saved'); announce() }).catch(() => setSaving('error'))
   }, [])
-
-  // Leaving the admin (or closing the tab) never drops a save that is still waiting.
   useEffect(() => {
+    if (hasBackend) return
     const flush = () => { if (pending.current && latest.current) persist(latest.current) }
     window.addEventListener('pagehide', flush)
     return () => { window.removeEventListener('pagehide', flush); flush() }
   }, [persist])
 
-  useEffect(() => {
-    if (initialData) return
-    dbGet(KEY).then((saved) => setData(saved?.products ? { ...saved, popup: upgradePopup(saved.popup) } : seedData()))
-  }, [initialData])
-
-  // persist + mirror on every change (debounced)
-  useEffect(() => {
-    if (!data) return
-    if (first.current) {
-      first.current = false
-      applyToSite(data)
+  const reload = useCallback(async () => {
+    if (!hasBackend) {
+      const saved = await dbGet(KEY)
+      setData(saved?.products ? { ...saved, popup: upgradePopup(saved.popup) } : seedData())
       return
     }
-    // the shop in this tab updates at once; the browser database write is batched
+    try {
+      const remote = await loadRemote()
+      const d = await remote.loadCatalogue()
+      setData({ ...d, popup: d.popup || { ...DEFAULT_POPUP }, empty: !d.products.length && !d.posts.length })
+      setLoadError('')
+    } catch (e) {
+      setLoadError(e.message || 'Could not reach the database.')
+    }
+  }, [])
+  useEffect(() => { if (!initialData) reload() }, [initialData, reload])
+
+  // mirror to the site in this tab; in preview mode also persist the whole blob
+  useEffect(() => {
+    if (!data) return
     applyToSite(data)
+    if (hasBackend) return
+    if (first.current) { first.current = false; return }
     latest.current = data
     pending.current = true
     setSaving('saving')
@@ -201,43 +227,105 @@ export function AdminStoreProvider({ children, initialData = null }) {
     return () => clearTimeout(t)
   }, [data, persist])
 
+  // database mode: run a write, tracking the save indicator
+  const remoteWrite = useCallback(async (fn) => {
+    if (!hasBackend) return
+    inflight.current += 1
+    setSaving('saving')
+    try {
+      await fn(await loadRemote())
+      inflight.current -= 1
+      if (!inflight.current) { setSaving('saved'); announce() }
+    } catch (e) {
+      inflight.current -= 1
+      setSaving('error')
+      console.error('[admin] save failed', e)
+    }
+  }, [])
+  // quick repeated edits (stock +/−) collapse into one write per product
+  const debounced = useCallback((key, fn) => {
+    clearTimeout(timers.current[key])
+    setSaving('saving')
+    timers.current[key] = setTimeout(() => remoteWrite(fn), 450)
+  }, [remoteWrite])
+
   const mutate = useCallback((fn) => setData((d) => ({ ...fn(d), updatedAt: Date.now() })), [])
 
-  const api = useMemo(
-    () => ({
-      data,
-      saving,
-      saveProduct: (p) =>
-        mutate((d) => {
-          const next = { ...p, updatedAt: Date.now() }
-          const exists = d.products.some((x) => x.id === p.id)
-          return { ...d, products: exists ? d.products.map((x) => (x.id === p.id ? next : x)) : [{ ...next, createdAt: Date.now() }, ...d.products] }
-        }),
-      deleteProduct: (id) => mutate((d) => ({ ...d, products: d.products.filter((x) => x.id !== id) })),
-      setStock: (id, variant, stock) =>
+  const api = useMemo(() => {
+    const upsertLocal = (list, item) => (list.some((x) => x.id === item.id) ? list.map((x) => (x.id === item.id ? item : x)) : [{ ...item, createdAt: Date.now() }, ...list])
+    return {
+      data, saving, loadError, reload, backend: hasBackend,
+      saveProduct: (p) => {
+        const next = { ...p, updatedAt: Date.now() }
+        mutate((d) => ({ ...d, products: upsertLocal(d.products, next) }))
+        remoteWrite((r) => r.upsertProduct(next))
+      },
+      deleteProduct: (id) => {
+        mutate((d) => ({ ...d, products: d.products.filter((x) => x.id !== id) }))
+        remoteWrite((r) => r.deleteProduct(id))
+      },
+      setStock: (id, variant, stock) => {
+        let next
         mutate((d) => ({
           ...d,
-          products: d.products.map((x) => (x.id === id ? { ...x, updatedAt: Date.now(), variants: { ...x.variants, [variant]: { ...x.variants[variant], stock: Math.max(0, stock) } } } : x)),
-        })),
-      savePost: (p) =>
-        mutate((d) => {
-          const next = { ...p, updatedAt: Date.now() }
-          const exists = d.posts.some((x) => x.id === p.id)
-          return { ...d, posts: exists ? d.posts.map((x) => (x.id === p.id ? next : x)) : [{ ...next, createdAt: Date.now() }, ...d.posts] }
-        }),
-      savePopup: (popup) => mutate((d) => ({ ...d, popup: { ...popup, updatedAt: Date.now() } })),
-      deletePost: (id) => mutate((d) => ({ ...d, posts: d.posts.filter((x) => x.id !== id) })),
-      replaceAll: (next) => setData({ ...next, updatedAt: Date.now() }),
+          products: d.products.map((x) => {
+            if (x.id !== id) return x
+            next = { ...x, updatedAt: Date.now(), variants: { ...x.variants, [variant]: { ...x.variants[variant], stock: Math.max(0, stock) } } }
+            return next
+          }),
+        }))
+        if (hasBackend) debounced(`p:${id}`, (r) => r.upsertProduct(next))
+      },
+      savePost: (p) => {
+        const next = { ...p, date: (p.publishAt || p.date || '').slice(0, 10), updatedAt: Date.now() }
+        mutate((d) => ({ ...d, posts: upsertLocal(d.posts, next) }))
+        remoteWrite((r) => r.upsertPost(next))
+      },
+      deletePost: (id) => {
+        mutate((d) => ({ ...d, posts: d.posts.filter((x) => x.id !== id) }))
+        remoteWrite((r) => r.deletePost(id))
+      },
+      savePopup: (popup) => {
+        const next = { ...popup, updatedAt: Date.now() }
+        mutate((d) => ({ ...d, popup: next }))
+        remoteWrite((r) => r.savePopup(next))
+      },
+      // photos: database mode uploads to Supabase Storage; preview mode keeps the data URL
+      uploadImage: async (dataUrl) => (hasBackend ? (await loadRemote()).uploadImage(dataUrl) : dataUrl),
+      // backup restore / first import into the database (uploads any embedded photos first)
+      replaceAll: async (next, onProgress) => {
+        if (!hasBackend) return setData({ ...next, popup: upgradePopup(next.popup), updatedAt: Date.now() })
+        const r = await loadRemote()
+        const up = async (src) => (src?.startsWith('data:') ? r.uploadImage(src) : src)
+        const products = []
+        for (const [i, p] of next.products.entries()) {
+          onProgress?.(`Products ${i + 1} / ${next.products.length}`)
+          products.push({ ...p, images: await Promise.all(p.images.map(up)) })
+        }
+        const posts = []
+        for (const [i, p] of next.posts.entries()) {
+          onProgress?.(`Posts ${i + 1} / ${next.posts.length}`)
+          posts.push({ ...p, cover: await up(p.cover), body: await Promise.all(p.body.map(async (b) => (b.type === 'img' ? { ...b, src: await up(b.src) } : b))) })
+        }
+        const popup = next.popup ? { ...next.popup, image: await up(next.popup.image) } : null
+        onProgress?.('Saving to the database…')
+        if (products.length) await r.upsertProducts(products)
+        if (posts.length) await r.upsertPosts(posts)
+        if (popup) await r.savePopup(popup)
+        announce()
+        await reload()
+      },
       reset: async () => {
+        if (hasBackend) return
         await dbDel(KEY)
         announce()
-        const s = seedData()
         first.current = true
-        setData(s)
+        setData(seedData())
       },
-    }),
-    [data, saving, mutate],
-  )
+      // what this browser saved in preview mode, for copying into the database
+      localCatalogue: async () => (await dbGet(KEY)) || null,
+    }
+  }, [data, saving, loadError, reload, mutate, remoteWrite, debounced])
 
   return createElement(Ctx.Provider, { value: api }, children)
 }
@@ -245,41 +333,22 @@ export function AdminStoreProvider({ children, initialData = null }) {
 export const useAdmin = () => useContext(Ctx)
 
 export const newProduct = () => ({
-  id: uid(),
-  slug: '',
-  name: '',
-  category: CATEGORIES[0].slug,
-  price: '',
-  comparePrice: '',
-  ribbon: '',
-  short: '',
-  description: '',
-  images: [],
-  variants: Object.fromEntries(VARIANTS.map((v, i) => [v, { enabled: i === 0, stock: 0, sku: '' }])),
-  lowStock: 3,
-  status: 'draft',
-  placeholder: false,
+  id: uid(), slug: '', name: '', category: CATEGORIES[0].slug, price: '', comparePrice: '', ribbon: '', short: '', description: '',
+  images: [], variants: Object.fromEntries(VARIANTS.map((v, i) => [v, { enabled: i === 0, stock: 0, sku: '' }])),
+  lowStock: 3, status: 'draft', placeholder: false,
 })
 
+const localNow = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 16) }
 export const newPost = () => ({
-  id: uid(),
-  slug: '',
-  title: '',
-  category: POST_CATEGORIES[0],
-  date: new Date().toISOString().slice(0, 10),
-  excerpt: '',
-  cover: '',
-  coverAlt: '',
-  body: [{ id: uid(), type: 'p', text: '' }],
-  seoTitle: '',
-  seoDescription: '',
-  status: 'draft',
+  id: uid(), slug: '', title: '', category: POST_CATEGORIES[0], publishAt: localNow(), date: localNow().slice(0, 10),
+  excerpt: '', cover: '', coverAlt: '', body: [{ id: uid(), type: 'p', text: '', size: 'md' }],
+  seoTitle: '', seoDescription: '', status: 'draft',
 })
 
 // Every photograph already on the site, offered as a library when adding images.
 export const IMAGE_LIBRARY = [...new Set([...POPUP_LIBRARY, ...DEFAULT_PRODUCTS.flatMap((p) => p.images), ...DEFAULT_POSTS.map((p) => p.cover)])]
 
-// Read an uploaded file, scale it to max 1600px and re-encode as WebP so the browser store stays small.
+// Read an uploaded file, scale it to max 1600px and re-encode as WebP.
 export function fileToImage(file, max = 1600) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()

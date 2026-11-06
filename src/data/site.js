@@ -32,6 +32,7 @@ export const NAV = [
 
 // Help & policy pages (footer). Copy on these pages is draft text pending client approval.
 export const HELP = [
+  { label: 'Track your order', to: '/track-order' },
   { label: 'FAQs', to: '/faq' },
   { label: 'Jewellery Care', to: '/jewellery-care' },
   { label: 'Shipping & Returns', to: '/shipping-returns' },

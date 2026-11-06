@@ -23,7 +23,7 @@ export default function OrderConfirmed() {
         <LogoStacked withTagline className="mx-auto" />
         <h1 className="h-display mt-10">{first ? `Thank you, ${first}.` : 'Thank you.'}</h1>
         <p className="mx-auto mt-4 max-w-md text-[15px] leading-relaxed text-ivory/80">
-          We’ve received your order and will be in touch shortly to confirm delivery and payment.
+          We’ve received your order and will be in touch shortly to confirm delivery and payment.{order?.tracked && ' You can follow every step on the tracking page.'}
         </p>
         {order?.id && (
           <dl className="mx-auto mt-8 grid max-w-sm grid-cols-2 gap-y-2 border-y border-ivory/15 py-5 text-left text-[15px]">
@@ -36,7 +36,8 @@ export default function OrderConfirmed() {
           </dl>
         )}
         <div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
-          <a href={whatsappLink(`${WHATSAPP_MESSAGES.general}${order?.id ? ` My order number is ${order.id}.` : ''}`)} target="_blank" rel="noreferrer" className="btn btn-gold"><IconWhatsApp size={16} /> Message us on WhatsApp</a>
+          {order?.tracked && <Link to={`/track-order?order=${encodeURIComponent(order.id)}`} className="btn btn-gold">Track your order</Link>}
+          <a href={whatsappLink(`${WHATSAPP_MESSAGES.general}${order?.id ? ` My order number is ${order.id}.` : ''}`)} target="_blank" rel="noreferrer" className={`btn ${order?.tracked ? 'btn-outline-light' : 'btn-gold'}`}><IconWhatsApp size={16} /> Message us on WhatsApp</a>
           <Link to="/shop" className="btn btn-outline-light">Keep exploring</Link>
         </div>
       </div>

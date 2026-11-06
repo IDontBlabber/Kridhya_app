@@ -9,6 +9,7 @@ import { PRODUCTS } from '../data/products'
 import { PostCard, fmtDate } from './Blog'
 import useDocumentMeta from '../hooks/useDocumentMeta'
 import NotFound from './NotFound'
+import { PARA_SIZES, renderInline } from '../lib/richtext'
 
 export default function BlogPost() {
   const { slug } = useParams()
@@ -54,14 +55,21 @@ function Article({ post }) {
                 {post.body.map((b, i) => {
                   if (b.h2) return <h2 key={i} className="!mt-9 font-display text-[clamp(1.25rem,1.9vw,1.5rem)] font-normal leading-snug text-wine-900">{b.h2}</h2>
                   if (b.h3) return <h3 key={i} className="!mt-8 font-display text-[19px] font-normal text-wine-900">{b.h3}</h3>
+                  if (b.quote)
+                    return (
+                      <blockquote key={i} className="!my-9 border-l-2 border-gold pl-6">
+                        <p className="font-display text-[clamp(1.25rem,2vw,1.55rem)] leading-snug text-wine-800">“{renderInline(b.quote)}”</p>
+                        {b.cite && <footer className="mt-3 text-[12px] font-semibold uppercase tracking-[0.18em] text-gold-deep">{b.cite}</footer>}
+                      </blockquote>
+                    )
                   if (b.img)
                     return (
                       <figure key={i} className="!my-8">
-                        <img src={b.img} srcSet={srcSetFor(b.img)} sizes="(min-width: 768px) 680px, 100vw" alt={b.caption} loading="lazy" className="aspect-[4/3] w-full object-cover" />
-                        <figcaption className="mt-3 text-center text-[13px] italic text-wine-900/55">{b.caption}</figcaption>
+                        <img src={b.img} srcSet={srcSetFor(b.img)} sizes="(min-width: 768px) 680px, 100vw" alt={b.alt || b.caption || ''} loading="lazy" className="aspect-[4/3] w-full object-cover" />
+                        <figcaption className="mt-3 text-center text-[13px] italic text-wine-900/55">{renderInline(b.caption)}</figcaption>
                       </figure>
                     )
-                  return <p key={i}>{b.p}</p>
+                  return <p key={i} className={PARA_SIZES[b.size] || ''}>{renderInline(b.p)}</p>
                 })}
               </div>
               <div className="mt-8 border-t border-wine-900/10 pt-5 text-[14px] text-wine-900/70">

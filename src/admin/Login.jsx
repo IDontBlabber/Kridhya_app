@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { ArrowLeft, Eye, EyeOff, LockKeyhole } from 'lucide-react'
 import Logo, { BRAND, LogoStacked } from '../components/Logo'
 import Mandala from '../components/Mandala'
-import { isConfigured, signIn } from './auth'
+import { isConfigured, signIn, usesEmail } from './auth'
 
 export default function Login({ onSignedIn }) {
   const [user, setUser] = useState('')
@@ -15,7 +15,7 @@ export default function Login({ onSignedIn }) {
 
   const submit = async (e) => {
     e.preventDefault()
-    if (!user.trim() || !password) return setError('Enter your username and password.')
+    if (!user.trim() || !password) return setError(`Enter your ${usesEmail ? 'email' : 'username'} and password.`)
     setBusy(true)
     setError('')
     const res = await signIn(user, password, remember)
@@ -51,25 +51,25 @@ export default function Login({ onSignedIn }) {
 
           <form onSubmit={submit} noValidate className="mt-8 space-y-5">
             <label className="block">
-              <span className="mb-1.5 block text-[13px] font-semibold">Username</span>
-              <input value={user} onChange={(e) => setUser(e.target.value)} autoComplete="username" autoCapitalize="none" spellCheck={false} autoFocus className="h-12 w-full rounded-md border border-wine-900/20 bg-white px-3.5 text-[15px] focus:border-wine-700 focus:outline-none focus:ring-2 focus:ring-gold/30" />
+              <span className="mb-1.5 block text-[13px] font-semibold">{usesEmail ? 'Email' : 'Username'}</span>
+              <input type={usesEmail ? 'email' : 'text'} value={user} onChange={(e) => setUser(e.target.value)} autoComplete={usesEmail ? 'email' : 'username'} autoCapitalize="none" spellCheck={false} autoFocus className="h-12 w-full border border-wine-900/20 bg-white px-3.5 text-[15px] focus:border-wine-700 focus:outline-none focus:ring-2 focus:ring-gold/30" />
             </label>
             <label className="block">
               <span className="mb-1.5 block text-[13px] font-semibold">Password</span>
               <span className="relative block">
-                <input type={show ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" className="h-12 w-full rounded-md border border-wine-900/20 bg-white pl-3.5 pr-12 text-[15px] focus:border-wine-700 focus:outline-none focus:ring-2 focus:ring-gold/30" />
+                <input type={show ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" className="h-12 w-full border border-wine-900/20 bg-white pl-3.5 pr-12 text-[15px] focus:border-wine-700 focus:outline-none focus:ring-2 focus:ring-gold/30" />
                 <button type="button" onClick={() => setShow((s) => !s)} aria-label={show ? 'Hide password' : 'Show password'} className="absolute right-1 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded text-wine-900/55 hover:text-wine-900">
                   {show ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </span>
             </label>
-            <label className="flex cursor-pointer items-center gap-2.5 text-[13.5px] text-wine-900/75">
+            {!usesEmail && <label className="flex cursor-pointer items-center gap-2.5 text-[13.5px] text-wine-900/75">
               <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} className="h-4 w-4 accent-wine-800" />
               Keep me signed in on this device
-            </label>
-            {error && <p role="alert" className="rounded-md bg-[#f8e3e6] px-3 py-2.5 text-[13.5px] font-medium text-[#9b2335]">{error}</p>}
-            {!isConfigured() && !error && <p className="rounded-md bg-[#fbf0d9] px-3 py-2.5 text-[13px] text-[#8a5a00]">Login is not set up on this build yet.</p>}
-            <button type="submit" disabled={busy} className="btn btn-wine h-12 w-full rounded-md disabled:opacity-60">
+            </label>}
+            {error && <p role="alert" className=" bg-[#f8e3e6] px-3 py-2.5 text-[13.5px] font-medium text-[#9b2335]">{error}</p>}
+            {!isConfigured() && !error && <p className=" bg-[#fbf0d9] px-3 py-2.5 text-[13px] text-[#8a5a00]">Login is not set up on this build yet.</p>}
+            <button type="submit" disabled={busy} className="btn btn-wine h-12 w-full disabled:opacity-60">
               <LockKeyhole size={16} /> {busy ? 'Signing in…' : 'Sign in'}
             </button>
           </form>

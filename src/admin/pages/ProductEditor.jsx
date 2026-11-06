@@ -106,7 +106,7 @@ export default function ProductEditor() {
 
           <Section title="Variants & stock" hint="Turn on the finishes this piece comes in and set the units available for each." aside={<StockPill state={stockState(p)} />}>
             {errors.variants && <p className="mb-3 text-[12.5px] font-medium text-[#9b2335]">{errors.variants}</p>}
-            <div className="divide-y divide-wine-900/10 rounded-lg border border-wine-900/10">
+            <div className="divide-y divide-wine-900/10 border border-wine-900/10">
               {VARIANTS.map((v) => {
                 const on = p.variants[v].enabled
                 return (
@@ -139,7 +139,7 @@ export default function ProductEditor() {
           <Section title="Visibility">
             <div className="grid grid-cols-2 gap-2">
               {[['published', 'Published', 'Visible in the shop'], ['draft', 'Draft', 'Hidden from visitors']].map(([v, t, d]) => (
-                <button key={v} type="button" onClick={() => set('status', v)} className={`rounded-lg border p-3 text-left transition-colors ${p.status === v ? 'border-wine-800 bg-wine-900/[0.04]' : 'border-wine-900/12 hover:border-wine-900/30'}`}>
+                <button key={v} type="button" onClick={() => set('status', v)} className={` border p-3 text-left transition-colors ${p.status === v ? 'border-wine-800 bg-wine-900/[0.04]' : 'border-wine-900/12 hover:border-wine-900/30'}`}>
                   <span className="block text-[13.5px] font-semibold">{t}</span>
                   <span className="block text-[12px] text-wine-900/55">{d}</span>
                 </button>
@@ -148,7 +148,7 @@ export default function ProductEditor() {
           </Section>
           <Card className="p-5">
             <p className="mb-3 text-[12px] font-semibold uppercase tracking-[0.08em] text-wine-900/50">Shop preview</p>
-            <div className="relative aspect-square overflow-hidden rounded-md bg-cream">
+            <div className="relative aspect-square overflow-hidden bg-cream">
               {p.images[0] ? <img src={p.images[0]} alt="" className="h-full w-full object-cover mix-blend-multiply" /> : <span className="absolute inset-0 flex items-center justify-center text-[12.5px] text-wine-900/40">No image yet</span>}
               {(total === 0 || p.ribbon) && <span className="absolute left-2.5 top-2.5 bg-ivory/90 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-wine-900">{total === 0 ? 'Sold out' : p.ribbon}</span>}
             </div>
@@ -167,7 +167,7 @@ export default function ProductEditor() {
       </div>
 
       {/* sticky save bar */}
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-wine-900/10 bg-white/95 backdrop-blur lg:left-[248px]">
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-gold/30 bg-ivory/95 backdrop-blur lg:left-[248px]">
         <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-3 px-4 py-3 sm:px-8">
           <p className="text-[13px] text-wine-900/60">{dirty ? 'You have unsaved changes' : 'No unsaved changes'}</p>
           <div className="flex gap-2">

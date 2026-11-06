@@ -15,6 +15,7 @@ import { LotusMark } from '../components/Logo'
 import Mandala from '../components/Mandala'
 import Founders from '../components/Founders'
 import useDocumentMeta from '../hooks/useDocumentMeta'
+import { useCatalogueVersion } from '../lib/catalogue'
 
 export default function Home() {
   useDocumentMeta('Kridhya by Devanshi Agarwal - Jewellery for the Moments That Matter', 'Thoughtfully designed jewellery for everyday elegance and meaningful gifting.')
@@ -127,9 +128,10 @@ function HighlightCard({ item, big = false }) {
 function Bestsellers() {
   const tabs = [{ slug: 'all', name: 'All' }, ...COLLECTIONS.slice(0, 3)]
   const [tab, setTab] = useState('all')
+  const version = useCatalogueVersion()
   const list = useMemo(
     () => (tab === 'all' ? [...PRODUCTS].filter((p) => !p.soldOut).sort((a, b) => !!b.badge - !!a.badge) : PRODUCTS.filter((p) => p.category === tab)).slice(0, 8),
-    [tab],
+    [tab, version],
   )
   return (
     <section className="section overflow-hidden bg-ivory">

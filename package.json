@@ -5,11 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "node backend/scripts/generate-seo.mjs && vite build",
     "preview": "vite preview",
-    "admin:password": "node scripts/set-admin-password.mjs"
+    "admin:password": "node backend/scripts/set-admin-password.mjs",
+    "seo": "node backend/scripts/generate-seo.mjs"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.119.0",
     "framer-motion": "^14.8.0",
     "lenis": "^1.1.18",
     "lucide-react": "^1.64.0",

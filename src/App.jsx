@@ -21,11 +21,13 @@ import Contact from './pages/Contact'
 import NotFound from './pages/NotFound'
 import Checkout from './pages/Checkout'
 import OrderConfirmed from './pages/OrderConfirmed'
+import TrackOrder from './pages/TrackOrder'
 import { Faq, JewelleryCare, ShippingReturns, Privacy, Terms } from './pages/Info'
 import FontPicker from './components/FontPicker'
 import PromoPopup from './components/PromoPopup'
 import { SHOW_FONT_PICKER } from './data/site'
 import { onCatalogueChange } from './admin/store'
+import { CatalogueVersion } from './lib/catalogue'
 
 // Admin portal is code-split: shoppers never download it.
 const AdminApp = lazy(() => import('./admin/AdminApp'))
@@ -61,7 +63,12 @@ export default function App() {
   useSmoothScroll(!isAdmin)
   // when the admin publishes in another tab, re-render the shop/journal with the new catalogue
   const [catalogueVersion, setCatalogueVersion] = useState(0)
-  useEffect(() => onCatalogueChange(() => setCatalogueVersion((v) => v + 1)), [])
+  useEffect(() => {
+    const bump = () => setCatalogueVersion((v) => v + 1)
+    window.addEventListener('kridhya:catalogue', bump)
+    const stop = onCatalogueChange(bump)
+    return () => { window.removeEventListener('kridhya:catalogue', bump); stop() }
+  }, [])
 
   if (isAdmin)
     return (
@@ -73,6 +80,7 @@ export default function App() {
     )
 
   return (
+    <CatalogueVersion.Provider value={catalogueVersion}>
     <MotionConfig reducedMotion="user">
       <CartProvider>
         <a href="#main" className="sr-only z-[100] bg-gold px-4 py-3 text-wine-950 focus:not-sr-only focus:fixed focus:left-4 focus:top-4">
@@ -82,7 +90,7 @@ export default function App() {
         <Header />
         <AnimatePresence mode="wait" onExitComplete={scrollTop}>
           <motion.div
-            key={`${location.pathname}:${catalogueVersion}`}
+            key={location.pathname}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transition: { duration: 0.6, ease: EASE } }}
             exit={{ opacity: 0, transition: { duration: 0.35, ease: EASE } }}
@@ -102,6 +110,7 @@ export default function App() {
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/order-confirmed" element={<OrderConfirmed />} />
+                <Route path="/track-order" element={<TrackOrder />} />
                 <Route path="/faq" element={<Faq />} />
                 <Route path="/jewellery-care" element={<JewelleryCare />} />
                 <Route path="/shipping-returns" element={<ShippingReturns />} />
@@ -115,9 +124,10 @@ export default function App() {
         </AnimatePresence>
         <WhatsAppFloat />
         <CartDrawer />
-        <PromoPopup key={`popup:${catalogueVersion}`} />
+        <PromoPopup />
         {/* {SHOW_FONT_PICKER && <FontPicker />} */}
       </CartProvider>
     </MotionConfig>
+    </CatalogueVersion.Provider>
   )
 }

@@ -5,6 +5,7 @@ import { useCart } from '../context/CartContext'
 import { CONTACT, formatPrice } from '../data/site'
 import { IconArrow, IconShield } from '../components/Icons'
 import useDocumentMeta from '../hooks/useDocumentMeta'
+import { hasBackend, rpc } from '../lib/backend'
 
 const PAYMENTS = [
   { id: 'upi', label: 'UPI', hint: 'Pay with any UPI app' },
@@ -12,8 +13,9 @@ const PAYMENTS = [
   { id: 'whatsapp', label: 'Confirm on WhatsApp', hint: 'We confirm details and share a payment link' },
 ]
 
-// DEMO checkout: validates the form, then shows an order confirmation. Payment is not connected yet -
-// PENDING: hook up the payment gateway / store backend (e.g. WooCommerce) before launch.
+// Checkout. With the database connected, place_order (backend/database/schema.sql) creates the order: prices come
+// from the database, stock is checked and reduced in one step. Without it, a preview confirmation is shown.
+// PENDING: online payment (Razorpay) - orders are placed as 'payment pending' and confirmed by the team.
 // Every figure on this page (prices, quantities, PIN, phone) uses the `.num` style so numerals match everywhere.
 export default function Checkout() {
   useDocumentMeta('Checkout | Kridhya by Devanshi Agarwal', 'Share your delivery details and review your order.')
@@ -21,9 +23,11 @@ export default function Checkout() {
   const navigate = useNavigate()
   const [form, setForm] = useState({ name: '', email: '', phone: '', address: '', address2: '', city: '', state: '', pin: '', note: '', payment: 'upi' })
   const [errors, setErrors] = useState({})
+  const [placing, setPlacing] = useState(false)
+  const [failure, setFailure] = useState('')
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }))
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault()
     const err = {}
     if (!form.name.trim()) err.name = 'Please enter your full name.'
@@ -38,7 +42,33 @@ export default function Checkout() {
       document.getElementById(`co-${Object.keys(err)[0]}`)?.focus()
       return
     }
-    const order = { id: `KRD-${Date.now().toString(36).toUpperCase()}`, name: form.name.trim(), items, subtotal, payment: form.payment }
+    let order = { id: `KRD-${Date.now().toString(36).toUpperCase()}`, name: form.name.trim(), items, subtotal, payment: form.payment, phone: form.phone }
+    if (hasBackend) {
+      setFailure('')
+      setPlacing(true)
+      try {
+        const res = await rpc('place_order', {
+          p: {
+            customer: { name: form.name, email: form.email, phone: form.phone },
+            address: { line1: form.address, line2: form.address2, city: form.city, state: form.state, pin: form.pin.trim() },
+            items: items.map((i) => ({ slug: i.slug, name: i.name, finish: i.finish, qty: i.qty })),
+            payment: form.payment,
+            note: form.note,
+          },
+        })
+        order = { ...order, id: res.order_no, subtotal: res.total, tracked: true }
+      } catch (err) {
+        setPlacing(false)
+        const m = err.message || ''
+        setFailure(
+          m.startsWith('OUT_OF_STOCK:') ? `Sorry - ${m.slice(13).split('|')[0]} has just sold out${m.includes('|') && +m.split('|')[1] > 0 ? ` (only ${m.split('|')[1]} left)` : ''}. Please update your bag.`
+            : m.startsWith('UNAVAILABLE:') ? `Sorry - ${m.slice(12)} is no longer available. Please remove it from your bag.`
+              : m === 'INVALID_DETAILS' ? 'Please check your details and try again.'
+                : 'We could not place your order just now. Please try again, or message us on WhatsApp.',
+        )
+        return
+      }
+    }
     try {
       sessionStorage.setItem('kridhya-last-order', JSON.stringify(order))
     } catch {
@@ -102,7 +132,7 @@ export default function Checkout() {
                       </label>
                     ))}
                   </div>
-                  <p className="mt-3 text-[12px] text-wine-900/60">Preview only - no payment is taken on this site yet.</p>
+                  <p className="mt-3 text-[12px] text-wine-900/60">{hasBackend ? 'No payment is taken now - our team confirms your order and shares payment details.' : 'Preview only - no payment is taken on this site yet.'}</p>
                 </fieldset>
 
                 <div>
@@ -134,7 +164,8 @@ export default function Checkout() {
                     <div className="flex justify-between text-wine-900/70"><dt>Shipping</dt><dd>Confirmed on order</dd></div>
                     <div className="flex items-baseline justify-between border-t border-wine-900/15 pt-3 text-[19px] font-medium"><dt>Total</dt><dd className="num">{formatPrice(subtotal)}</dd></div>
                   </dl>
-                  <button type="submit" className="btn btn-wine mt-6 h-12 w-full text-[12px] font-semibold">Place order <IconArrow size={15} /></button>
+                  {failure && <p role="alert" className="mt-5 border border-wine-600/40 bg-wine-600/5 px-4 py-3 text-[14px] font-medium text-wine-700">{failure}</p>}
+                  <button type="submit" disabled={placing} className="btn btn-wine mt-6 h-12 w-full text-[12px] font-semibold disabled:opacity-60">{placing ? 'Placing your order…' : <>Place order <IconArrow size={15} /></>}</button>
                   <p className="mt-4 flex items-start gap-2 text-[12px] leading-snug text-wine-900/65">
                     <IconShield size={16} className="mt-0.5 shrink-0 text-gold-deep" />
                     <span>Questions? Call or WhatsApp <span className="num">{CONTACT.phoneDisplay}</span>. See <Link to="/shipping-returns" className="underline decoration-gold underline-offset-4">Shipping &amp; Returns</Link>.</span>

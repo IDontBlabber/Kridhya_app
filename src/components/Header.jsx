@@ -6,7 +6,7 @@ import { useCart } from '../context/CartContext'
 import { IconBag, IconChevron, IconClose, IconMenu, IconSearch, IconWhatsApp } from './Icons'
 
 // Pages whose first section is dark - header text is beige there, burgundy on light pages.
-const DARK_TOP = ['/', '/contact', '/corporate-gifting', '/our-story', '/about', '/collections', '/checkout', '/order-confirmed', '/faq', '/jewellery-care', '/shipping-returns', '/privacy-policy', '/terms']
+const DARK_TOP = ['/', '/contact', '/corporate-gifting', '/our-story', '/about', '/collections', '/checkout', '/order-confirmed', '/track-order', '/faq', '/jewellery-care', '/shipping-returns', '/privacy-policy', '/terms']
 
 // Nested routes light up their section: products → Shop, category archives → Collections, posts → Journal.
 function isSection(path, to) {

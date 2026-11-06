@@ -6,6 +6,7 @@ import { EASE, Stagger } from '../components/motion'
 import { CATEGORIES, PRODUCTS, getCategory } from '../data/products'
 import { IconChevronDown, IconClose, IconSearch } from '../components/Icons'
 import useDocumentMeta from '../hooks/useDocumentMeta'
+import { useCatalogueVersion } from '../lib/catalogue'
 
 const PER_PAGE = 12
 const SORTS = {
@@ -40,13 +41,14 @@ export default function Shop() {
     if (key === 'page') window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  const version = useCatalogueVersion()
   const filtered = useMemo(() => {
     let list = PRODUCTS
     if (category !== 'all') list = list.filter((p) => p.category === category)
     if (finish) list = list.filter((p) => p.finishes.includes(finish))
     if (q) list = list.filter((p) => `${p.name} ${p.short}`.toLowerCase().includes(q.toLowerCase()))
     return [...list].sort(SORTS[sort]?.fn ?? SORTS.featured.fn)
-  }, [category, finish, q, sort])
+  }, [category, finish, q, sort, version])
 
   const pages = Math.max(1, Math.ceil(filtered.length / PER_PAGE))
   const current = Math.min(page, pages)

@@ -88,7 +88,7 @@ export default function Products() {
                   <tr key={p.id} className="align-middle hover:bg-wine-900/[0.02]">
                     <td className="px-4 py-3">
                       <button type="button" onClick={() => nav(`/admin/products/${p.id}`)} className="flex items-center gap-3 text-left">
-                        <img src={p.images[0] || '/images/generated/satin-beige.webp'} alt="" className="h-12 w-12 shrink-0 rounded-md bg-cream object-cover" />
+                        <img src={p.images[0] || '/images/generated/satin-beige.webp'} alt="" className="h-12 w-12 shrink-0 bg-cream object-cover" />
                         <span className="min-w-0">
                           <span className="block max-w-[220px] truncate font-semibold hover:underline">{p.name || 'Untitled product'}</span>
                           <span className="mt-0.5 flex flex-wrap gap-1">
@@ -130,14 +130,14 @@ export default function Products() {
 }
 
 function StockStepper({ label, value, low, onChange }) {
-  const tone = value === 0 ? 'border-[#e8b9c0] bg-[#fdf2f4]' : value <= low ? 'border-[#ecd29a] bg-[#fdf7ea]' : 'border-wine-900/12 bg-white'
+  const tone = value === 0 ? 'border-[#e8b9c0] bg-[#fdf2f4]' : value <= low ? 'border-[#ecd29a] bg-[#fdf7ea]' : 'border-wine-900/20 bg-ivory/70'
   const short = { Gold: 'Gold', 'Rose Gold': 'Rose', Silver: 'Silver' }[label]
   return (
-    <span className={`inline-flex h-8 items-center rounded-md border text-[12.5px] ${tone}`}>
+    <span className={`inline-flex h-8 items-center border text-[12.5px] ${tone}`}>
       <span className="px-2 font-medium text-wine-900/65">{short}</span>
       <button type="button" className="flex h-full w-6 items-center justify-center hover:bg-wine-900/5" onClick={() => onChange(value - 1)} aria-label={`Decrease ${label} stock`}><Minus size={12} /></button>
       <span className="num w-7 text-center font-semibold">{value}</span>
-      <button type="button" className="flex h-full w-6 items-center justify-center rounded-r-md hover:bg-wine-900/5" onClick={() => onChange(value + 1)} aria-label={`Increase ${label} stock`}><Plus size={12} /></button>
+      <button type="button" className="flex h-full w-6 items-center justify-center hover:bg-wine-900/5" onClick={() => onChange(value + 1)} aria-label={`Increase ${label} stock`}><Plus size={12} /></button>
     </span>
   )
 }

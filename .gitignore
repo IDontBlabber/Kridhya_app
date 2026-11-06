@@ -13,3 +13,7 @@ dist/
 Thumbs.db
 *.log
 app/.impeccable
+!.env.example
+
+# archives / backups - never commit (GitHub rejects files over 100 MB)
+*.zip

@@ -1,0 +1,9 @@
+# Kridhya by Devanshi Agarwal
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /checkout
+Disallow: /order-confirmed
+Disallow: /track-order
+
+Sitemap: https://kridhyabydevanshi.com/sitemap.xml
