@@ -1,6 +1,6 @@
 import { forwardRef, useEffect, useRef, useState } from 'react'
-import { ChevronDown, ChevronUp, ImagePlus, Images, Trash2, Upload, X } from 'lucide-react'
-import { IMAGE_LIBRARY, fileToImage, useAdmin } from './store'
+import { Check, ChevronDown, ChevronUp, ImagePlus, Images, Search, Trash2, Upload, X } from 'lucide-react'
+import { fileToImage, libraryGroups, useAdmin } from './store'
 
 export const cx = (...c) => c.filter(Boolean).join(' ')
 
@@ -131,30 +131,76 @@ export function Toast({ message, onDone }) {
   return <div role="status" className="fixed bottom-5 left-1/2 z-[95] -translate-x-1/2 rounded-full bg-wine-950 px-5 py-2.5 text-[13.5px] font-medium text-ivory shadow-xl">{message}</div>
 }
 
-// Library of existing site photos + uploads.
+// Picker for photos already on the site (and earlier uploads), grouped and searchable.
 function Library({ open, onPick, onClose, multiple }) {
+  const store = useAdmin()
   const [sel, setSel] = useState([])
-  useEffect(() => setSel([]), [open])
+  const [q, setQ] = useState('')
+  useEffect(() => { setSel([]); setQ('') }, [open])
+  useEffect(() => {
+    if (!open) return
+    const k = (e) => e.key === 'Escape' && onClose()
+    window.addEventListener('keydown', k)
+    return () => window.removeEventListener('keydown', k)
+  }, [open, onClose])
   if (!open) return null
+  const t = q.trim().toLowerCase()
+  const groups = libraryGroups(store?.data)
+    .map((g) => ({ ...g, items: t ? g.items.filter((i) => i.label.toLowerCase().includes(t)) : g.items }))
+    .filter((g) => g.items.length)
   const toggle = (src) => setSel((s) => (s.includes(src) ? s.filter((x) => x !== src) : multiple ? [...s, src] : [src]))
   return (
-    <div className="fixed inset-0 z-[90] flex items-center justify-center bg-wine-950/50 p-4" onClick={onClose}>
-      <div className="flex max-h-[85vh] w-full max-w-3xl flex-col border border-gold/40 bg-ivory shadow-2xl" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center justify-between border-b border-wine-900/10 px-5 py-4">
-          <h3 className="font-display text-[20px] font-normal text-wine-900">Choose from site photos</h3>
-          <button type="button" onClick={onClose} className="rounded p-1 hover:bg-wine-900/5" aria-label="Close"><X size={18} /></button>
+    <div className="fixed inset-0 z-[90] flex items-center justify-center bg-wine-950/60 p-3 sm:p-6" onClick={onClose}>
+      <div role="dialog" aria-modal="true" aria-label="Choose from site photos" className="flex h-[88vh] w-full max-w-5xl flex-col border border-gold/40 bg-ivory shadow-2xl" onClick={(e) => e.stopPropagation()}>
+        <div className="flex shrink-0 flex-wrap items-center gap-3 border-b border-gold/30 px-5 py-4">
+          <h3 className="mr-auto font-display text-[22px] font-normal text-wine-900">Choose from site photos</h3>
+          <label className="relative order-last w-full sm:order-none sm:w-64">
+            <span className="sr-only">Search photos</span>
+            <Search size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-wine-900/40" />
+            <Input autoFocus value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search by product or post" className="pl-9" />
+          </label>
+          <button type="button" onClick={onClose} className="p-1.5 text-wine-900/60 hover:bg-wine-900/5 hover:text-wine-900" aria-label="Close"><X size={20} /></button>
         </div>
-        <div className="grid flex-1 grid-cols-3 gap-2 overflow-y-auto p-4 sm:grid-cols-5">
-          {IMAGE_LIBRARY.map((src) => (
-            <button key={src} type="button" onClick={() => toggle(src)} className={cx('relative aspect-square overflow-hidden border-2', sel.includes(src) ? 'border-wine-700' : 'border-transparent hover:border-gold')}>
-              <img src={src} alt="" loading="lazy" className="h-full w-full object-cover" />
-              {sel.includes(src) && <span className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-wine-800 text-[11px] font-bold text-white">{multiple ? sel.indexOf(src) + 1 : '✓'}</span>}
-            </button>
+
+        {/* scroll area: the grid inside keeps square tiles (content-start stops rows stretching) */}
+        <div className="min-h-0 flex-1 overflow-y-auto px-5 pb-6">
+          {groups.length === 0 && <p className="py-16 text-center text-[14px] text-wine-900/55">No photos match “{q}”.</p>}
+          {groups.map((g) => (
+            <section key={g.title} className="pt-5">
+              <h4 className="sticky top-0 z-10 -mx-5 mb-3 border-b border-gold/20 bg-ivory/95 px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-gold-deep backdrop-blur">
+                {g.title} <span className="num ml-1 text-wine-900/40">{g.items.length}</span>
+              </h4>
+              <ul className="grid grid-cols-2 content-start gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+                {g.items.map(({ src, label }) => {
+                  const on = sel.includes(src)
+                  return (
+                    <li key={src}>
+                      <button type="button" onClick={() => toggle(src)} aria-pressed={on} title={label}
+                        className={cx('group block w-full border bg-[#f8f1e4] p-1.5 text-left transition-shadow', on ? 'border-wine-800 shadow-[0_0_0_2px_#45101F]' : 'border-gold/30 hover:border-gold hover:shadow-[0_10px_24px_-18px_rgba(43,9,18,0.6)]')}>
+                        <span className="relative block aspect-square overflow-hidden bg-cream">
+                          <img src={src} alt="" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
+                          {on && (
+                            <span className="absolute right-1.5 top-1.5 flex h-6 min-w-6 items-center justify-center bg-wine-800 px-1 text-[11px] font-bold text-ivory">
+                              {multiple ? sel.indexOf(src) + 1 : <Check size={14} />}
+                            </span>
+                          )}
+                        </span>
+                        <span className="mt-1.5 block truncate px-0.5 text-[12px] text-wine-900/70">{label}</span>
+                      </button>
+                    </li>
+                  )
+                })}
+              </ul>
+            </section>
           ))}
         </div>
-        <div className="flex justify-end gap-2 border-t border-wine-900/10 px-5 py-3">
-          <Button variant="ghost" onClick={onClose}>Cancel</Button>
-          <Button disabled={!sel.length} onClick={() => { onPick(sel); onClose() }}>Add {sel.length ? `(${sel.length})` : ''}</Button>
+
+        <div className="flex shrink-0 items-center justify-between gap-2 border-t border-gold/30 px-5 py-3">
+          <p className="text-[13px] text-wine-900/60">{sel.length ? `${sel.length} selected${multiple ? ' - added in this order' : ''}` : multiple ? 'Select one or more photos' : 'Select a photo'}</p>
+          <div className="flex gap-2">
+            <Button variant="ghost" onClick={onClose}>Cancel</Button>
+            <Button disabled={!sel.length} onClick={() => { onPick(sel); onClose() }}>Add{sel.length ? ` ${sel.length}` : ''}</Button>
+          </div>
         </div>
       </div>
     </div>

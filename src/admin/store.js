@@ -359,6 +359,23 @@ export const newPost = () => ({
 // Every photograph already on the site, offered as a library when adding images.
 export const IMAGE_LIBRARY = [...new Set([...POPUP_LIBRARY, ...DEFAULT_PRODUCTS.flatMap((p) => p.images), ...DEFAULT_POSTS.map((p) => p.cover)])]
 
+// The same photos grouped and labelled for the picker (each photo listed once, under its first group).
+export function libraryGroups(data) {
+  const seen = new Set()
+  const group = (title, list) => ({ title, items: list.filter(({ src }) => src && !seen.has(src) && seen.add(src)) })
+  const uploaded = [
+    ...(data?.products || []).flatMap((p) => p.images.map((src) => ({ src, label: p.name }))),
+    ...(data?.posts || []).flatMap((p) => [{ src: p.cover, label: p.title }, ...p.body.filter((b) => b.type === 'img').map((b) => ({ src: b.src, label: p.title }))]),
+    ...(data?.popup?.image ? [{ src: data.popup.image, label: data.popup.name || 'Pop-up banner' }] : []),
+  ].filter(({ src }) => src && !src.startsWith('/images/'))
+  return [
+    group('Your uploads', uploaded),
+    group('Banners', POPUP_LIBRARY.map((src, i) => ({ src, label: i ? 'Diwali (WhatsApp artwork)' : 'Diwali celebration' }))),
+    group('Products', DEFAULT_PRODUCTS.flatMap((p) => p.images.map((src, i) => ({ src, label: i ? `${p.name} · ${i + 1}` : p.name })))),
+    group('Journal', DEFAULT_POSTS.map((p) => ({ src: p.cover, label: p.title }))),
+  ].filter((g) => g.items.length)
+}
+
 // Read an uploaded file, scale it to max 1600px and re-encode as WebP.
 export function fileToImage(file, max = 1600) {
   return new Promise((resolve, reject) => {
