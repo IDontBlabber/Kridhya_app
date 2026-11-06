@@ -39,6 +39,29 @@ const friendly = (m = '') =>
       : m === 'INVALID_DETAILS' ? 'Please check your details and try again.'
         : m || 'We could not place your order just now. Please try again, or message us on WhatsApp.'
 
+// PIN code -> city + state (India Post's public lookup). Cached; failures are silent (the shopper types them in).
+const pinCache = {}
+async function lookupPin(pin) {
+  if (pin in pinCache) return pinCache[pin]
+  const ctrl = new AbortController()
+  const t = setTimeout(() => ctrl.abort(), 6000)
+  try {
+    const res = await fetch(`https://api.postalpincode.in/pincode/${pin}`, { signal: ctrl.signal })
+    const [r] = await res.json()
+    const offices = r?.Status === 'Success' ? r.PostOffice || [] : []
+    if (!offices.length) return (pinCache[pin] = { found: false })
+    // most common district among the post offices for this PIN
+    const count = {}
+    offices.forEach((o) => { count[o.District] = (count[o.District] || 0) + 1 })
+    const city = Object.entries(count).sort((a, b) => b[1] - a[1])[0][0]
+    return (pinCache[pin] = { found: true, city, state: offices[0].State })
+  } catch {
+    return null // offline / service down: don't cache, don't block checkout
+  } finally {
+    clearTimeout(t)
+  }
+}
+
 const fmtEtd = (q) => {
   if (!q?.etd) return q?.days ? `${q.days} days` : ''
   const d = new Date(q.etd)
@@ -57,8 +80,30 @@ export default function Checkout() {
   const [q, setQ] = useState(null) // shipping quote
   const [quoting, setQuoting] = useState(false)
   const pending = useRef(null) // created-but-unpaid online order, reused when the shopper retries payment
+  const auto = useRef({ city: '', state: '' }) // values we filled from the PIN code
+  const [pinInfo, setPinInfo] = useState(null) // { found, city, state } | null
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }))
   const pin = form.pin.trim()
+
+  // PIN code -> fill city and state (only empty fields, or ones we filled earlier)
+  useEffect(() => {
+    if (!/^\d{6}$/.test(pin)) return setPinInfo(null)
+    let live = true
+    lookupPin(pin).then((r) => {
+      if (!live || !r) return
+      setPinInfo(r)
+      if (!r.found) return
+      setForm((f) => {
+        const next = { ...f }
+        if (!f.city.trim() || f.city === auto.current.city) next.city = r.city
+        if (!f.state.trim() || f.state === auto.current.state) next.state = r.state
+        auto.current = { city: next.city === r.city ? r.city : auto.current.city, state: next.state === r.state ? r.state : auto.current.state }
+        return next
+      })
+      setErrors((e) => ({ ...e, city: undefined, state: undefined }))
+    })
+    return () => { live = false }
+  }, [pin])
 
   // what the store server can offer
   useEffect(() => {
@@ -218,10 +263,17 @@ export default function Checkout() {
                     <div className="sm:col-span-2">
                       <Field id="co-address2" label="Apartment, landmark (optional)" value={form.address2} onChange={set('address2')} autoComplete="address-line2" />
                     </div>
+                    <div>
+                      <Field id="co-pin" label="PIN code" required inputMode="numeric" maxLength={6} value={form.pin} onChange={(e) => setForm((f) => ({ ...f, pin: e.target.value.replace(/\D/g, '').slice(0, 6) }))} error={errors.pin} autoComplete="postal-code" num />
+                      {!errors.pin && pinInfo && (
+                        <p className={`mt-1.5 text-[13px] ${pinInfo.found ? 'text-gold-deep' : 'text-wine-600'}`} aria-live="polite">
+                          {pinInfo.found ? `✓ ${pinInfo.city}, ${pinInfo.state}` : 'We couldn’t find this PIN code - please check it.'}
+                        </p>
+                      )}
+                    </div>
+                    <Field id="co-country" label="Country" value="India" readOnly />
                     <Field id="co-city" label="City" required value={form.city} onChange={set('city')} error={errors.city} autoComplete="address-level2" />
                     <Field id="co-state" label="State" required value={form.state} onChange={set('state')} error={errors.state} autoComplete="address-level1" />
-                    <Field id="co-pin" label="PIN code" required inputMode="numeric" maxLength={6} value={form.pin} onChange={set('pin')} error={errors.pin} autoComplete="postal-code" num />
-                    <Field id="co-country" label="Country" value="India" readOnly />
                   </div>
                 </fieldset>
 
