@@ -23,6 +23,7 @@ import Checkout from './pages/Checkout'
 import OrderConfirmed from './pages/OrderConfirmed'
 import { Faq, JewelleryCare, ShippingReturns, Privacy, Terms } from './pages/Info'
 import FontPicker from './components/FontPicker'
+import PromoPopup from './components/PromoPopup'
 import { SHOW_FONT_PICKER } from './data/site'
 import { onCatalogueChange } from './admin/store'
 
@@ -114,6 +115,7 @@ export default function App() {
         </AnimatePresence>
         <WhatsAppFloat />
         <CartDrawer />
+        <PromoPopup key={`popup:${catalogueVersion}`} />
         {/* {SHOW_FONT_PICKER && <FontPicker />} */}
       </CartProvider>
     </MotionConfig>

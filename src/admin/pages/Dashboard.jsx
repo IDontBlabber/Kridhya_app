@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
-import { AlertTriangle, BookOpen, Boxes, Gem, IndianRupee, PackageX, Plus } from 'lucide-react'
+import { AlertTriangle, BookOpen, Boxes, Gem, IndianRupee, Megaphone, PackageX, Plus } from 'lucide-react'
+import { popupStatus } from './PopupPage'
 import { CATEGORIES, VARIANTS, stockOf, stockState, useAdmin } from '../store'
 import { formatPrice } from '../../data/site'
 import { Button, Card, Empty, PageHeader, Pill, StatusPill, StockPill } from '../ui'
@@ -32,6 +33,17 @@ export default function Dashboard() {
         <Kpi icon={IndianRupee} label="Stock value" value={formatPrice(value)} note="at listed prices" />
         <Kpi icon={AlertTriangle} label="Needs attention" value={low.length + out.length} note={`${out.length} out · ${low.length} low`} tone={low.length + out.length ? 'warn' : 'ok'} />
       </div>
+
+      {/* festival pop-up at a glance */}
+      <Card className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:p-5">
+        {data.popup?.image ? <img src={data.popup.image} alt="" className="h-20 w-full rounded-md bg-wine-950 object-cover sm:w-36" /> : <span className="flex h-20 w-36 items-center justify-center rounded-md bg-wine-900/5 text-wine-900/40"><Megaphone size={22} /></span>}
+        <div className="min-w-0 flex-1">
+          <p className="text-[12.5px] font-semibold uppercase tracking-[0.08em] text-wine-900/55">Pop-up banner</p>
+          <p className="mt-0.5 truncate text-[16px] font-semibold">{data.popup?.name || 'Not set'}</p>
+          <p className="mt-1"><Pill tone={popupStatus(data.popup || {})[1]}>{popupStatus(data.popup || {})[0]}</Pill></p>
+        </div>
+        <Link to="/admin/popup"><Button variant="ghost">Change banner</Button></Link>
+      </Card>
 
       <div className="grid gap-6 lg:grid-cols-3">
         <Card className="lg:col-span-2">

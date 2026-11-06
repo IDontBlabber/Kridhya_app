@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, Route, Routes, useLocation } from 'react-router-dom'
-import { BookOpen, Database, ExternalLink, Gem, LayoutDashboard, LogOut, Menu, X } from 'lucide-react'
+import { BookOpen, Database, ExternalLink, Gem, LayoutDashboard, LogOut, Megaphone, Menu, X } from 'lucide-react'
 import Logo, { BRAND } from '../components/Logo'
 import Login from './Login'
 import { getSession, signOut } from './auth'
@@ -12,11 +12,13 @@ import ProductEditor from './pages/ProductEditor'
 import Posts from './pages/Posts'
 import PostEditor from './pages/PostEditor'
 import DataPage from './pages/DataPage'
+import PopupPage from './pages/PopupPage'
 
 const NAV = [
   { to: '/admin', label: 'Dashboard', icon: LayoutDashboard, end: true },
   { to: '/admin/products', label: 'Products', icon: Gem },
   { to: '/admin/journal', label: 'Journal', icon: BookOpen },
+  { to: '/admin/popup', label: 'Pop-up banner', icon: Megaphone },
   { to: '/admin/data', label: 'Data & backup', icon: Database },
 ]
 
@@ -95,6 +97,7 @@ function Shell({ user, onSignOut }) {
               <Route path="journal" element={<Posts />} />
               <Route path="journal/new" element={<PostEditor />} />
               <Route path="journal/:id" element={<PostEditor />} />
+              <Route path="popup" element={<PopupPage />} />
               <Route path="data" element={<DataPage />} />
               <Route path="*" element={<Dashboard />} />
             </Routes>

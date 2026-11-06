@@ -3,6 +3,7 @@
 import { createContext, createElement, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { PRODUCTS, CATEGORIES } from '../data/products'
 import { POSTS } from '../data/blog'
+import { DEFAULT_POPUP, POPUP, POPUP_LIBRARY } from '../data/popup'
 import { dbDel, dbGet, dbSet } from './db'
 
 const KEY = 'catalogue-v1'
@@ -13,6 +14,7 @@ export const VARIANTS = ['Gold', 'Rose Gold', 'Silver']
 export const RIBBONS = ['', 'Bestseller', 'New', 'Limited edition', 'Gift favourite', 'Back in stock']
 export const POST_CATEGORIES = ['Styling', 'Care', 'Gifting', 'Stories']
 export { CATEGORIES }
+export { DEFAULT_POPUP, popupActive } from '../data/popup'
 
 // Snapshots of the shipped catalogue, taken before any hydration mutates the live arrays.
 const DEFAULT_PRODUCTS = structuredClone(PRODUCTS)
@@ -119,13 +121,18 @@ function postToSite(p) {
 }
 
 // Mirror published items into the live arrays (in place, so every existing import sees the change).
+// Browsers that stored an earlier default Diwali image (and never edited the pop-up) get the current one; other settings carry over.
+const OLD_DEFAULTS = ['/images/popups/diwali-2026.webp', '/images/popups/diwali-kridhya.webp']
+const upgradePopup = (p) => (!p ? { ...DEFAULT_POPUP } : OLD_DEFAULTS.includes(p.image) && p.id === DEFAULT_POPUP.id && !p.updatedAt ? { ...p, image: DEFAULT_POPUP.image, alt: DEFAULT_POPUP.alt } : p)
+
 export function applyToSite(data) {
   if (!data) return
   PRODUCTS.splice(0, PRODUCTS.length, ...data.products.filter((p) => p.status === 'published').map(productToSite))
   POSTS.splice(0, POSTS.length, ...data.posts.filter((p) => p.status === 'published').sort((a, b) => b.date.localeCompare(a.date)).map(postToSite))
+  Object.assign(POPUP, DEFAULT_POPUP, upgradePopup(data.popup))
 }
 
-export const seedData = () => ({ products: DEFAULT_PRODUCTS.map(productFromSite), posts: DEFAULT_POSTS.map(postFromSite), updatedAt: Date.now() })
+export const seedData = () => ({ products: DEFAULT_PRODUCTS.map(productFromSite), posts: DEFAULT_POSTS.map(postFromSite), popup: { ...DEFAULT_POPUP }, updatedAt: Date.now() })
 
 // Called once before the site renders: if the client has saved edits in this browser, show them.
 export async function hydrateSite() {
@@ -135,6 +142,7 @@ export async function hydrateSite() {
     // nothing saved (or the admin reset): the shipped catalogue, untouched
     PRODUCTS.splice(0, PRODUCTS.length, ...structuredClone(DEFAULT_PRODUCTS))
     POSTS.splice(0, POSTS.length, ...structuredClone(DEFAULT_POSTS))
+    Object.assign(POPUP, DEFAULT_POPUP)
   }
 }
 
@@ -173,7 +181,7 @@ export function AdminStoreProvider({ children, initialData = null }) {
 
   useEffect(() => {
     if (initialData) return
-    dbGet(KEY).then((saved) => setData(saved?.products ? saved : seedData()))
+    dbGet(KEY).then((saved) => setData(saved?.products ? { ...saved, popup: upgradePopup(saved.popup) } : seedData()))
   }, [initialData])
 
   // persist + mirror on every change (debounced)
@@ -217,6 +225,7 @@ export function AdminStoreProvider({ children, initialData = null }) {
           const exists = d.posts.some((x) => x.id === p.id)
           return { ...d, posts: exists ? d.posts.map((x) => (x.id === p.id ? next : x)) : [{ ...next, createdAt: Date.now() }, ...d.posts] }
         }),
+      savePopup: (popup) => mutate((d) => ({ ...d, popup: { ...popup, updatedAt: Date.now() } })),
       deletePost: (id) => mutate((d) => ({ ...d, posts: d.posts.filter((x) => x.id !== id) })),
       replaceAll: (next) => setData({ ...next, updatedAt: Date.now() }),
       reset: async () => {
@@ -268,7 +277,7 @@ export const newPost = () => ({
 })
 
 // Every photograph already on the site, offered as a library when adding images.
-export const IMAGE_LIBRARY = [...new Set([...DEFAULT_PRODUCTS.flatMap((p) => p.images), ...DEFAULT_POSTS.map((p) => p.cover)])]
+export const IMAGE_LIBRARY = [...new Set([...POPUP_LIBRARY, ...DEFAULT_PRODUCTS.flatMap((p) => p.images), ...DEFAULT_POSTS.map((p) => p.cover)])]
 
 // Read an uploaded file, scale it to max 1600px and re-encode as WebP so the browser store stays small.
 export function fileToImage(file, max = 1600) {

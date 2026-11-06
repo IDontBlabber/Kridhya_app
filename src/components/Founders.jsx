@@ -47,7 +47,7 @@ function Portrait({ founder }) {
   return (
     <div className="mx-auto max-w-sm border border-gold/60 bg-cream p-2 shadow-[0_30px_60px_-34px_rgba(43,9,18,0.6)] md:max-w-none">
       {founder.portrait ? (
-        <img src={founder.portrait} alt={`Portrait of ${founder.name}`} loading="lazy" className="aspect-[4/5] w-full object-cover" />
+        <img src={founder.portrait} srcSet={`${founder.portrait.replace('.webp', '-640.webp')} 640w, ${founder.portrait} 1024w`} sizes="(min-width: 768px) 40vw, 90vw" alt={`Portrait of ${founder.name}`} loading="lazy" className="aspect-[4/5] w-full object-cover object-top" />
       ) : (
         <div className="grain relative isolate flex aspect-[4/5] w-full flex-col items-center justify-center overflow-hidden bg-wine-900 text-ivory" data-placeholder="true">
           <Mandala className="absolute -z-10 h-[130%] w-[130%] text-gold/20" />
