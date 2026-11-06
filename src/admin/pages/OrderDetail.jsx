@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { ArrowLeft, Check, MessageCircle, Phone } from 'lucide-react'
+import { ArrowLeft, Check, ExternalLink, MessageCircle, Phone, Printer, Truck } from 'lucide-react'
 import { formatPrice } from '../../data/site'
 import { ORDER_STAGES, fmtDateTime, isActive, nextStage, stageIndex, stageOf } from '../../lib/orders'
 import { orderApi, useOrders } from '../orders'
@@ -19,6 +19,8 @@ export default function OrderDetail() {
   const [toast, setToast] = useState('')
   const [cancel, setCancel] = useState(false)
   const [adminNote, setAdminNote] = useState(null)
+  const [srBusy, setSrBusy] = useState('')
+  const [srMsg, setSrMsg] = useState('')
 
   const loadEvents = useCallback(() => orderApi.events(id).then(setEvents).catch(() => {}), [id])
   useEffect(() => { loadEvents() }, [loadEvents])
@@ -57,6 +59,25 @@ export default function OrderDetail() {
     } catch (e) {
       setErr(e.message)
     }
+  }
+  // Shiprocket actions (run on the store server)
+  const shiprocket = async (action) => {
+    setSrMsg('')
+    setSrBusy(action)
+    try {
+      const r = await orderApi.shipment(order.id, action)
+      if (action === 'label' && r.url) window.open(r.url, '_blank', 'noopener')
+      await Promise.all([reload(), loadEvents()])
+      setSrMsg(r.message || (action === 'label' ? 'Label ready' : 'Done'))
+    } catch (e) {
+      setSrMsg(e.message)
+    } finally {
+      setSrBusy('')
+    }
+  }
+  const cancelOrder = async () => {
+    if (order.shiprocket_order_id) await orderApi.shipment(order.id, 'cancel').catch((e) => setErr(`Cancelled here, but Shiprocket said: ${e.message}`))
+    await move('cancelled', 'Order cancelled')
   }
   const phoneDigits = (order.customer?.phone || '').replace(/\D/g, '').slice(-10)
   const a = order.address || {}
@@ -102,8 +123,35 @@ export default function OrderDetail() {
                 </div>
               </div>
             ) : (
-              <p className="text-[14px] text-wine-900/65">{order.status === 'delivered' ? 'This order has been delivered.' : 'This order was cancelled and its items were returned to stock.'}</p>
+              <p className="text-[14px] text-wine-900/65">
+                {order.status === 'delivered' ? 'This order has been delivered.'
+                  : order.status === 'awaiting_payment' ? 'Waiting for the customer to complete online payment. Unpaid orders are cancelled automatically after 30 minutes and their stock is released.'
+                    : order.status === 'returned' ? 'This parcel was returned (RTO). Its items were added back to stock.'
+                      : 'This order was cancelled and its items were returned to stock.'}
+              </p>
             )}
+          </Section>
+
+          <Section title="Shipping - Shiprocket" hint={order.shipping_quote?.courier ? `Quoted at checkout: ${order.shipping_quote.courier}${order.shipping_quote.etd ? ` · ETA ${order.shipping_quote.etd}` : ''}` : undefined}>
+            <dl className="grid gap-x-6 gap-y-2 text-[13.5px] sm:grid-cols-2">
+              <div className="flex justify-between gap-3"><dt className="text-wine-900/55">Shiprocket order</dt><dd className="num">{order.shiprocket_order_id || '-'}</dd></div>
+              <div className="flex justify-between gap-3"><dt className="text-wine-900/55">Shipment</dt><dd className="num">{order.shiprocket_shipment_id || '-'}</dd></div>
+              <div className="flex justify-between gap-3"><dt className="text-wine-900/55">Courier</dt><dd>{order.courier || '-'}</dd></div>
+              <div className="flex justify-between gap-3"><dt className="text-wine-900/55">AWB / tracking</dt><dd className="num">{order.awb || order.tracking_no || '-'}</dd></div>
+            </dl>
+            {['awaiting_payment', 'cancelled', 'returned'].includes(order.status) ? (
+              <p className="mt-4 text-[13px] text-wine-900/55">Shipping actions are available once the order is paid or confirmed.</p>
+            ) : (
+              <div className="mt-4 flex flex-wrap gap-2">
+                {!order.shiprocket_order_id && <Button size="sm" disabled={!!srBusy} onClick={() => shiprocket('create')}><Truck size={13} /> {srBusy === 'create' ? 'Sending…' : 'Send to Shiprocket'}</Button>}
+                {order.shiprocket_shipment_id && !order.awb && <Button size="sm" disabled={!!srBusy} onClick={() => shiprocket('awb')}>{srBusy === 'awb' ? 'Assigning…' : 'Assign courier & AWB'}</Button>}
+                {order.awb && <Button size="sm" variant="ghost" disabled={!!srBusy} onClick={() => shiprocket('pickup')}>{srBusy === 'pickup' ? 'Requesting…' : 'Schedule pickup'}</Button>}
+                {order.awb && <Button size="sm" variant="ghost" disabled={!!srBusy} onClick={() => shiprocket('label')}><Printer size={13} /> {srBusy === 'label' ? 'Generating…' : 'Shipping label'}</Button>}
+                {order.tracking_url && <a href={order.tracking_url} target="_blank" rel="noreferrer"><Button size="sm" variant="quiet"><ExternalLink size={13} /> Track parcel</Button></a>}
+              </div>
+            )}
+            {srMsg && <p role="status" className="mt-3 text-[13px] font-medium text-wine-800">{srMsg}</p>}
+            <p className="mt-3 text-[12px] text-wine-900/50">Courier updates (picked up, in transit, delivered) move this order automatically once the Shiprocket webhook is set up.</p>
           </Section>
 
           <Section title="Items">
@@ -150,10 +198,13 @@ export default function OrderDetail() {
             {order.note && (<><h3 className="mt-5 text-[12px] font-semibold uppercase tracking-[0.12em] text-wine-900/55">Customer note</h3><p className="mt-1 text-[13.5px]">{order.note}</p></>)}
           </Section>
           <Section title="Payment">
-            <p className="mb-3 text-[13px] text-wine-900/60">Method chosen: {order.payment_method || '-'}</p>
+            <p className="mb-1 text-[13px] text-wine-900/60">Method: {order.payment_method === 'online' ? 'Online (Razorpay)' : order.payment_method === 'cod' ? 'Cash on Delivery' : order.payment_method || '-'}</p>
+            {order.razorpay_payment_id && <p className="num mb-1 break-all text-[12.5px] text-wine-900/60">Payment ID: {order.razorpay_payment_id}</p>}
+            <div className="mb-3" />
             <Select value={order.payment_status} onChange={(e) => patch({ payment_status: e.target.value }, 'Payment status updated')} aria-label="Payment status">
               <option value="pending">Payment pending</option>
               <option value="paid">Paid</option>
+              <option value="cod">Cash on delivery</option>
               <option value="refunded">Refunded</option>
               <option value="failed">Failed</option>
             </Select>
@@ -165,7 +216,7 @@ export default function OrderDetail() {
         </div>
       </div>
 
-      <Confirm open={cancel} title={`Cancel ${order.order_no}?`} body="The order is marked cancelled and its items are added back to stock. The customer sees 'Cancelled' on the tracking page." confirmLabel="Cancel order" onConfirm={() => move('cancelled', 'Order cancelled')} onClose={() => setCancel(false)} />
+      <Confirm open={cancel} title={`Cancel ${order.order_no}?`} body="The order is marked cancelled and its items are added back to stock. The customer sees 'Cancelled' on the tracking page." confirmLabel="Cancel order" onConfirm={cancelOrder} onClose={() => setCancel(false)} />
       <Toast message={toast} onDone={() => setToast('')} />
     </div>
   )

@@ -41,4 +41,12 @@ export const orderApi = {
   events: async (id) => (await remote()).orderEvents(id),
   setStatus: async (...a) => (await remote()).setOrderStatus(...a),
   update: async (...a) => (await remote()).updateOrder(...a),
+  // Shiprocket actions run on the store server (/api/admin/shipment) with the admin's sign-in token
+  shipment: async (orderId, action) => {
+    const token = await (await remote()).accessToken()
+    const res = await fetch('/api/admin/shipment', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ orderId, action }) })
+    const data = await res.json().catch(() => ({}))
+    if (!res.ok) throw new Error(data.error || `Server error ${res.status}`)
+    return data
+  },
 }

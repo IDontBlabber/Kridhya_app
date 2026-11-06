@@ -11,13 +11,15 @@ const TABS = [
   ['new', 'New', (o) => o.status === 'placed'],
   ['active', 'Active', (o) => isActive(o.status)],
   ['delivered', 'Delivered', (o) => o.status === 'delivered'],
-  ['cancelled', 'Cancelled', (o) => o.status === 'cancelled'],
+  ['unpaid', 'Unpaid', (o) => o.status === 'awaiting_payment'],
+  ['cancelled', 'Cancelled / returned', (o) => ['cancelled', 'returned'].includes(o.status)],
   ['all', 'All', () => true],
 ]
 
-export const statusTone = (s) => (s === 'placed' ? 'gold' : s === 'delivered' ? 'ok' : s === 'cancelled' ? 'bad' : 'warn')
+export const statusTone = (s) => (s === 'placed' ? 'gold' : s === 'delivered' ? 'ok' : ['cancelled', 'returned'].includes(s) ? 'bad' : s === 'awaiting_payment' ? 'neutral' : 'warn')
 export const StatusBadge = ({ status }) => <Pill tone={statusTone(status)}>{stageOf(status).label}</Pill>
-export const PaymentBadge = ({ status }) => <Pill tone={status === 'paid' ? 'ok' : status === 'pending' ? 'neutral' : 'bad'}>{status === 'paid' ? 'Paid' : status === 'pending' ? 'Payment pending' : status[0].toUpperCase() + status.slice(1)}</Pill>
+const PAY = { paid: ['ok', 'Paid'], pending: ['neutral', 'Payment pending'], cod: ['gold', 'Cash on delivery'], refunded: ['bad', 'Refunded'], failed: ['bad', 'Payment failed'] }
+export const PaymentBadge = ({ status }) => <Pill tone={(PAY[status] || PAY.pending)[0]}>{(PAY[status] || [0, status])[1]}</Pill>
 
 export default function Orders() {
   const { orders, error, reload, fresh, clearFresh } = useOrders()

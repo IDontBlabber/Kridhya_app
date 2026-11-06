@@ -10,13 +10,16 @@ export const ORDER_STAGES = [
   { id: 'delivered', label: 'Delivered', customer: 'Delivered - we hope you love it.' },
 ]
 export const CANCELLED = { id: 'cancelled', label: 'Cancelled', customer: 'This order was cancelled.' }
+export const AWAITING = { id: 'awaiting_payment', label: 'Awaiting payment', customer: 'Waiting for your online payment to complete.' }
+export const RETURNED = { id: 'returned', label: 'Returned', customer: 'This parcel was returned to us. We will be in touch.' }
+const EXTRA = { cancelled: CANCELLED, awaiting_payment: AWAITING, returned: RETURNED }
 
 export const stageIndex = (status) => ORDER_STAGES.findIndex((s) => s.id === status)
-export const stageOf = (status) => ORDER_STAGES.find((s) => s.id === status) || (status === 'cancelled' ? CANCELLED : { id: status, label: status })
+export const stageOf = (status) => ORDER_STAGES.find((s) => s.id === status) || EXTRA[status] || { id: status, label: status }
 export const nextStage = (status) => {
   const i = stageIndex(status)
   return i >= 0 && i < ORDER_STAGES.length - 1 ? ORDER_STAGES[i + 1] : null
 }
-export const isActive = (status) => !['delivered', 'cancelled'].includes(status)
+export const isActive = (status) => !['delivered', 'cancelled', 'returned', 'awaiting_payment'].includes(status)
 
 export const fmtDateTime = (d) => new Date(d).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' })

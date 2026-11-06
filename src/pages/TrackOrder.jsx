@@ -4,7 +4,7 @@ import { InfoHero } from '../components/InfoPage'
 import { IconArrow, IconTruck, IconWhatsApp } from '../components/Icons'
 import { WHATSAPP_MESSAGES, formatPrice, whatsappLink } from '../data/site'
 import { hasBackend, rpc } from '../lib/backend'
-import { CANCELLED, ORDER_STAGES, fmtDateTime, stageIndex } from '../lib/orders'
+import { ORDER_STAGES, fmtDateTime, stageIndex, stageOf } from '../lib/orders'
 import useDocumentMeta from '../hooks/useDocumentMeta'
 
 // Customers look up an order with its number + the phone number used at checkout (track_order in the database).
@@ -66,7 +66,7 @@ export default function TrackOrder() {
 }
 
 function Result({ order }) {
-  const cancelled = order.status === 'cancelled'
+  const cancelled = ['cancelled', 'returned', 'awaiting_payment'].includes(order.status)
   const current = stageIndex(order.status)
   const when = Object.fromEntries((order.events || []).map((e) => [e.status, e.at]))
   return (
@@ -74,7 +74,7 @@ function Result({ order }) {
       <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-wine-900/15 pb-4">
         <div>
           <p className="eyebrow text-gold-deep">Order {order.order_no}</p>
-          <h2 className="mt-2 font-display text-[28px] leading-tight">{cancelled ? CANCELLED.customer : ORDER_STAGES[current]?.customer}</h2>
+          <h2 className="mt-2 font-display text-[28px] leading-tight">{cancelled ? stageOf(order.status).customer : ORDER_STAGES[current]?.customer}</h2>
         </div>
         <p className="num text-[14px] text-wine-900/60">Placed {fmtDateTime(order.created_at)} · {formatPrice(order.total)}</p>
       </div>

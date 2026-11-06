@@ -32,6 +32,7 @@ export async function signIn(email, password) {
   return { session: { user: data.user.email } }
 }
 export const signOut = () => sb.auth.signOut()
+export const accessToken = async () => (await sb.auth.getSession()).data.session?.access_token || ''
 
 /* ---------- catalogue ---------- */
 const fromRow = (r) => ({ ...r.data, id: r.id, slug: r.slug, status: r.status })
