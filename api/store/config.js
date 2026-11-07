@@ -1,5 +1,5 @@
 // GET /api/store/config - what the checkout can offer (no secrets).
-import { config, paymentsLive, serverReady, shiprocketLive } from '../../backend/server/config.js'
+import { config, mailLive, paymentsLive, serverReady, shiprocketLive } from '../../backend/server/config.js'
 import { json } from '../../backend/server/http.js'
 
 export function GET() {
@@ -10,5 +10,6 @@ export function GET() {
     codFee: config.shipping.codFee,
     freeShippingAbove: config.shipping.freeAbove,
     liveRates: shiprocketLive(),
+    emails: mailLive(),
   })
 }

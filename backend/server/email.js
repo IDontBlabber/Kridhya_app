@@ -1,6 +1,7 @@
 // Customer emails through Brevo's transactional API (https://developers.brevo.com/reference/sendtransacemail).
 // Emails never block or fail an order: problems are logged and recorded on the order timeline.
 import { config, mailLive } from './config.js'
+import { addEvent } from './db.js'
 
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c])
 const inr = (n) => `₹${Number(n || 0).toLocaleString('en-IN')}`
@@ -92,15 +93,31 @@ ${button(o.tracking_url || trackLink(o), 'Track your parcel')}`),
   }),
 }
 
+const LABEL = { confirmed: 'Order confirmation', shipped: 'Shipped', out_for_delivery: 'Out for delivery', delivered: 'Delivered', cancelled: 'Cancelled', refund_initiated: 'Refund started', refund_processed: 'Refund processed', payment_failed: 'Payment not completed' }
+
 // Send a template to the customer (and bcc the shop). Never throws.
+// Every attempt is written on the order timeline, so the team can see whether the customer was emailed - and why not.
 export async function notify(kind, order, extra) {
+  const label = LABEL[kind] || kind
+  const log = (note) => (order?.id ? addEvent(order.id, order.status, note).catch(() => {}) : null)
   try {
     const t = templates[kind]?.(order, extra)
-    if (!t || !order?.customer?.email) return { skipped: true }
+    if (!t) return { skipped: true }
+    if (!order?.customer?.email) {
+      await log(`Email not sent (${label}): the order has no customer email`)
+      return { skipped: true }
+    }
+    if (!mailLive()) {
+      await log(`Email not sent (${label}): customer emails are off - add BREVO_API_KEY and MAIL_FROM_EMAIL in Vercel`)
+      return { skipped: true }
+    }
     const ccShop = ['confirmed', 'cancelled', 'refund_initiated'].includes(kind) ? config.mail.adminEmail : undefined
-    return await sendEmail({ to: order.customer.email, name: order.customer.name, subject: t.subject, html: t.html, cc: ccShop })
+    const r = await sendEmail({ to: order.customer.email, name: order.customer.name, subject: t.subject, html: t.html, cc: ccShop })
+    await log(`Email sent: ${label} → ${order.customer.email}`)
+    return r
   } catch (e) {
     console.warn(`[email] ${kind} for ${order?.order_no} failed:`, e.message)
+    await log(`Email NOT sent (${label}): ${e.message}`)
     return { error: e.message }
   }
 }

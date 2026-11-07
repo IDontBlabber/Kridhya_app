@@ -44,7 +44,6 @@ export const POST = handle(async (request) => {
       if (!kinds[body.kind]) return json({ error: 'Unknown email' }, 400)
       const r = await notify(body.kind, o)
       if (r.error) return json({ error: `Brevo did not send it: ${r.error}` }, 502)
-      await addEvent(o.id, o.status, `Email sent to customer: ${kinds[body.kind]} (by ${actor})`)
       return json({ ok: true, message: `${kinds[body.kind]} email sent to ${o.customer?.email}` })
     }
     case 'status':
