@@ -19,7 +19,8 @@ export default function Product() {
 
 function ProductView({ product }) {
   const { add } = useCart()
-  const cat = getCategory(product.category)
+  // a product saved with a category that no longer exists still shows (as 'Jewellery')
+  const cat = getCategory(product.category) || { slug: '', name: 'Jewellery' }
   const [img, setImg] = useState(0)
   const inStock = (f) => !product.stock || (product.stock[f] ?? 1) > 0
   const [finish, setFinish] = useState(product.finishes.find(inStock) ?? product.finishes[0])
@@ -41,7 +42,7 @@ function ProductView({ product }) {
     <>
       <section className="bg-ivory pb-16 pt-28 sm:pt-32">
         <div className="container-site">
-          <Breadcrumbs items={[{ label: 'Home', to: '/' }, { label: cat.name, to: `/collections/${cat.slug}` }, { label: product.name }]} />
+          <Breadcrumbs items={[{ label: 'Home', to: '/' }, { label: cat.name, to: cat.slug ? `/collections/${cat.slug}` : '/shop' }, { label: product.name }]} />
 
           <div className="mt-6 grid gap-8 lg:grid-cols-12 lg:gap-12">
             {/* gallery */}

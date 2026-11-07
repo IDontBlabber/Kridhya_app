@@ -50,7 +50,10 @@ export default function CoverflowCarousel({ products }) {
     if (d < -n / 2) d += n
     return d
   }
-  const current = products[active]
+  // the list can shrink (category tab, catalogue refresh) or be empty - never point past the end
+  const current = products[active] ?? products[0]
+  useEffect(() => { if (active >= n && n) setActive(0) }, [active, n])
+  if (!n || !current) return <p className="py-16 text-center text-[15px] text-wine-900/60">New pieces are coming to this collection soon.</p>
 
   return (
     <div
@@ -133,7 +136,7 @@ export default function CoverflowCarousel({ products }) {
           </AnimatePresence>
         </div>
         <div className="flex items-center gap-2">
-          <button type="button" onClick={() => add(current, current.finishes[0])} className="btn btn-wine">
+          <button type="button" onClick={() => add(current, current.finishes?.[0] || 'Gold')} className="btn btn-wine">
             <IconBag size={15} /> Add to bag
           </button>
           <span className="mx-2 font-display text-[15px] tabular-nums text-wine-900/60">

@@ -169,6 +169,7 @@ export default function OrderDetail() {
             <p className="mt-1 text-[13.5px] leading-relaxed">{a.line1}{a.line2 && <><br />{a.line2}</>}<br />{a.city}, {a.state} <span className="num">{a.pin}</span></p>
             {order.note && (<><h3 className="mt-5 text-[12px] font-semibold uppercase tracking-[0.12em] text-wine-900/55">Customer note</h3><p className="mt-1 text-[13.5px]">{order.note}</p></>)}
           </Section>
+          <EmailPanel order={order} info={info} busy={busy} run={run} />
           <Section title="Internal note" hint="Only visible to the team">
             <Textarea rows={3} value={adminNote ?? ''} onChange={(e) => setAdminNote(e.target.value)} />
             <Button size="sm" variant="ghost" className="mt-2" onClick={() => patch({ admin_note: adminNote }, 'Note saved')}>Save note</Button>
@@ -347,6 +348,35 @@ function PaymentPanel({ order, info, busy, run, paidOnline }) {
         onConfirm={() => run('refund', () => orderApi.action(order.id, 'refund', { amount: refund?.full ? undefined : amount, reason: refund?.reason || '' }), 'Refund started').then((r) => r && !r.error && setRefund(null))}
         onClose={() => setConfirm(false)}
       />
+    </Section>
+  )
+}
+
+/* ───────────────────────── Customer emails ───────────────────────── */
+function EmailPanel({ order, info, busy, run }) {
+  const [kind, setKind] = useState('confirmed')
+  const on = info.emails
+  return (
+    <Section title="Customer emails" aside={on === undefined ? null : <Pill tone={on ? 'ok' : 'bad'}>{on ? 'On' : 'Off'}</Pill>}>
+      {on === false ? (
+        <p className="text-[13px] leading-relaxed text-wine-900/65">
+          Emails are not being sent. Add <strong>BREVO_API_KEY</strong> and <strong>MAIL_FROM_EMAIL</strong> (a sender verified in Brevo) in Vercel, then redeploy.
+        </p>
+      ) : (
+        <>
+          <p className="text-[13px] leading-relaxed text-wine-900/65">Sent automatically: order confirmation, shipped, out for delivery, delivered, cancelled and refunds - to {order.customer?.email}.</p>
+          <div className="mt-3 flex gap-2">
+            <select value={kind} onChange={(e) => setKind(e.target.value)} aria-label="Email to resend" className="h-8 flex-1 border border-wine-900/20 bg-ivory/60 px-2 text-[13px]">
+              <option value="confirmed">Order confirmation</option>
+              <option value="shipped">Shipped</option>
+              <option value="out_for_delivery">Out for delivery</option>
+              <option value="delivered">Delivered</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+            <Button size="sm" variant="ghost" disabled={!!busy} onClick={() => run('email', () => orderApi.action(order.id, 'email', { kind }), 'Email sent')}>{busy === 'email' ? 'Sending…' : 'Resend'}</Button>
+          </div>
+        </>
+      )}
     </Section>
   )
 }

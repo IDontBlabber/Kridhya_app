@@ -6,7 +6,8 @@
 //   ship      send to Shiprocket | couriers (list with prices) | awb { courierId? } | pickup | label | cancel-shipment
 //   shiprocket-retry-login               clear the login pause after fixing the Shiprocket password
 import { confirmPayment, pushToShiprocket } from '../../backend/server/checkout.js'
-import { shiprocketLive } from '../../backend/server/config.js'
+import { mailLive, shiprocketLive } from '../../backend/server/config.js'
+import { notify } from '../../backend/server/email.js'
 import { addEvent, currentUser, getOrder, select, update } from '../../backend/server/db.js'
 import { handle, json, readJson } from '../../backend/server/http.js'
 import { changeStatus, reconcilePayment, refundOrder, refundable, syncTracking } from '../../backend/server/orders.js'
@@ -34,7 +35,17 @@ export const POST = handle(async (request) => {
   switch (action) {
     case 'info': {
       const refunds = await select(`refunds?order_id=eq.${o.id}&select=*&order=created_at.desc`)
-      return json({ refunds, refundable: await refundable(o) })
+      return json({ refunds, refundable: await refundable(o), emails: mailLive() })
+    }
+    case 'email': {
+      // resend one of the customer emails for this order
+      if (!mailLive()) return json({ error: 'Customer emails are off: add BREVO_API_KEY and MAIL_FROM_EMAIL in Vercel, then redeploy.' }, 400)
+      const kinds = { confirmed: 'Order confirmation', shipped: 'Shipped', out_for_delivery: 'Out for delivery', delivered: 'Delivered', cancelled: 'Cancelled' }
+      if (!kinds[body.kind]) return json({ error: 'Unknown email' }, 400)
+      const r = await notify(body.kind, o)
+      if (r.error) return json({ error: `Brevo did not send it: ${r.error}` }, 502)
+      await addEvent(o.id, o.status, `Email sent to customer: ${kinds[body.kind]} (by ${actor})`)
+      return json({ ok: true, message: `${kinds[body.kind]} email sent to ${o.customer?.email}` })
     }
     case 'status':
       await changeStatus(o.id, body.status, { note: body.note, courier: body.courier, trackingNo: body.trackingNo, trackingUrl: body.trackingUrl, actor })
