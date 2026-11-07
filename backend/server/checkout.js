@@ -2,7 +2,8 @@
 import { config, paymentsLive, shiprocketLive } from './config.js'
 import { addEvent, getOrder, rpc, select, update } from './db.js'
 import { capturePayment, createRazorpayOrder, fetchPayment, verifyCheckoutSignature } from './razorpay.js'
-import { createShipment, liveRate, trackingUrl } from './shiprocket.js'
+import { assignAwb, createShipment, liveRate, requestPickup, trackingUrl } from './shiprocket.js'
+import { notify } from './email.js'
 
 export class UserError extends Error {
   constructor(message, status = 400) {
@@ -75,7 +76,7 @@ export async function quote({ items, pincode, payment = 'online' }) {
 }
 
 /** Create the order. Online: also creates the Razorpay order for the payment window. */
-export async function createCheckout(body) {
+export async function createCheckout(body, user = null) {
   const payment = body.payment === 'cod' ? 'cod' : 'online'
   if (payment === 'online' && !paymentsLive()) throw new UserError('Online payment is not available right now. Please choose Cash on Delivery or message us on WhatsApp.')
   const items = cleanItems(body.items)
@@ -97,9 +98,12 @@ export async function createCheckout(body) {
       quote: { courier: q.courier, etd: q.etd, days: q.days, source: q.source },
     },
   }).catch((e) => { throw new UserError(e.message) }) // OUT_OF_STOCK:… / UNAVAILABLE:… / INVALID_DETAILS → shown by the checkout page
+  // link the order to the signed-in customer ("My orders")
+  if (user?.id) await rpc('attach_order_user', { p_order: order.id, p_user: user.id }).catch((e) => console.warn('[checkout] could not link customer', e.message))
 
   if (payment === 'cod') {
     await pushToShiprocket(order.id)
+    await notify('confirmed', await getOrder(`id=eq.${order.id}`))
     return { orderNo: order.order_no, total: order.total, payment }
   }
 
@@ -114,7 +118,7 @@ export async function createCheckout(body) {
     }
   } catch (e) {
     // release the stock we just held
-    await rpc('set_order_status', { p_order: order.id, p_status: 'cancelled', p_note: `Could not start payment: ${e.message}` }).catch(() => {})
+    await rpc('server_set_order_status', { p_order: order.id, p_status: 'cancelled', p_note: `Could not start payment: ${e.message}` }).catch(() => {})
     throw new UserError('We could not start the payment just now. Please try again in a moment.', 502)
   }
 }
@@ -132,10 +136,42 @@ export async function confirmPayment({ razorpay_order_id: orderId, razorpay_paym
   if (pay.status !== 'captured') throw new UserError(`Payment not completed (status: ${pay.status}).`)
   const res = await rpc('mark_order_paid', { p_razorpay_order: orderId, p_payment_id: paymentId, p_amount_paise: Number(pay.amount) })
   if (!res.already && !res.late) {
-    const o = await getOrder(`razorpay_order_id=eq.${encodeURIComponent(orderId)}`)
-    if (o) await pushToShiprocket(o.id)
+    // first confirmation only (checkout page and webhook can both arrive): ship + confirmation email once
+    await pushToShiprocket(res.id)
+    await notify('confirmed', await getOrder(`id=eq.${res.id}`))
   }
   return { orderNo: res.order_no, late: !!res.late }
+}
+
+/** A failed attempt (Razorpay payment.failed webhook). The order stays open for a retry until it expires. */
+export async function recordFailure(entity) {
+  const before = await getOrder(`razorpay_order_id=eq.${encodeURIComponent(entity.order_id)}`)
+  if (!before || before.payment_status !== 'pending') return
+  await rpc('record_payment_failure', { p_razorpay_order: entity.order_id, p_payment_id: entity.id, p_error: entity.error_description || entity.error_reason || 'Payment failed' })
+  // one email per order, after the first failure, pointing to "Complete payment"
+  if (before.payment_attempts === 0) await notify('payment_failed', before)
+}
+
+/**
+ * Retry payment on the customer's own unpaid order (from "My account"). Re-uses the same Razorpay order,
+ * so no second order is created and the held stock stays held.
+ */
+export async function retryPayment(orderNo, user) {
+  if (!user?.id) throw new UserError('Please sign in again.', 401)
+  if (!paymentsLive()) throw new UserError('Online payment is not available right now.')
+  await rpc('expire_unpaid_orders', { p_minutes: config.unpaidHoldMinutes }).catch(() => {})
+  const o = await getOrder(`order_no=eq.${encodeURIComponent(orderNo)}&user_id=eq.${user.id}`)
+  if (!o) throw new UserError('Order not found.', 404)
+  if (o.status !== 'awaiting_payment' || !o.razorpay_order_id) {
+    throw new UserError(o.payment_status === 'paid' ? 'This order is already paid.' : 'This order can no longer be paid - it expired. Please place it again.')
+  }
+  return {
+    orderNo: o.order_no,
+    total: o.total,
+    payment: 'online',
+    razorpay: { key: config.razorpay.keyId, orderId: o.razorpay_order_id, amount: o.total * 100, currency: 'INR' },
+    customer: o.customer,
+  }
 }
 
 /** Create the shipment in Shiprocket once an order is paid (or COD). Failures are logged on the order, never thrown. */
@@ -151,6 +187,20 @@ export async function pushToShiprocket(orderId) {
       ...(sr.awb ? { awb: sr.awb, tracking_no: sr.awb, tracking_url: trackingUrl(sr.awb), courier: sr.courier } : {}),
     })
     await addEvent(o.id, o.status, `Sent to Shiprocket (order ${sr.shiprocketOrderId})`)
+    // optional automation: courier + AWB, then pickup, straight away
+    if (config.shiprocket.autoAwb && sr.shipmentId && !sr.awb) {
+      try {
+        const a = await assignAwb(sr.shipmentId)
+        await update('orders', `id=eq.${o.id}`, { awb: a.awb, tracking_no: a.awb, tracking_url: trackingUrl(a.awb), courier: a.courier })
+        await addEvent(o.id, o.status, `Courier assigned automatically: ${a.courier || ''} · AWB ${a.awb}`)
+        if (config.shiprocket.autoPickup) {
+          const pk = await requestPickup(sr.shipmentId)
+          await addEvent(o.id, o.status, `Pickup requested${pk.scheduled ? ` for ${pk.scheduled}` : ''}`)
+        }
+      } catch (e) {
+        await addEvent(o.id, o.status, `Automatic courier assignment failed - assign it from the order page (${e.message})`)
+      }
+    }
     return sr
   } catch (e) {
     await addEvent(o.id, o.status, `Shiprocket: could not create shipment - ${e.message}`).catch(() => {})

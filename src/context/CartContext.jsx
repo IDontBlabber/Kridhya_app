@@ -1,4 +1,6 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { useAuth } from './AuthContext'
+import { loadCart, saveCart } from '../lib/auth'
 
 const CartContext = createContext(null)
 const KEY = 'kridhya-bag'
@@ -22,6 +24,33 @@ export function CartProvider({ children }) {
       /* storage unavailable - bag stays in memory */
     }
   }, [items])
+
+  // Signed-in customers: the bag is saved to their account, so it's waiting on any device.
+  // On sign-in the saved bag and this device's bag are merged (higher quantity wins), then every change is saved.
+  const { user } = useAuth()
+  const syncedFor = useRef(null)
+  useEffect(() => {
+    if (!user) { syncedFor.current = null; return }
+    if (syncedFor.current === user.id) return
+    let live = true
+    loadCart(user.id)
+      .then((saved) => {
+        if (!live) return
+        setItems((local) => {
+          const byId = new Map(saved.map((i) => [i.id, i]))
+          local.forEach((i) => byId.set(i.id, byId.has(i.id) ? { ...i, qty: Math.max(i.qty, byId.get(i.id).qty) } : i))
+          return [...byId.values()]
+        })
+        syncedFor.current = user.id
+      })
+      .catch(() => { syncedFor.current = user.id })
+    return () => { live = false }
+  }, [user])
+  useEffect(() => {
+    if (!user || syncedFor.current !== user.id) return
+    const t = setTimeout(() => saveCart(user.id, items).catch(() => {}), 600)
+    return () => clearTimeout(t)
+  }, [items, user])
 
   const add = useCallback((product, finish, qty = 1) => {
     setItems((prev) => {

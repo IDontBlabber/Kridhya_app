@@ -3,10 +3,12 @@ import { Link, useLocation } from 'react-router-dom'
 import Logo from './Logo'
 import { NAV, WHATSAPP_MESSAGES, whatsappLink } from '../data/site'
 import { useCart } from '../context/CartContext'
-import { IconBag, IconChevron, IconClose, IconMenu, IconSearch, IconWhatsApp } from './Icons'
+import { IconBag, IconChevron, IconClose, IconMenu, IconSearch, IconUser, IconWhatsApp } from './Icons'
+import { useAuth } from '../context/AuthContext'
+import { hasBackend } from '../lib/backend'
 
 // Pages whose first section is dark - header text is beige there, burgundy on light pages.
-const DARK_TOP = ['/', '/contact', '/corporate-gifting', '/our-story', '/about', '/collections', '/checkout', '/order-confirmed', '/track-order', '/faq', '/jewellery-care', '/shipping-returns', '/privacy-policy', '/terms']
+const DARK_TOP = ['/', '/contact', '/corporate-gifting', '/our-story', '/about', '/collections', '/checkout', '/order-confirmed', '/track-order', '/account', '/account/reset', '/faq', '/jewellery-care', '/shipping-returns', '/privacy-policy', '/terms']
 
 // Nested routes light up their section: products → Shop, category archives → Collections, posts → Journal.
 function isSection(path, to) {
@@ -19,6 +21,7 @@ function isSection(path, to) {
 export default function Header() {
   const { pathname } = useLocation()
   const { count, setOpen } = useCart()
+  const { user } = useAuth()
   const [menu, setMenu] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
@@ -77,6 +80,12 @@ export default function Header() {
               <Link to="/shop" className="hidden h-10 w-10 items-center justify-center hover:text-gold sm:inline-flex" aria-label="Search the shop">
                 <IconSearch size={18} />
               </Link>
+              {hasBackend && (
+                <Link to="/account" className="relative hidden h-10 w-10 items-center justify-center hover:text-gold sm:inline-flex" aria-label={user ? 'My account and orders' : 'Sign in'}>
+                  <IconUser size={18} />
+                  {user && <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-gold" aria-hidden="true" />}
+                </Link>
+              )}
               <button type="button" onClick={() => setOpen(true)} className="relative inline-flex h-10 w-10 items-center justify-center hover:text-gold" aria-label={`Open shopping bag, ${count} items`}>
                 <IconBag size={18} />
                 {count > 0 && (
@@ -120,6 +129,7 @@ export default function Header() {
               </ul>
             </nav>
             <div className="px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4 sm:px-8">
+              {hasBackend && <Link to="/account" className="btn btn-outline-light mb-3 w-full"><IconUser size={16} /> {user ? 'My account & orders' : 'Sign in'}</Link>}
               <a href={whatsappLink(WHATSAPP_MESSAGES.general)} target="_blank" rel="noreferrer" className="btn btn-gold w-full">
                 <IconWhatsApp size={16} /> Chat with us
               </a>

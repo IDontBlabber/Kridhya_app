@@ -92,6 +92,7 @@ Disallow: /admin
 Disallow: /checkout
 Disallow: /order-confirmed
 Disallow: /track-order
+Disallow: /account
 
 Sitemap: ${SITE}/sitemap.xml
 `

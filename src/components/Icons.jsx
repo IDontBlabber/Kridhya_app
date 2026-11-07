@@ -6,6 +6,7 @@ const Svg = ({ size = 20, children, ...rest }) => (
 
 export const IconBag = (p) => <Svg {...p}><path d="M5 8h14l-1 12H6L5 8z" /><path d="M9 8V6a3 3 0 0 1 6 0v2" /></Svg>
 export const IconSearch = (p) => <Svg {...p}><circle cx="11" cy="11" r="6.5" /><path d="m20 20-4.2-4.2" /></Svg>
+export const IconUser = (p) => <Svg {...p}><circle cx="12" cy="8" r="4" /><path d="M4.5 20c1.4-3.6 4.2-5.4 7.5-5.4s6.1 1.8 7.5 5.4" /></Svg>
 export const IconMenu = (p) => <Svg {...p}><path d="M3 8h18M3 16h12" /></Svg>
 export const IconClose = (p) => <Svg {...p}><path d="M6 6l12 12M18 6 6 18" /></Svg>
 export const IconArrow = (p) => <Svg {...p}><path d="M4 12h15M14 6l6 6-6 6" /></Svg>

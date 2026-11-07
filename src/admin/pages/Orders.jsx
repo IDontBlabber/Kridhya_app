@@ -18,7 +18,7 @@ const TABS = [
 
 export const statusTone = (s) => (s === 'placed' ? 'gold' : s === 'delivered' ? 'ok' : ['cancelled', 'returned'].includes(s) ? 'bad' : s === 'awaiting_payment' ? 'neutral' : 'warn')
 export const StatusBadge = ({ status }) => <Pill tone={statusTone(status)}>{stageOf(status).label}</Pill>
-const PAY = { paid: ['ok', 'Paid'], pending: ['neutral', 'Payment pending'], cod: ['gold', 'Cash on delivery'], refunded: ['bad', 'Refunded'], failed: ['bad', 'Payment failed'] }
+const PAY = { paid: ['ok', 'Paid'], pending: ['neutral', 'Payment pending'], cod: ['gold', 'Cash on delivery'], refunded: ['bad', 'Refunded'], partially_refunded: ['warn', 'Partly refunded'], failed: ['bad', 'Payment failed'] }
 export const PaymentBadge = ({ status }) => <Pill tone={(PAY[status] || PAY.pending)[0]}>{(PAY[status] || [0, status])[1]}</Pill>
 
 export default function Orders() {

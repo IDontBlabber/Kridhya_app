@@ -1,27 +1,70 @@
 // Shiprocket API (https://apidocs.shiprocket.in). Adapted from the KA.SHA project's integration:
 // token cached per server instance, Shiprocket's *recommended* courier used for the rate (it's what gets assigned).
-import { config, shiprocketLive } from './config.js'
+import { config, serverReady, shiprocketLive } from './config.js'
+import { clearState, getState, setState } from './db.js'
 
 const BASE = 'https://apiv2.shiprocket.in/v1/external'
-let token = null // { value, expires }
+const TOKEN_KEY = 'shiprocket_token'
+const BLOCK_KEY = 'shiprocket_login_block'
+let token = null // { value, expires } - per-instance copy of the shared token
 
+// Shiprocket tokens last 10 days. The token is shared through the database so every server instance re-uses it
+// (logging in on every request is what gets an account blocked). After a rejected login, no further login is
+// attempted for 30 minutes, so a wrong password can never lock the account through retries.
 async function getToken() {
   if (token && token.expires > Date.now()) return token.value
+  const db = serverReady()
+  if (db) {
+    const saved = await getState(TOKEN_KEY).catch(() => null)
+    if (saved?.value && saved.expires > Date.now()) return (token = saved).value
+    const block = await getState(BLOCK_KEY).catch(() => null)
+    if (block?.until > Date.now()) {
+      const mins = Math.ceil((block.until - Date.now()) / 60000)
+      throw new Error(`Shiprocket login paused for ${mins} min after a rejected login (${block.reason}). Check SHIPROCKET_EMAIL / SHIPROCKET_PASSWORD - they must be a Shiprocket API user.`)
+    }
+  }
   const res = await fetch(`${BASE}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email: config.shiprocket.email, password: config.shiprocket.password }),
   })
   const data = await res.json().catch(() => ({}))
-  if (!res.ok || !data.token) throw new Error(`Shiprocket login failed (${res.status}): ${data.message || 'check SHIPROCKET_EMAIL / SHIPROCKET_PASSWORD'}`)
-  token = { value: data.token, expires: Date.now() + 9 * 24 * 3600_000 } // tokens last 10 days
+  if (!res.ok || !data.token) {
+    const reason = `${res.status}: ${data.message || 'login rejected'}`
+    // credentials problem (or Shiprocket's own block): stop trying for a while
+    if (db && [400, 401, 403, 422, 429].includes(res.status)) {
+      const wait = /block/i.test(data.message || '') || res.status === 429 ? 60 : 30
+      await setState(BLOCK_KEY, { until: Date.now() + wait * 60000, reason }).catch(() => {})
+    }
+    throw new Error(`Shiprocket login failed (${reason}). Use a Shiprocket API user's email and password.`)
+  }
+  token = { value: data.token, expires: Date.now() + 9 * 24 * 3600_000 }
+  if (db) {
+    await setState(TOKEN_KEY, token).catch(() => {})
+    await clearState(BLOCK_KEY).catch(() => {})
+  }
   return token.value
+}
+
+// Admin: try the login again now (e.g. right after fixing the password in Vercel).
+export async function resetLogin() {
+  token = null
+  if (serverReady()) {
+    await clearState(BLOCK_KEY).catch(() => {})
+    await clearState(TOKEN_KEY).catch(() => {})
+  }
+  await getToken()
+  return true
 }
 
 async function call(path, init = {}) {
   const res = await fetch(`${BASE}${path}`, { ...init, headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${await getToken()}`, ...init.headers } })
   const data = await res.json().catch(() => ({}))
-  if (res.status === 401) token = null
+  if (res.status === 401) {
+    // token expired or revoked: forget it everywhere; the next call logs in once
+    token = null
+    if (serverReady()) await clearState(TOKEN_KEY).catch(() => {})
+  }
   return { ok: res.ok, status: res.status, data }
 }
 
@@ -132,6 +175,26 @@ export async function cancelShipment(shiprocketOrderId) {
   const { ok, status, data } = await call('/orders/cancel', { method: 'POST', body: JSON.stringify({ ids: [Number(shiprocketOrderId)] }) })
   if (!ok) throw new Error(errorText(data, status))
   return true
+}
+
+/** Couriers available for an order already in Shiprocket, cheapest first (for the admin to choose). */
+export async function courierOptions(shiprocketOrderId) {
+  const { ok, status, data } = await call(`/courier/serviceability/?order_id=${encodeURIComponent(shiprocketOrderId)}`)
+  if (!ok) throw new Error(errorText(data, status))
+  const rec = data?.data?.recommended_courier_company_id
+  return (data?.data?.available_courier_companies || [])
+    .map((c) => ({ id: c.courier_company_id, name: c.courier_name, rate: Math.ceil(Number(c.freight_charge ?? c.rate ?? 0)), etd: c.etd || null, days: c.estimated_delivery_days ? Number(c.estimated_delivery_days) : null, rating: c.rating ? Number(c.rating) : null, recommended: c.courier_company_id === rec }))
+    .sort((a, b) => a.rate - b.rate)
+}
+
+/** Latest courier status for an AWB (used when the webhook is not set up, and by the daily sync). */
+export async function trackAwb(awb) {
+  const { ok, status, data } = await call(`/courier/track/awb/${encodeURIComponent(awb)}`)
+  if (!ok) throw new Error(errorText(data, status))
+  const t = data?.tracking_data || {}
+  const track = (t.shipment_track || [])[0] || {}
+  const last = (t.shipment_track_activities || [])[0] || {}
+  return { status: String(track.current_status || last['sr-status-label'] || last.activity || '').trim(), location: last.location || null, etd: t.etd || track.edd || null, url: t.track_url || null }
 }
 
 export const trackingUrl = (awb) => (awb ? `https://shiprocket.co/tracking/${awb}` : null)

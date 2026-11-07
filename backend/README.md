@@ -8,6 +8,8 @@ This folder holds the backend code. Vercel ignores it; nothing here is published
 backend/
   database/schema.sql          tables, security rules, order functions, photo storage (run in Supabase)
   database/002_payments_shipping.sql   payments + shipping additions (run after schema.sql)
+  database/003_customers.sql           customer accounts, saved bags, My orders
+  database/004_payments_refunds_shipping.sql   refunds, failed payments, webhook de-duplication, Shiprocket token store
   server/                      Razorpay, Shiprocket and checkout logic used by the /api server functions
   scripts/generate-seo.mjs     builds robots.txt, sitemap.xml, llms.txt (runs automatically on `npm run build`)
   scripts/set-admin-password.mjs   preview-mode admin password (only used without Supabase)
@@ -101,3 +103,79 @@ Server code: `backend/server/` (Razorpay, Shiprocket, checkout logic). Vercel ru
 
 Until `SUPABASE_SECRET_KEY` is set, checkout keeps the earlier no-payment flow, so nothing breaks while the accounts are being set up.
 
+## Accounts, payments, refunds and shipping (migration 004)
+
+Run `backend/database/003_customers.sql` and then `backend/database/004_payments_refunds_shipping.sql` in the Supabase SQL Editor.
+
+### Customer accounts (Supabase Auth: signed JWT sessions)
+
+Customers can:
+- **create an account** with email and password (the email must be confirmed)
+- **sign in** with a password, or with a **6-digit email code**
+- use **forgot password**, which leads to `/account/reset`
+- see **My account**: orders, tracking, **Complete payment** on unpaid orders, and refunds
+
+Checkout requires signing in. The bag is saved to the account.
+
+Settings in Supabase:
+- **Authentication → Sign In / Providers → Email:** turn on *Confirm email*, and set the minimum password length to **8**.
+- **Authentication → URL Configuration:**
+  - Site URL: `https://<your-site>`
+  - Redirect URLs: `https://<your-site>/**`, `http://localhost:5173/**`
+- **Authentication → Emails → SMTP Settings → Enable custom SMTP (Brevo):**
+  - Host `smtp-relay.brevo.com`, port `587`
+  - Username = your Brevo SMTP login
+  - Password = a Brevo **SMTP key** (Brevo → SMTP & API → SMTP)
+  - Sender = a sender verified in Brevo
+- **Authentication → Emails → Templates → Magic Link:** add `{{ .Token }}` so the email shows the 6-digit code.
+
+### Order emails (Brevo API)
+
+The server sends customers emails for:
+- **order confirmed:** paid online, or Cash on Delivery
+- **payment not completed:** once per order, after the first failed attempt
+- **shipped:** with the tracking number
+- **out for delivery**
+- **delivered**
+- **cancelled**
+- **refund started** and **refund processed**
+
+The shop gets a copy (bcc) of confirmations, cancellations and refunds, sent to `ADMIN_NOTIFY_EMAIL`.
+
+### Payments (Razorpay)
+
+| Situation | What happens |
+|---|---|
+| Paid | Signature and amount checked with Razorpay. The order is marked **Paid** and sent to Shiprocket, and the customer is emailed. The checkout page and the webhook can both confirm the order; only the first counts. |
+| Payment failed | Recorded on the order (attempt count and reason). The order stays open for 30 minutes, and the customer can **Complete payment** from My account on the same Razorpay order. After that, it expires and the stock is released. |
+| Customer paid, but the page closed | The `payment.captured` webhook confirms the order. An admin can also click **Check with Razorpay** on the order. |
+| Paid after the order expired | Kept and flagged on the timeline. Refund it from the order page. |
+| Refund | Admin → Order → **Payment → Refund**, full or partial. It can never exceed what's left. Razorpay's `refund.processed` / `refund.failed` webhooks update the order (**Partly refunded** / **Refunded**). Refunds made in the Razorpay dashboard are recorded too. |
+| Webhook replays | Every event is stored once (`payment_events`). Repeats are ignored. |
+
+Razorpay webhook events to tick: `payment.captured`, `payment.failed`, `order.paid`, `refund.created`, `refund.processed`, `refund.failed`.
+
+### Shipping (Shiprocket)
+
+- **Login is shared and protected.** The login token is saved in the database and shared by every server instance, so the server logs in roughly every 9 days. If a login is rejected, logins pause for 30 minutes, so the account can't get locked. After fixing the login details, use **Try Shiprocket login again** on any order.
+- **Order page actions:**
+  - **Send to Shiprocket:** happens automatically after payment or a COD order
+  - **Choose courier:** lists couriers with price, ETA and rating
+  - **Auto-assign best courier** (AWB)
+  - **Schedule pickup**
+  - **Shipping label**
+  - **Update tracking**
+  - **Cancel shipment** (also cancelled automatically when the order is cancelled)
+- **Automatic courier and pickup (optional):** `SHIPROCKET_AUTO_AWB=true` and `SHIPROCKET_AUTO_PICKUP=true`.
+- **Courier updates** move the order through the webhook. A **daily job** (`/api/cron/daily`, set in `vercel.json`) also syncs tracking and expires unpaid orders. Set `CRON_SECRET` in Vercel to any random string; Vercel sends it automatically.
+
+### New environment variables
+
+| Variable | Notes |
+|---|---|
+| `BREVO_API_KEY` | Brevo → SMTP & API → **API keys** |
+| `MAIL_FROM_EMAIL` / `MAIL_FROM_NAME` | a sender verified in Brevo |
+| `ADMIN_NOTIFY_EMAIL` | the shop's inbox for copies |
+| `SITE_URL` | `https://<your-site>`, used in email links |
+| `CRON_SECRET` | random string, for the daily job |
+| `SHIPROCKET_AUTO_AWB` / `SHIPROCKET_AUTO_PICKUP` | `true` / `false` |

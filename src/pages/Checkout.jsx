@@ -2,10 +2,14 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { InfoHero } from '../components/InfoPage'
 import { useCart } from '../context/CartContext'
-import { BRAND_NAME, CONTACT, formatPrice } from '../data/site'
+import { CONTACT, formatPrice } from '../data/site'
 import { IconArrow, IconShield, IconTruck } from '../components/Icons'
 import useDocumentMeta from '../hooks/useDocumentMeta'
 import { hasBackend, rpc } from '../lib/backend'
+import { api, payWithRazorpay } from '../lib/razorpay'
+import { useAuth } from '../context/AuthContext'
+import { accessToken, loadProfile, saveProfile } from '../lib/auth'
+import SignIn from '../components/SignIn'
 
 // Checkout.
 //  - Store server live (/api, see backend/server): live Shiprocket delivery charge for the PIN code, then
@@ -13,25 +17,6 @@ import { hasBackend, rpc } from '../lib/backend'
 //  - Server not reachable: falls back to the database's place_order (no payment taken; the team confirms).
 //  - No database: preview confirmation only.
 // Every figure on this page uses the `.num` style so numerals match everywhere.
-
-const api = async (path, body) => {
-  const res = await fetch(`/api/${path}`, body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : undefined)
-  const data = await res.json().catch(() => ({}))
-  if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`)
-  return data
-}
-
-// Razorpay's payment window script, loaded only when someone pays.
-let rzpScript
-const loadRazorpay = () =>
-  (rzpScript ??= new Promise((resolve, reject) => {
-    if (window.Razorpay) return resolve()
-    const s = document.createElement('script')
-    s.src = 'https://checkout.razorpay.com/v1/checkout.js'
-    s.onload = () => resolve()
-    s.onerror = () => { rzpScript = null; reject(new Error('Could not load the payment window. Check your connection and try again.')) }
-    document.head.appendChild(s)
-  }))
 
 const friendly = (m = '') =>
   m.startsWith('OUT_OF_STOCK:') ? `Sorry - ${m.slice(13).split('|')[0]} has just sold out${m.includes('|') && +m.split('|')[1] > 0 ? ` (only ${m.split('|')[1]} left)` : ''}. Please update your bag.`
@@ -71,6 +56,7 @@ const fmtEtd = (q) => {
 export default function Checkout() {
   useDocumentMeta('Checkout | Kridhya by Devanshi Agarwal', 'Share your delivery details and review your order.')
   const { items, subtotal, clear } = useCart()
+  const { user, ready: authReady, ensure } = useAuth()
   const navigate = useNavigate()
   const [form, setForm] = useState({ name: '', email: '', phone: '', address: '', address2: '', city: '', state: '', pin: '', note: '', payment: 'online' })
   const [errors, setErrors] = useState({})
@@ -84,6 +70,28 @@ export default function Checkout() {
   const [pinInfo, setPinInfo] = useState(null) // { found, city, state } | null
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }))
   const pin = form.pin.trim()
+
+  // sign-in: load the auth library on arrival; once signed in, prefill email + saved details
+  useEffect(() => { if (hasBackend) ensure() }, [ensure])
+  useEffect(() => {
+    if (!user) return
+    setForm((f) => ({ ...f, email: f.email || user.email || '' }))
+    loadProfile(user.id)
+      .then((pr) => {
+        if (!pr) return
+        setForm((f) => ({
+          ...f,
+          name: f.name || pr.name || '',
+          phone: f.phone || pr.phone || '',
+          address: f.address || pr.address?.line1 || '',
+          address2: f.address2 || pr.address?.line2 || '',
+          city: f.city || pr.address?.city || '',
+          state: f.state || pr.address?.state || '',
+          pin: f.pin || pr.address?.pin || '',
+        }))
+      })
+      .catch(() => {})
+  }, [user])
 
   // PIN code -> fill city and state (only empty fields, or ones we filled earlier)
   useEffect(() => {
@@ -134,38 +142,13 @@ export default function Checkout() {
   }, [store, pin, form.payment, bagKey]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const finish = (order) => {
+    if (user) saveProfile(user.id, { name: form.name.trim(), phone: form.phone.trim(), address: { line1: form.address, line2: form.address2, city: form.city, state: form.state, pin } }).catch(() => {})
     try { sessionStorage.setItem('kridhya-last-order', JSON.stringify(order)) } catch { /* confirmation page falls back */ }
     clear()
     navigate('/order-confirmed', { state: order })
   }
 
-  const payOnline = async (created) => {
-    await loadRazorpay()
-    return new Promise((resolve) => {
-      const rz = new window.Razorpay({
-        key: created.razorpay.key,
-        order_id: created.razorpay.orderId,
-        amount: created.razorpay.amount,
-        currency: created.razorpay.currency,
-        name: BRAND_NAME,
-        description: `Order ${created.orderNo}`,
-        prefill: { name: form.name, email: form.email, contact: form.phone.replace(/\D/g, '').slice(-10) },
-        notes: { order_no: created.orderNo },
-        theme: { color: '#5E182C' },
-        handler: async (resp) => {
-          try {
-            const v = await api('checkout/verify', resp)
-            resolve({ ok: true, orderNo: v.orderNo })
-          } catch (e) {
-            resolve({ ok: false, error: `${e.message} (order ${created.orderNo})` })
-          }
-        },
-        modal: { ondismiss: () => resolve({ ok: false, error: 'Payment was not completed. Your pieces are held for 30 minutes - you can try again.' }) },
-      })
-      rz.on('payment.failed', (r) => resolve({ ok: false, error: `Payment failed: ${r?.error?.description || 'please try another method'}. You can try again.` }))
-      rz.open()
-    })
-  }
+  const payOnline = (created) => payWithRazorpay(created, { name: form.name, email: form.email, phone: form.phone })
 
   const submit = async (e) => {
     e.preventDefault()
@@ -200,7 +183,7 @@ export default function Checkout() {
     try {
       // store server: online payment or COD
       if (store) {
-        const created = pending.current || (await api('checkout/create', payload))
+        const created = pending.current || (await api('checkout/create', payload, user ? await accessToken() : ''))
         if (created.payment === 'online') {
           pending.current = created
           const r = await payOnline(created)
@@ -229,9 +212,36 @@ export default function Checkout() {
         store.cod && { id: 'cod', label: 'Cash on Delivery', hint: q && q.serviceable && !q.codAvailable ? 'Not available for this order or PIN code' : `Pay when your order arrives${store.codFee ? ` (+${formatPrice(store.codFee)})` : ''}`, disabled: q && q.serviceable && !q.codAvailable },
       ].filter(Boolean)
 
+  if (hasBackend && items.length && (!authReady || !user))
+    return (
+      <>
+        <InfoHero eyebrow="Checkout" title="Almost yours" intro="Sign in to check out - your bag is saved to your account, so you can pick up where you left off." />
+        <section className="section bg-ivory">
+          <div className="container-site grid gap-10 lg:grid-cols-12 lg:gap-14">
+            <div className="lg:col-span-6">{!authReady ? <p className="py-10 text-[15px] text-wine-900/60">One moment…</p> : <SignIn title="Sign in to check out" />}</div>
+            <aside className="lg:col-span-5 lg:col-start-8" aria-label="Your bag">
+              <div className="border border-gold/40 bg-cream/60 p-6 sm:p-8">
+                <h2 className="font-display text-[24px] font-medium">Your bag</h2>
+                <ul className="mt-4 divide-y divide-wine-900/10">
+                  {items.map((i) => (
+                    <li key={i.id} className="flex items-center gap-4 py-3">
+                      <img src={i.image} alt="" className="h-16 w-14 shrink-0 bg-cream object-cover" />
+                      <p className="flex-1 text-[15px] leading-snug">{i.name} <span className="block text-[12px] uppercase tracking-[0.14em] text-wine-900/55">{i.finish} · <span className="num">Qty {i.qty}</span></span></p>
+                      <p className="num text-[15px]">{formatPrice(i.price * i.qty)}</p>
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-4 flex justify-between border-t border-wine-900/15 pt-4 text-[17px] font-medium"><span>Subtotal</span><span className="num">{formatPrice(subtotal)}</span></p>
+              </div>
+            </aside>
+          </div>
+        </section>
+      </>
+    )
+
   return (
     <>
-      <InfoHero eyebrow="Checkout" title="Almost yours" intro="Share your delivery details and review your order." />
+      <InfoHero eyebrow="Checkout" title="Almost yours" intro={user ? `Signed in as ${user.email}. Share your delivery details and review your order.` : 'Share your delivery details and review your order.'} />
       <section className="section bg-ivory">
         <div className="container-site">
           {items.length === 0 ? (

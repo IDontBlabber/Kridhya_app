@@ -33,3 +33,15 @@ export const verifyCheckoutSignature = (orderId, paymentId, signature) =>
 // Webhook: signature = HMAC_SHA256(raw request body, webhook secret)
 export const verifyWebhookSignature = (rawBody, signature) =>
   !!config.razorpay.webhookSecret && !!signature && safeEqual(createHmac('sha256', config.razorpay.webhookSecret).update(rawBody).digest('hex'), signature)
+
+/** Refund all or part of a captured payment. amountPaise omitted = full refund. */
+export const createRefund = (paymentId, { amountPaise, notes, receipt } = {}) =>
+  call(`/payments/${encodeURIComponent(paymentId)}/refund`, {
+    method: 'POST',
+    body: JSON.stringify({ ...(amountPaise ? { amount: amountPaise } : {}), speed: 'normal', notes, receipt }),
+  })
+
+export const fetchRefund = (paymentId, refundId) => call(`/payments/${encodeURIComponent(paymentId)}/refunds/${encodeURIComponent(refundId)}`)
+
+/** All payment attempts on a Razorpay order (to fix orders stuck in "awaiting payment"). */
+export const fetchOrderPayments = async (orderId) => (await call(`/orders/${encodeURIComponent(orderId)}/payments`)).items || []

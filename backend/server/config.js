@@ -19,6 +19,8 @@ export const config = {
     email: env('SHIPROCKET_EMAIL'),
     password: env('SHIPROCKET_PASSWORD'),
     pickupLocation: env('SHIPROCKET_PICKUP_LOCATION', 'Primary'), // the pickup address nickname in Shiprocket
+    autoAwb: env('SHIPROCKET_AUTO_AWB', 'false') === 'true', // assign courier + AWB right after the order reaches Shiprocket
+    autoPickup: env('SHIPROCKET_AUTO_PICKUP', 'false') === 'true', // and request pickup
     pickupPincode: env('SHIPROCKET_PICKUP_PINCODE'),
     webhookToken: env('SHIPROCKET_WEBHOOK_TOKEN'),
     // jewellery parcels: small box, light
@@ -35,8 +37,20 @@ export const config = {
   },
 
   unpaidHoldMinutes: num('UNPAID_ORDER_MINUTES', 30),
+
+  // Transactional email (Brevo API). Sender must be verified in Brevo > Senders & IP.
+  mail: {
+    brevoKey: env('BREVO_API_KEY'),
+    fromEmail: env('MAIL_FROM_EMAIL'),
+    fromName: env('MAIL_FROM_NAME', 'Kridhya by Devanshi Agarwal'),
+    adminEmail: env('ADMIN_NOTIFY_EMAIL'), // gets a copy of new orders, refunds and failures
+  },
+  siteUrl: (env('SITE_URL') || env('VITE_SITE_URL') || 'https://kridhyabydevanshi.com').replace(/\/+$/, ''),
+
 }
 
 export const paymentsLive = () => !!(config.razorpay.keyId && config.razorpay.keySecret)
 export const shiprocketLive = () => !!(config.shiprocket.email && config.shiprocket.password && config.shiprocket.pickupPincode)
 export const serverReady = () => !!(config.supabaseUrl && config.supabaseSecret)
+
+export const mailLive = () => !!(config.mail.brevoKey && config.mail.fromEmail)

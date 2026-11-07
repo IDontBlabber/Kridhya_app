@@ -8,6 +8,7 @@ import WhatsAppFloat from './components/WhatsAppFloat'
 import CartDrawer from './components/CartDrawer'
 import { ScrollProgress, EASE } from './components/motion'
 import { CartProvider } from './context/CartContext'
+import { AuthProvider } from './context/AuthContext'
 import Home from './pages/Home'
 import Shop from './pages/Shop'
 import Collections from './pages/Collections'
@@ -22,6 +23,8 @@ import NotFound from './pages/NotFound'
 import Checkout from './pages/Checkout'
 import OrderConfirmed from './pages/OrderConfirmed'
 import TrackOrder from './pages/TrackOrder'
+import Account from './pages/Account'
+import ResetPassword from './pages/ResetPassword'
 import { Faq, JewelleryCare, ShippingReturns, Privacy, Terms } from './pages/Info'
 import FontPicker from './components/FontPicker'
 import PromoPopup from './components/PromoPopup'
@@ -82,6 +85,7 @@ export default function App() {
   return (
     <CatalogueVersion.Provider value={catalogueVersion}>
     <MotionConfig reducedMotion="user">
+      <AuthProvider>
       <CartProvider>
         <a href="#main" className="sr-only z-[100] bg-gold px-4 py-3 text-wine-950 focus:not-sr-only focus:fixed focus:left-4 focus:top-4">
           Skip to content
@@ -111,6 +115,8 @@ export default function App() {
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/order-confirmed" element={<OrderConfirmed />} />
                 <Route path="/track-order" element={<TrackOrder />} />
+                <Route path="/account" element={<Account />} />
+                <Route path="/account/reset" element={<ResetPassword />} />
                 <Route path="/faq" element={<Faq />} />
                 <Route path="/jewellery-care" element={<JewelleryCare />} />
                 <Route path="/shipping-returns" element={<ShippingReturns />} />
@@ -127,6 +133,7 @@ export default function App() {
         <PromoPopup />
         {/* {SHOW_FONT_PICKER && <FontPicker />} */}
       </CartProvider>
+      </AuthProvider>
     </MotionConfig>
     </CatalogueVersion.Provider>
   )

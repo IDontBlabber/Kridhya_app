@@ -9,9 +9,7 @@ import { config, serverReady } from '../../backend/server/config.js'
 import { addEvent, getOrder, update } from '../../backend/server/db.js'
 import { json, readJson } from '../../backend/server/http.js'
 import { STATUS_MAP, trackingUrl } from '../../backend/server/shiprocket.js'
-
-const FLOW = ['placed', 'confirmed', 'packed', 'shipped', 'out_for_delivery', 'delivered']
-const canMove = (from, to) => to === 'returned' || to === 'cancelled' || FLOW.indexOf(to) > FLOW.indexOf(from)
+import { canMove, changeStatus } from '../../backend/server/orders.js'
 
 const ping = () => json({ ok: true, service: 'kridhya-fulfillment-webhook', ready: serverReady() })
 export const GET = ping
@@ -39,13 +37,13 @@ export async function POST(request) {
       (p.sr_order_id && (await getOrder(`shiprocket_order_id=eq.${encodeURIComponent(p.sr_order_id)}`)))
     if (!order) return json({ ok: true, matched: false }) // e.g. Shiprocket's test payload
 
-    const patch = {}
-    if (awb && order.awb !== awb) Object.assign(patch, { awb, tracking_no: awb, tracking_url: trackingUrl(awb), ...(p.courier_name ? { courier: p.courier_name } : {}) })
+    if (awb && order.awb !== awb) await update('orders', `id=eq.${order.id}`, { awb, tracking_no: awb, tracking_url: trackingUrl(awb), ...(p.courier_name ? { courier: p.courier_name } : {}) })
     const next = STATUS_MAP[raw]
-    if (next && next !== order.status && canMove(order.status, next)) patch.status = next
-    if (Object.keys(patch).length) await update('orders', `id=eq.${order.id}`, patch)
     const where = p.current_location || p.city
-    await addEvent(order.id, patch.status || order.status, `Courier: ${p.current_status || p.shipment_status}${where ? ` - ${where}` : ''}`)
+    const note = `Courier: ${p.current_status || p.shipment_status}${where ? ` - ${where}` : ''}`
+    // stage changes go through changeStatus so the customer gets the shipped / out for delivery / delivered email
+    if (next && next !== order.status && canMove(order.status, next)) await changeStatus(order.id, next, { note })
+    else await addEvent(order.id, order.status, note)
     return json({ ok: true, matched: true })
   } catch (e) {
     console.error('[fulfillment webhook] could not process update', p?.awb, e.message)
