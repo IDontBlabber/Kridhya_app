@@ -68,7 +68,9 @@ const friendly = (m = '') =>
   /invalid login/i.test(m) ? 'That email or password is not right.'
     : /not confirmed/i.test(m) ? 'Please confirm your email first - check your inbox for our link (or send it again below).'
       : /already registered|already exists/i.test(m) ? 'An account with this email already exists. Sign in instead, or reset your password.'
-        : /rate|seconds|too many/i.test(m) ? 'Too many attempts - please wait a minute and try again.'
+        : /email rate limit/i.test(m) ? 'We’ve sent several emails recently, so sending is paused for a while. Please use the newest email you already received (check spam too), or try again later.'
+          : /after (\d+) seconds?/i.test(m) ? `For security, please wait ${/after (\d+) seconds?/i.exec(m)[1]} seconds before asking again.`
+            : /rate|too many/i.test(m) ? 'Too many attempts - please wait a few minutes and try again.'
           : /weak|pwned|leaked/i.test(m) ? 'Please choose a stronger password - this one appears in known data leaks.'
             : m
 
