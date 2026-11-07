@@ -5,7 +5,7 @@ import { Breadcrumbs, FinishDot, ProductCard, SectionHeading } from '../componen
 import { EASE, Stagger } from '../components/motion'
 import { PRODUCTS, getCategory, getProduct } from '../data/products'
 import { WHATSAPP_MESSAGES, formatPrice, whatsappLink } from '../data/site'
-import { useCart } from '../context/CartContext'
+import { stockFor, useCart } from '../context/CartContext'
 import { IconBag, IconGift, IconMinus, IconPlus, IconWhatsApp } from '../components/Icons'
 import useDocumentMeta from '../hooks/useDocumentMeta'
 import NotFound from './NotFound'
@@ -18,13 +18,17 @@ export default function Product() {
 }
 
 function ProductView({ product }) {
-  const { add } = useCart()
+  const { add, items } = useCart()
   // a product saved with a category that no longer exists still shows (as 'Jewellery')
   const cat = getCategory(product.category) || { slug: '', name: 'Jewellery' }
   const [img, setImg] = useState(0)
   const inStock = (f) => !product.stock || (product.stock[f] ?? 1) > 0
   const [finish, setFinish] = useState(product.finishes.find(inStock) ?? product.finishes[0])
   const [qty, setQty] = useState(1)
+  // how many more of this finish can go in the bag
+  const inBag = items.find((i) => i.id === `${product.slug}:${finish}`)?.qty || 0
+  const canAdd = Math.max(0, stockFor(product.slug, finish) - inBag)
+  useEffect(() => { setQty((q) => Math.max(1, Math.min(q, canAdd || 1))) }, [canAdd])
   const [stickyBar, setStickyBar] = useState(false)
   const buyRef = useRef(null)
   useDocumentMeta(`${product.name} | Kridhya by Devanshi Agarwal`, product.short)
@@ -122,7 +126,7 @@ function ProductView({ product }) {
                 </fieldset>
                 {product.stock && (
                   <p className="mt-3 text-[13px] font-medium" role="status">
-                    {!inStock(finish) ? <span className="text-wine-600">Sold out in {finish} - ask us about the next batch.</span> : product.stock[finish] <= 3 ? <span className="text-gold-deep">Only {product.stock[finish]} left in {finish}</span> : <span className="text-wine-900/60">In stock</span>}
+                    {!inStock(finish) ? <span className="text-wine-600">Sold out in {finish} - ask us about the next batch.</span> : canAdd === 0 && inBag > 0 ? <span className="text-gold-deep">All {inBag} available in {finish} {inBag === 1 ? 'is' : 'are'} in your bag.</span> : product.stock[finish] <= 3 ? <span className="text-gold-deep">Only {product.stock[finish]} left in {finish}{inBag ? ` (${inBag} in your bag)` : ''}</span> : <span className="text-wine-900/60">In stock</span>}
                   </p>
                 )}
 
@@ -130,10 +134,10 @@ function ProductView({ product }) {
                   <div className="flex items-center border border-wine-900/20">
                     <button type="button" className="inline-flex h-11 w-10 items-center justify-center" onClick={() => setQty((q) => Math.max(1, q - 1))} aria-label="Decrease quantity"><IconMinus size={14} /></button>
                     <span className="w-8 text-center" aria-live="polite" aria-label={`Quantity ${qty}`}>{qty}</span>
-                    <button type="button" className="inline-flex h-11 w-10 items-center justify-center" onClick={() => setQty((q) => q + 1)} aria-label="Increase quantity"><IconPlus size={14} /></button>
+                    <button type="button" className="inline-flex h-11 w-10 items-center justify-center disabled:cursor-not-allowed disabled:opacity-30" disabled={qty >= canAdd} onClick={() => setQty((q) => Math.min(canAdd, q + 1))} aria-label="Increase quantity"><IconPlus size={14} /></button>
                   </div>
-                  <motion.button whileTap={{ scale: 0.98 }} type="button" disabled={!inStock(finish)} onClick={() => add(product, finish, qty)} className="btn btn-wine flex-1 disabled:cursor-not-allowed disabled:opacity-50">
-                    <IconBag size={18} /> {inStock(finish) ? 'Add to bag' : 'Sold out'}
+                  <motion.button whileTap={{ scale: 0.98 }} type="button" disabled={!inStock(finish) || canAdd === 0} onClick={() => add(product, finish, qty)} className="btn btn-wine flex-1 disabled:cursor-not-allowed disabled:opacity-50">
+                    <IconBag size={18} /> {!inStock(finish) ? 'Sold out' : canAdd === 0 ? 'In your bag' : 'Add to bag'}
                   </motion.button>
                 </div>
                 <a href={whatsappLink(WHATSAPP_MESSAGES.product(`${product.name} (${finish})`))} target="_blank" rel="noreferrer" className="btn btn-outline-dark mt-3 w-full">
@@ -191,7 +195,7 @@ function ProductView({ product }) {
               <p className="truncate font-display text-[19px] leading-tight">{product.name}</p>
               <p className="num text-[15px]">{formatPrice(product.price)}</p>
             </div>
-            <button type="button" disabled={!inStock(finish)} onClick={() => add(product, finish, qty)} className="btn btn-wine disabled:opacity-50">{inStock(finish) ? 'Add' : 'Sold out'}</button>
+            <button type="button" disabled={!inStock(finish) || canAdd === 0} onClick={() => add(product, finish, qty)} className="btn btn-wine disabled:opacity-50">{inStock(finish) ? 'Add' : 'Sold out'}</button>
           </motion.div>
         )}
       </AnimatePresence>

@@ -82,7 +82,20 @@
   input, select, textarea { font-size: 16px !important; }
 }
 
+/* Aevum gallery on phones/tablets: endless vertical glide, softly faded at the edges */
+.aevum-window {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 14%, #000 86%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 14%, #000 86%, transparent 100%);
+}
+@keyframes aevum-glide { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(0, -50%, 0); } }
+.aevum-track { animation: aevum-glide var(--dur, 36s) linear infinite; will-change: transform; }
+.aevum-track.down { animation-direction: reverse; }
+.aevum-window:hover .aevum-track,
+.aevum-window:active .aevum-track { animation-play-state: paused; }
+
 @media (prefers-reduced-motion: reduce) {
+  .aevum-track { animation: none; }
+
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;

@@ -8,6 +8,10 @@ import { getOrder, insert } from '../../backend/server/db.js'
 import { json } from '../../backend/server/http.js'
 import { syncRefund } from '../../backend/server/orders.js'
 import { verifyWebhookSignature } from '../../backend/server/razorpay.js'
+import { config } from '../../backend/server/config.js'
+
+// Browser visit / reachability check (Razorpay itself only POSTs). Shows whether the secret is set - never the secret.
+export const GET = () => json({ ok: true, service: 'kridhya-razorpay-webhook', ready: serverReady(), secretSet: !!config.razorpay.webhookSecret })
 
 export async function POST(request) {
   const raw = await request.text()

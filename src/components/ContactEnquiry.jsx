@@ -41,7 +41,7 @@ export default function ContactEnquiry({
         <div className="grain relative isolate bg-wine-900 p-7 text-ivory sm:p-10 lg:col-span-5">
           <Mandala className="pointer-events-none absolute -bottom-40 -right-40 -z-10 h-[420px] w-[420px] text-gold/[0.14]" />
           <p className="eyebrow font-semibold text-gold">{eyebrow}</p>
-          <h2 className="mt-3 font-display text-[clamp(1.6rem,2.6vw,2.1rem)] font-normal leading-[1.15]">{title}</h2>
+          <h2 className="mt-3 font-sans text-[clamp(1.5rem,2.4vw,1.9rem)] font-semibold leading-[1.2] tracking-[0.005em]">{title}</h2>
           <p className="mt-4 max-w-sm text-[15px] font-medium leading-relaxed text-ivory/80">{intro}</p>
 
           <dl className="mt-9 divide-y divide-ivory/10 [&>div]:py-4 first:[&>div]:pt-0">

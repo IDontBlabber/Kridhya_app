@@ -7,7 +7,8 @@ import { IconClose, IconGift, IconMinus, IconPlus } from './Icons'
 import { EASE } from './motion'
 
 export default function CartDrawer() {
-  const { items, open, setOpen, update, subtotal } = useCart()
+  const { items, open, setOpen, update, subtotal, notice, setNotice, problems, limitFor } = useCart()
+  useEffect(() => { if (!open) setNotice(null) }, [open, setNotice])
   const closeRef = useRef(null)
 
   useEffect(() => {
@@ -70,11 +71,17 @@ export default function CartDrawer() {
                             <p className="num shrink-0 text-[15px]">{formatPrice(i.price * i.qty)}</p>
                           </div>
                           <p className="mt-1 text-[12px] uppercase tracking-[0.18em] text-wine-900/60">{i.finish}</p>
+                          {problems.includes(i.id) ? (
+                            <p className="mt-1 text-[13px] font-semibold text-wine-600">Sold out - please remove</p>
+                          ) : limitFor(i) <= 3 ? (
+                            <p className="mt-1 text-[12.5px] text-gold-deep">Only {limitFor(i)} left</p>
+                          ) : null}
+                          {notice?.id === i.id && <p role="status" className="mt-1 text-[12.5px] font-medium text-wine-700">{notice.text}</p>}
                           <div className="mt-auto flex items-center justify-between">
                             <div className="flex items-center border border-wine-900/20">
                               <button type="button" className="inline-flex h-10 w-10 items-center justify-center" onClick={() => update(i.id, i.qty - 1)} aria-label={`Decrease ${i.name} quantity`}><IconMinus size={14} /></button>
                               <span className="num w-6 text-center text-[15px]" aria-live="polite">{i.qty}</span>
-                              <button type="button" className="inline-flex h-10 w-10 items-center justify-center" onClick={() => update(i.id, i.qty + 1)} aria-label={`Increase ${i.name} quantity`}><IconPlus size={14} /></button>
+                              <button type="button" disabled={i.qty >= limitFor(i)} className="inline-flex h-10 w-10 items-center justify-center disabled:cursor-not-allowed disabled:opacity-30" onClick={() => update(i.id, i.qty + 1)} aria-label={`Increase ${i.name} quantity`}><IconPlus size={14} /></button>
                             </div>
                             <button type="button" onClick={() => update(i.id, 0)} className="link-underline min-h-[44px] text-[12px] uppercase tracking-[0.18em] text-wine-900/60">Remove</button>
                           </div>
@@ -89,7 +96,12 @@ export default function CartDrawer() {
                     <span className="num text-[19px] font-medium">{formatPrice(subtotal)}</span>
                   </div>
                   <p className="mt-1 text-[12px] text-wine-900/60">Shipping &amp; taxes calculated at checkout.</p>
-                  <Link to="/checkout" onClick={() => setOpen(false)} className="btn btn-wine mt-5 w-full">Proceed to checkout</Link>
+                  {notice && !items.some((i) => i.id === notice.id) && <p role="status" className="mt-3 text-[13px] font-medium text-wine-700">{notice.text}</p>}
+                  {problems.length > 0 ? (
+                    <p className="btn mt-5 w-full cursor-not-allowed bg-wine-900/20 text-wine-900/60">Remove sold-out pieces to continue</p>
+                  ) : (
+                    <Link to="/checkout" onClick={() => setOpen(false)} className="btn btn-wine mt-5 w-full">Proceed to checkout</Link>
+                  )}
                 </div>
               </>
             )}

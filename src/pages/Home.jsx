@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion'
 import HeroSlideshow from '../components/HeroSlideshow'
@@ -159,23 +159,71 @@ function Bestsellers() {
 }
 
 /* Three image columns travelling at different speeds and directions */
+// Phones/tablets get the auto-scrolling gallery (AevumScroller); desktop keeps the scroll-linked parallax.
+const SMALL = '(max-width: 1023px)'
+function useSmallScreen() {
+  const [small, setSmall] = useState(() => typeof window !== 'undefined' && window.matchMedia(SMALL).matches)
+  useEffect(() => {
+    const mq = window.matchMedia(SMALL)
+    const on = () => setSmall(mq.matches)
+    mq.addEventListener('change', on)
+    return () => mq.removeEventListener('change', on)
+  }, [])
+  return small
+}
+
+const AEVUM_A = [['/images/products/ananta-gulabi-914b1b68.webp', 'Ananta Gulabi cuff'], ['/images/products/bindu-246a05b3.webp', 'Bindu studs'], ['/images/products/the-lemniscate-5dd8e835.webp', 'The Lemniscate necklace']]
+const AEVUM_B = [['/images/editorial/double-strand-gold-satin.webp', 'Double strand necklace'], ['/images/products/infinity-brooch-faff9bb7.webp', 'Infinity brooch'], ['/images/products/sandhya-studs-2a48f163.webp', 'Sandhya studs']]
+const AEVUM_C = [['/images/products/layered-eternity-336df71a.webp', 'Layered eternity ring'], ['/images/editorial/heart-necklace-rose-satin.webp', 'Infinity heart necklace'], ['/images/products/ashta-studa-ff8ef6aa.webp', 'Ashta studs']]
+
+// Gallery print: thin gold rule around an ivory mount.
+const Print = ({ src, alt, eager }) => (
+  <div className="border border-gold/60 bg-ivory p-1.5 shadow-[0_18px_40px_-26px_rgba(43,9,18,0.55)] sm:p-2">
+    <img src={src} alt={alt} loading={eager ? 'eager' : 'lazy'} decoding="async" data-placeholder="true" className="aspect-[4/5] w-full object-cover outline outline-1 outline-offset-0 outline-gold/30" />
+  </div>
+)
+
+// Phones/tablets: two columns of prints gliding endlessly in opposite directions inside a softly faded window.
+// Pure CSS animation (smooth, battery-friendly); touching the gallery pauses it; still for reduce-motion users.
+function AevumScroller() {
+  const colA = [...AEVUM_A, ...AEVUM_C.slice(0, 2)]
+  const colB = [...AEVUM_B, ...AEVUM_C.slice(2)]
+  const lane = (list, dir, dur) => (
+    <div className="aevum-lane overflow-hidden">
+      <div className={`aevum-track ${dir}`} style={{ '--dur': `${dur}s` }}>
+        {/* the list twice, so the loop is seamless */}
+        {[...list, ...list].map(([src, alt], i) => (
+          <div key={`${src}-${i}`} aria-hidden={i >= list.length || undefined} className="pb-3">
+            <Print src={src} alt={i < list.length ? alt : ''} />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+  return (
+    <div className="aevum-window relative">
+      <div className="grid h-[440px] grid-cols-2 gap-3 sm:h-[560px] sm:gap-4" role="group" aria-label="Aevum pieces">
+        {lane(colA, 'up', 34)}
+        {lane(colB, 'down', 40)}
+      </div>
+    </div>
+  )
+}
+
 function ParallaxColumns() {
   const ref = useRef(null)
+  const small = useSmallScreen()
   const reduce = useReducedMotion()
+  const Text = FadeUp
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
   const p = useSpring(scrollYProgress, { stiffness: 110, damping: 28, mass: 0.4 })
-  const up = useTransform(p, [0, 1], reduce ? [0, 0] : [60, -160])
-  const down = useTransform(p, [0, 1], reduce ? [0, 0] : [-140, 80])
-  const upSlow = useTransform(p, [0, 1], reduce ? [0, 0] : [30, -90])
+  const up = useTransform(p, [0, 1], reduce || small ? [0, 0] : [60, -160])
+  const down = useTransform(p, [0, 1], reduce || small ? [0, 0] : [-140, 80])
+  const upSlow = useTransform(p, [0, 1], reduce || small ? [0, 0] : [30, -90])
 
   const col = (srcs, y, extra = '') => (
-    <motion.div style={{ y }} className={`flex flex-col gap-3 ${extra}`}>
-      {srcs.map(([src, alt]) => (
-        // framed: thin gold rule around an ivory mount, like a gallery print
-        <div key={src} className="border border-gold/60 bg-ivory p-1.5 shadow-[0_18px_40px_-26px_rgba(43,9,18,0.55)] sm:p-2">
-          <img src={src} alt={alt} loading="lazy" data-placeholder="true" className="aspect-[4/5] w-full object-cover outline outline-1 outline-offset-0 outline-gold/30" />
-        </div>
-      ))}
+    <motion.div style={{ y }} className={`flex flex-col gap-4 ${extra}`}>
+      {srcs.map(([src, alt]) => <Print key={src} src={src} alt={alt} />)}
     </motion.div>
   )
 
@@ -184,23 +232,27 @@ function ParallaxColumns() {
       {/* mandala backdrop (original, light, static): a large wheel behind the gallery, a smaller one under the copy */}
       <Mandala className="pointer-events-none absolute -right-48 top-1/2 -z-10 h-[900px] w-[900px] -translate-y-1/2 text-gold/25 sm:-right-40" strokeWidth={0.7} />
       <Mandala className="pointer-events-none absolute -left-40 -top-24 -z-10 h-[460px] w-[460px] text-wine-700/[0.09]" strokeWidth={0.8} />
-      <div className="container-site grid items-center gap-8 py-10 sm:py-12 lg:grid-cols-12 lg:py-0">
+      <div className="container-site grid items-center gap-6 py-8 sm:gap-8 sm:py-10 lg:grid-cols-12 lg:py-0">
         <div className="lg:col-span-4">
-          <FadeUp as="p" className="eyebrow text-[12px] font-semibold text-gold-deep">The collection</FadeUp>
-          <FadeUp as="h2" delay={0.05} className="font-collection tracking-[0.1em] mt-3 text-[clamp(calc(2.6rem_-_2px),calc(6vw_-_2px),calc(5rem_-_2px))] font-medium leading-[1]">Aevum</FadeUp>
-          <FadeUp as="p" delay={0.08} className="mt-2 font-display text-[clamp(calc(1.5rem_-_1px),calc(2.4vw_-_1px),calc(2rem_-_1px))] italic leading-tight text-wine-700">The Infinity Edit</FadeUp>
-          <FadeUp as="p" delay={0.1} className="mt-5 max-w-sm text-[15px] font-medium leading-relaxed text-wine-900/75">
+          <Text as="p" className="eyebrow text-[12px] font-semibold text-gold-deep">The collection</Text>
+          <Text as="h2" delay={0.05} className="font-collection mt-2 text-[30px] font-medium leading-[1] tracking-[0.08em] sm:mt-3 sm:text-[38px] sm:tracking-[0.1em] lg:text-[clamp(calc(2.6rem_-_2px),calc(4.6vw_-_2px),calc(5rem_-_2px))]">Aevum</Text>
+          <Text as="p" delay={0.08} className="mt-1.5 font-display text-[18px] italic leading-tight text-wine-700 sm:mt-2 sm:text-[21px] lg:text-[clamp(calc(1.5rem_-_1px),calc(2.4vw_-_1px),calc(2rem_-_1px))]">The Infinity Edit</Text>
+          <Text as="p" delay={0.1} className="mt-3 max-w-sm text-[14px] font-medium leading-relaxed text-wine-900/75 sm:mt-5 sm:text-[15px]">
             A line with no beginning and no end - an endless loop reimagined in Gold, Rose Gold and Silver, for bonds, promises and everyday rituals.
-          </FadeUp>
-          <FadeUp delay={0.15} className="mt-6">
+          </Text>
+          <Text delay={0.15} className="mt-5 sm:mt-6">
             <Link to="/shop" className="btn btn-wine">Discover Aevum <IconArrow size={14} /></Link>
-          </FadeUp>
+          </Text>
         </div>
-        <div className="grid h-[440px] grid-cols-3 gap-3 overflow-hidden sm:h-[580px] sm:gap-4 lg:col-span-7 lg:col-start-6 lg:h-[700px]">
-          {col([['/images/products/ananta-gulabi-914b1b68.webp', 'Ananta Gulabi cuff'], ['/images/products/bindu-246a05b3.webp', 'Bindu studs'], ['/images/products/the-lemniscate-5dd8e835.webp', 'The Lemniscate necklace']], up)}
-          {col([['/images/editorial/double-strand-gold-satin.webp', 'Double strand necklace'], ['/images/products/infinity-brooch-faff9bb7.webp', 'Infinity brooch'], ['/images/products/sandhya-studs-2a48f163.webp', 'Sandhya studs']], down, '-mt-40')}
-          {col([['/images/products/layered-eternity-336df71a.webp', 'Layered eternity ring'], ['/images/editorial/heart-necklace-rose-satin.webp', 'Infinity heart necklace'], ['/images/products/ashta-studa-ff8ef6aa.webp', 'Ashta studs']], upSlow)}
-        </div>
+        {small ? (
+          <AevumScroller />
+        ) : (
+          <div className="grid grid-cols-3 gap-4 overflow-hidden lg:col-span-7 lg:col-start-6 lg:h-[700px]">
+            {col(AEVUM_A, up)}
+            {col(AEVUM_B, down, '-mt-40')}
+            {col(AEVUM_C, upSlow)}
+          </div>
+        )}
       </div>
     </section>
   )
