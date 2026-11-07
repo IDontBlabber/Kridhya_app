@@ -75,6 +75,37 @@ const errorText = (data, status) => {
   return data?.message || `Shiprocket error ${status}`
 }
 
+// ── pickup address ──
+// Shiprocket needs the exact nickname of a pickup address saved in the account (Settings > Pickup Addresses).
+// We read the real list once per server instance and choose: the configured nickname (any capitals) →
+// the address with SHIPROCKET_PICKUP_PINCODE → the primary address → the first active one.
+let pickupCache = null // { at, list }
+export async function pickupLocations() {
+  if (pickupCache && Date.now() - pickupCache.at < 30 * 60_000) return pickupCache.list
+  const { ok, status, data } = await call('/settings/company/pickup')
+  if (!ok) throw new Error(errorText(data, status))
+  const list = (data?.data?.shipping_address || []).map((a) => ({
+    name: a.pickup_location,
+    pin: String(a.pin_code || ''),
+    city: a.city,
+    primary: Number(a.is_primary_location) === 1,
+    active: a.status === undefined || Number(a.status) !== 0,
+  }))
+  pickupCache = { at: Date.now(), list }
+  return list
+}
+export async function resolvePickup() {
+  const list = (await pickupLocations()).filter((a) => a.active)
+  if (!list.length) throw new Error('No pickup address found in Shiprocket - add one under Settings > Pickup Addresses.')
+  const want = (config.shiprocket.pickupLocation || '').trim().toLowerCase()
+  return (
+    list.find((a) => a.name?.trim().toLowerCase() === want) ||
+    list.find((a) => config.shiprocket.pickupPincode && a.pin === config.shiprocket.pickupPincode) ||
+    list.find((a) => a.primary) ||
+    list[0]
+  )
+}
+
 export const parcelWeight = (units) => Math.max(0.1, Math.round(units * config.shiprocket.weightPerItemKg * 100) / 100)
 
 /**
@@ -84,7 +115,7 @@ export const parcelWeight = (units) => Math.max(0.1, Math.round(units * config.s
 export async function liveRate({ pincode, units, orderValue, cod = false }) {
   if (!shiprocketLive()) return null
   const params = new URLSearchParams({
-    pickup_postcode: config.shiprocket.pickupPincode,
+    pickup_postcode: (await resolvePickup().catch(() => null))?.pin || config.shiprocket.pickupPincode,
     delivery_postcode: pincode,
     weight: String(parcelWeight(units)),
     length: String(config.shiprocket.box.length),
@@ -123,7 +154,7 @@ export async function createShipment(order) {
   const body = {
     order_id: order.order_no,
     order_date: new Date(order.created_at).toISOString().replace('T', ' ').slice(0, 16),
-    pickup_location: config.shiprocket.pickupLocation,
+    pickup_location: (await resolvePickup()).name,
     billing_customer_name: first,
     billing_last_name: last,
     billing_address: a.line1,
@@ -146,7 +177,15 @@ export async function createShipment(order) {
   }
   const { ok, status, data } = await call('/orders/create/adhoc', { method: 'POST', body: JSON.stringify(body) })
   // Shiprocket can answer 200 with validation errors and no order_id
-  if (!ok || !data?.order_id) throw new Error(errorText(data, status))
+  if (!ok || !data?.order_id) {
+    let msg = errorText(data, status)
+    if (/pickup location/i.test(msg)) {
+      pickupCache = null
+      const names = (await pickupLocations().catch(() => [])).map((a) => `"${a.name}" (${a.pin})`).join(', ')
+      msg += names ? `. Your Shiprocket pickup addresses: ${names} - set SHIPROCKET_PICKUP_LOCATION to one of these names.` : ''
+    }
+    throw new Error(msg)
+  }
   return { shiprocketOrderId: String(data.order_id), shipmentId: data.shipment_id ? String(data.shipment_id) : null, awb: data.awb_code || null, courier: data.courier_name || null }
 }
 
