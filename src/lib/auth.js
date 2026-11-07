@@ -111,6 +111,29 @@ export async function setNewPassword(password) {
   if (error) throw new Error(friendly(error.message))
 }
 
+// Email links (reset password, confirm signup, magic link) use ?token_hash=…&type=… - see backend/README.md
+// for the email templates. Verified here in the page, so they work in any browser / device, and email
+// link scanners that pre-open links can't use them up (they don't run the page's code).
+export function linkFromUrl() {
+  const q = new URLSearchParams(window.location.search)
+  const h = new URLSearchParams(window.location.hash.replace(/^#/, ''))
+  return {
+    tokenHash: q.get('token_hash'),
+    type: q.get('type'),
+    // Supabase reports link problems in the URL, e.g. #error_code=otp_expired
+    errorCode: q.get('error_code') || h.get('error_code'),
+    errorText: q.get('error_description') || h.get('error_description'),
+  }
+}
+export async function verifyEmailLink(tokenHash, type) {
+  const sb = await client()
+  const { data, error } = await sb.auth.verifyOtp({ token_hash: tokenHash, type })
+  if (error) throw new Error(/expired|invalid|not found/i.test(error.message) ? 'This link has expired or was already used.' : error.message)
+  // tidy the address bar so a refresh doesn't try the used token again
+  window.history.replaceState(null, '', window.location.pathname)
+  return data.user
+}
+
 // fires 'PASSWORD_RECOVERY' when the visitor arrives from a reset-password email
 export async function onPasswordRecovery(cb) {
   const sb = await client()

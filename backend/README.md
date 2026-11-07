@@ -127,7 +127,11 @@ Settings in Supabase:
   - Username = your Brevo SMTP login
   - Password = a Brevo **SMTP key** (Brevo → SMTP & API → SMTP)
   - Sender = a sender verified in Brevo
-- **Authentication → Emails → Templates → Magic Link:** add `{{ .Token }}` so the email shows the 6-digit code.
+- **Authentication → Emails → Templates:** use links with `token_hash`. Our pages check them, so they work in any browser or device, and email link scanners can't use them up. In each template, replace the `{{ .ConfirmationURL }}` link with:
+  - **Reset Password:** `{{ .SiteURL }}/account/reset?token_hash={{ .TokenHash }}&type=recovery`
+  - **Confirm signup:** `{{ .SiteURL }}/account?token_hash={{ .TokenHash }}&type=signup`
+  - **Magic Link:** `{{ .SiteURL }}/account?token_hash={{ .TokenHash }}&type=email`, and also show the code with `{{ .Token }}`
+  - **Change Email Address:** `{{ .SiteURL }}/account?token_hash={{ .TokenHash }}&type=email_change`
 
 ### Order emails (Brevo API)
 

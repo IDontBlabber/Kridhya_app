@@ -6,14 +6,15 @@ import { IconArrow } from '../components/Icons'
 import { useAuth } from '../context/AuthContext'
 import { formatPrice } from '../data/site'
 import { hasBackend } from '../lib/backend'
-import { accessToken, myOrders } from '../lib/auth'
+import { accessToken, linkFromUrl, myOrders, verifyEmailLink } from '../lib/auth'
 import { api, payWithRazorpay } from '../lib/razorpay'
 import { fmtDateTime, stageOf } from '../lib/orders'
 import useDocumentMeta from '../hooks/useDocumentMeta'
 
 export default function Account() {
   useDocumentMeta('My account | Kridhya by Devanshi Agarwal', 'Your orders and saved details.')
-  const { user, ready, ensure, signOut } = useAuth()
+  const { user, ready, ensure, signOut, setUser } = useAuth()
+  const [linkMsg, setLinkMsg] = useState('')
   const [orders, setOrders] = useState(null)
   const [error, setError] = useState('')
   const [paying, setPaying] = useState('')
@@ -36,7 +37,23 @@ export default function Account() {
     }
   }
 
-  useEffect(() => { if (hasBackend) ensure() }, [ensure])
+  // confirm-signup / email sign-in links (?token_hash=…&type=…) are checked here - works in any browser
+  useEffect(() => {
+    if (!hasBackend) return
+    ensure().then(async () => {
+      const link = linkFromUrl()
+      if (link.tokenHash && ['signup', 'email', 'magiclink', 'invite', 'email_change'].includes(link.type)) {
+        try {
+          setUser(await verifyEmailLink(link.tokenHash, link.type))
+          setLinkMsg(link.type === 'signup' ? 'Your email is confirmed - welcome to Kridhya.' : '')
+        } catch (e) {
+          setLinkMsg(`${e.message} Sign in below, or ask for a new email.`)
+        }
+      } else if (link.errorCode) {
+        setLinkMsg(link.errorCode === 'otp_expired' ? 'That email link has expired or was already used. Sign in below, or ask for a new one.' : link.errorText || '')
+      }
+    })
+  }, [ensure, setUser])
   useEffect(() => {
     if (!user) return setOrders(null)
     myOrders().then(setOrders).catch((e) => setError(e.message))
@@ -47,6 +64,7 @@ export default function Account() {
       <InfoHero eyebrow="My account" title={user ? 'Your orders' : 'Sign in'} intro={user ? `Signed in as ${user.email}` : 'Follow your orders and keep your bag on every device.'} />
       <section className="section bg-ivory">
         <div className="container-site max-w-3xl">
+          {linkMsg && <p role="status" className="mb-6 border border-gold/40 bg-gold/10 px-4 py-3 text-[14.5px] text-wine-900">{linkMsg}</p>}
           {!hasBackend ? (
             <p className="text-[15px] text-wine-900/70">Accounts will be available once the online store is live.</p>
           ) : !ready ? (
