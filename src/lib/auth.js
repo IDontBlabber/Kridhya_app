@@ -65,7 +65,8 @@ export function passwordProblem(pw) {
   return ''
 }
 const friendly = (m = '') =>
-  /invalid login/i.test(m) ? 'That email or password is not right.'
+  /invalid login/i.test(m) ? 'We couldn’t sign you in with that email and password.'
+    : /error sending/i.test(m) ? 'We couldn’t send the email just now. Please try again in a few minutes, or contact us on WhatsApp.'
     : /not confirmed/i.test(m) ? 'Please confirm your email first - check your inbox for our link (or send it again below).'
       : /already registered|already exists/i.test(m) ? 'An account with this email already exists. Sign in instead, or reset your password.'
         : /email rate limit/i.test(m) ? 'We’ve sent several emails recently, so sending is paused for a while. Please use the newest email you already received (check spam too), or try again later.'

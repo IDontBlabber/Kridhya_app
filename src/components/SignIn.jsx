@@ -139,6 +139,17 @@ export default function SignIn({ title = 'Welcome to Kridhya', intro = 'Sign in 
           )}
 
           {error && <p role="alert" className="text-[14px] font-medium text-wine-600">{error}</p>}
+          {/* wrong password OR no account yet - Supabase never says which (privacy), so offer every next step */}
+          {mode === 'signin' && error.startsWith('We couldn’t sign you in') && (
+            <div className="space-y-3 border border-gold/40 bg-ivory/70 p-4 text-[14px] leading-relaxed text-wine-900/80">
+              <p>Check the email and password, or choose what fits:</p>
+              <div className="grid gap-2 sm:grid-cols-2">
+                <button type="button" onClick={() => { go('signup'); setF((x) => ({ ...x, password: '', confirm: '' })) }} className="btn btn-wine h-11 text-[12px]">New here? Create account</button>
+                <button type="button" onClick={() => go('forgot')} className="btn btn-outline-dark h-11 text-[12px]">Forgot password</button>
+              </div>
+              <button type="button" onClick={() => go('code')} className="link-underline text-[13px] text-wine-700">Or get a one-time sign-in code by email (works for new and existing accounts)</button>
+            </div>
+          )}
           {error.startsWith('Please confirm your email') && (
             <button type="button" disabled={busy || cooldown > 0} onClick={() => attempt(async () => { await resendConfirmation(f.email); setNotice('Confirmation email sent again.'); setCooldown(60) })} className="link-underline text-[13px] text-wine-700 disabled:text-wine-900/40">
               {cooldown ? `Send again in ${cooldown}s` : 'Send the confirmation email again'}
