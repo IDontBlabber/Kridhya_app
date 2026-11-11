@@ -1,6 +1,8 @@
 // Server-side settings (Vercel Functions). Secrets here are read from environment variables only and never
 // reach the browser - none of them start with VITE_. See backend/README.md for the full list.
 
+const COD_HIDDEN = true
+
 const env = (k, d = '') => (process.env[k] ?? d).trim()
 const num = (k, d) => (process.env[k] ? Number(process.env[k]) : d)
 
@@ -31,7 +33,9 @@ export const config = {
   shipping: {
     flatFee: num('SHIPPING_FLAT_FEE', 99), // used when Shiprocket is not set up or unreachable
     freeAbove: num('FREE_SHIPPING_ABOVE', 0), // 0 = never free; e.g. 2999 = free shipping on orders of ₹2,999+
-    codEnabled: env('COD_ENABLED', 'true') !== 'false',
+    // Cash on Delivery is HIDDEN for now (client request, Nov 2026). Everything for COD is still built:
+    // to bring it back, change COD_HIDDEN to false and redeploy (COD_ENABLED in Vercel then controls it as before).
+    codEnabled: !COD_HIDDEN && env('COD_ENABLED', 'true') !== 'false',
     codFee: num('COD_FEE', 0), // extra charge for Cash on Delivery
     codMax: num('COD_MAX_ORDER', 10000), // no COD above this order value
   },

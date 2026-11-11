@@ -57,7 +57,7 @@ export default function About() {
             </FadeUp>
           </div>
           <div className="md:col-span-5 md:col-start-8">
-            <ParallaxImage src={IMG.modelPortrait.src} alt={IMG.modelPortrait.alt} placeholder ratio="4/5" position="50% 30%" strength={8} className="mx-auto max-w-[460px] md:mr-0" />
+            <ParallaxImage src={IMG.whoWeAre.src} alt={IMG.whoWeAre.alt} ratio="4/5" position="50% 30%" strength={8} className="mx-auto max-w-[460px] md:mr-0" />
           </div>
         </div>
       </section>
