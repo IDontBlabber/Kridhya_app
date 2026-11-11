@@ -1,7 +1,7 @@
 // Brand-wide configuration. Items marked PENDING need client confirmation before launch.
 
 // PENDING: replace with the verified business WhatsApp number (country code, digits only).
-export const WHATSAPP_NUMBER = '919886921568'
+export const WHATSAPP_NUMBER = '919413548001'
 
 export const WHATSAPP_MESSAGES = {
   general: 'Hello Kridhya by Devanshi Agarwal, I would love some help choosing a piece. Could you assist me?',
@@ -43,9 +43,9 @@ export const HELP = [
 // Contact details shown on the Contact page and Corporate Gifting enquiry block.
 // Phone/WhatsApp mirrors WHATSAPP_NUMBER above. PENDING: confirm email, Instagram handle and studio hours with the client.
 export const CONTACT = {
-  phoneDisplay: '+91 98869 21568',
-  phoneHref: 'tel:+919886921568',
-  email: 'hello@kridhyabydevanshi.com',
+  phoneDisplay: '+91 94135 48001',
+  phoneHref: 'tel:+919413548001',
+  email: 'kridhyabydevanshi@gmail.com',
   instagram: { handle: '@kridhyabydevanshi', href: 'https://instagram.com/kridhyabydevanshi' },
   facebook: { label: 'Facebook', href: 'https://www.facebook.com/profile.php?id=61595468576080' },
   website: 'kridhyabydevanshi.com',

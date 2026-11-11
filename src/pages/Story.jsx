@@ -15,9 +15,9 @@ export default function Story() {
         eyebrow="Our Story"
         title="Small details, lasting meaning."
         intro="How a simple belief - that jewellery can carry the moments we want to keep close - became Kridhya."
-        image={IMG.womanWearing.src}
-        imageAlt={IMG.womanWearing.alt}
-        position="62% 28%"
+        image={IMG.storyHero.src}
+        imageAlt={IMG.storyHero.alt}
+        position="50% 40%"
         square
       >
         <div className="mt-8 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
@@ -38,7 +38,7 @@ export default function Story() {
         n="I"
         label="The beginning"
         title="Kridhya began with a simple belief"
-        img={IMG.storyStill}
+        img={IMG.storyBeginning}
         paras={[
           'That jewellery can carry the moments we want to keep close. What we wear says something about who we are - and the pieces we return to most often are the ones that remind us of a person, a place or a feeling.',
           'Our pieces are made to move easily between the everyday and the occasion, to be layered, gifted and worn for years.',
@@ -47,7 +47,7 @@ export default function Story() {
 
       {/* static banner - no scroll animation */}
       <section className="relative isolate overflow-hidden bg-wine-950 text-ivory">
-        <img src={IMG.heroBanner.src} srcSet={srcSetFor(IMG.heroBanner.src)} sizes="100vw" alt={IMG.heroBanner.alt} loading="lazy" decoding="async" className="absolute inset-0 -z-10 h-full w-full object-cover" />
+        <img src={IMG.storyQuote.src} srcSet={srcSetFor(IMG.storyQuote.src)} sizes="100vw" alt={IMG.storyQuote.alt} loading="lazy" decoding="async" className="absolute inset-0 -z-10 h-full w-full object-cover" />
         <div className="absolute inset-0 -z-10 bg-gradient-to-r from-wine-950/80 via-wine-950/35 to-transparent" />
         <div className="container-site flex min-h-[52svh] items-center py-10">
           <blockquote className="max-w-md font-display text-[clamp(calc(1.75rem_+_1px),calc(3.2vw_+_1px),calc(2.6rem_+_1px))] italic leading-tight">
@@ -61,7 +61,7 @@ export default function Story() {
         n="II"
         label="The design"
         title="Guided by symbols that last"
-        img={IMG.designSketch}
+        img={IMG.storyDesign}
         flip
         paras={[
           'From the endless line of the infinity loop to the quiet bloom of the lotus, our designs draw on shapes that feel timeless - simple enough to wear daily, meaningful enough to mark a milestone.',
@@ -72,7 +72,7 @@ export default function Story() {
       <section id="your-story" className="section grain relative scroll-mt-6 bg-wine-900 text-ivory">
         <div className="container-site grid items-center gap-10 md:grid-cols-12">
           <div className="md:col-span-5">
-            <ParallaxImage src={IMG.modelPortrait.src} alt={IMG.modelPortrait.alt} placeholder ratio="4/5" strength={8} />
+            <ParallaxImage src={IMG.storyYours.src} alt={IMG.storyYours.alt} ratio="4/5" position="50% 30%" strength={8} />
           </div>
           <div className="md:col-span-6 md:col-start-7">
             <FadeUp as="p" className="eyebrow text-gold">III · Your story</FadeUp>
@@ -103,7 +103,7 @@ function Chapter({ id, n, label, title, paras, img, flip = false }) {
           ))}
         </div>
         <ParallaxLayer distance={30} className={`md:col-span-5 ${flip ? 'md:order-1' : 'md:col-start-8'}`}>
-          <ParallaxImage src={img.src} alt={img.alt} placeholder ratio="4/5" strength={8} />
+          <ParallaxImage src={img.src} alt={img.alt} placeholder={img.placeholder} ratio="4/5" strength={8} />
         </ParallaxLayer>
       </article>
     </section>

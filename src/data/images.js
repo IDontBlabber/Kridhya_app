@@ -7,9 +7,9 @@ const e = (name) => `/images/editorial/${name}.webp`
 const g = (name) => `/images/generated/${name}.webp`
 
 // Responsive sources for the enhanced editorial images (800 / 1600px wide).
-const HIRES = ['hero-banner', 'story-still-life', 'model-portrait', 'design-sketch', 'artisan-detail', 'necklace-closeup', 'collection-still-life', 'woman-wearing', 'ring-still-life']
+const HIRES = ['story-hero', 'story-beginning', 'story-design', 'story-yours', 'philosophy-thoughtful', 'philosophy-timeless', 'philosophy-personal', 'hero-banner', 'story-still-life', 'model-portrait', 'design-sketch', 'artisan-detail', 'necklace-closeup', 'collection-still-life', 'woman-wearing', 'ring-still-life']
 const UPSCALED_4K = ['woman-wearing', 'story-still-life', 'hero-banner', 'design-sketch', 'model-portrait']
-const AI_4K = ['gift-box', 'gift-banner', 'gifting-hero']
+const AI_4K = ['gift-box', 'gift-banner', 'gifting-hero', 'gifting-boxes', 'story-quote']
 export function srcSetFor(src) {
   // 4K hero banners: /images/hero/hero-<name>-<width>.webp
   const h = /^\/images\/hero\/(hero-[\w-]+?)-(1080|1920|3840)\.webp$/.exec(src || '')
@@ -35,7 +35,8 @@ export const IMG = {
   // `position` is the focal point kept in frame on narrow/portrait screens.
   heroSlides: [
     // client-supplied 'Elegant Jewelry in Natural Light' (mirrored so the pieces sit opposite the headline), AI-upscaled to 4K
-    { name: 'infinity', alt: 'Kridhya infinity pendants in silver, rose gold and pearl displayed on driftwood with dried flowers', position: '82% 50%', mobilePosition: '64% 50%' },
+    // Images Direction PDF p.2 - Aevum earrings, pendant, bangle and ring on burgundy calla lilies (AI-upscaled to 4K)
+    { name: 'calla', alt: 'Kridhya infinity earrings, pendant, bangle and ring resting on burgundy calla lilies and satin', position: '72% 50%', mobilePosition: '70% 50%' },
     { name: 'bracelets', alt: 'Outstretched wrists wearing delicate gold chain bracelets against black drapery', position: '60% 45%', mobilePosition: '64% 50%', placeholder: true },
     { name: 'everyday-gold', alt: 'Layered gold necklaces and sculptural rings worn against warm skin tones', position: '50% 45%', mobilePosition: '50% 40%', placeholder: true },
     { name: 'gifting', alt: 'Polished gold herringbone necklace worn with a black blazer', position: '62% 40%', mobilePosition: '66% 40%', placeholder: true },
@@ -58,6 +59,18 @@ export const IMG = {
   giftBanner: { src: e('gift-curation'), alt: 'Gold lotus ring in an open burgundy velvet gift box on burgundy satin', position: '72% 50%' },
   // Corporate Gifting hero - 'Golden Floral Ring in Velvet Box' (4K), mirrored so the gift box sits left and the copy reads on the right
   giftingHero: { src: e('gifting-hero'), alt: 'Floral gold ring in an open burgundy velvet gift box on draped velvet among dried flowers', position: '35% 55%', mobilePosition: '28% 55%' },
+  // Images Direction PDF (Nov 2026) - Our Story, Corporate Gifting and About
+  storyHero: { src: e('story-hero'), alt: 'Portrait of a woman wearing Kridhya infinity drop earrings in low warm light' },
+  storyBeginning: { src: e('story-beginning'), alt: 'Stacked infinity rings on a twist of burgundy silk' },
+  storyQuote: { src: e('story-quote'), alt: 'Gold infinity pendant and earrings on a burgundy velvet heart' },
+  storyDesign: { src: e('story-design'), alt: 'Infinity eternity ring resting on a burgundy calla lily' },
+  storyYours: { src: e('story-yours'), alt: 'Woman in burgundy velvet wearing Kridhya drop earrings and pendant' },
+  giftingBoxes: { src: e('gifting-boxes'), alt: 'Kridhya bracelet, necklace and studs presented in burgundy gift boxes with branded ribbon', position: '45% 50%', mobilePosition: '30% 50%' },
+  philosophy: [
+    { src: e('philosophy-thoughtful'), alt: 'Layered infinity necklaces on a burgundy velvet bust beside infinity studs' },
+    { src: e('philosophy-timeless'), alt: 'Rose gold drop earrings, pendant and bracelet on a burgundy bust and hand' },
+    { src: e('philosophy-personal'), alt: 'Rose gold infinity bangle set with garnets on a stone among burgundy leaves' },
+  ],
   heartRose: { src: e('heart-necklace-rose-satin'), alt: 'Rose gold infinity heart necklace on satin', placeholder: true },
   heartSilver: { src: e('heart-necklace-silver-satin'), alt: 'Silver infinity heart necklace on satin', placeholder: true },
   doubleGold: { src: e('double-strand-gold-satin'), alt: 'Gold double strand infinity necklace on satin', placeholder: true },

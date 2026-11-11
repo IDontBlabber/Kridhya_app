@@ -122,7 +122,7 @@ function Hero() {
   const bannerY = useTransform(scrollYProgress, [0, 1], reduce ? ['0%', '0%'] : ['0%', '22%'])
   const copyY = useTransform(scrollYProgress, [0, 1], reduce ? ['0px', '0px'] : ['0px', '-110px'])
   const fade = useTransform(scrollYProgress, [0, 0.55], [1, 0])
-  const img = IMG.giftingHero
+  const img = IMG.giftingBoxes
   return (
     <section ref={ref} className="relative h-[100svh] min-h-[560px] w-full overflow-hidden bg-wine-950 text-ivory">
       <motion.div style={{ y: bannerY }} className="absolute inset-0">

@@ -82,7 +82,7 @@ export default function FontPicker() {
                       {f.note}
                     </span>
                     <span className="mt-1 block text-[14px] text-wine-900" style={{ fontFamily: f.sans, fontVariantNumeric: 'lining-nums tabular-nums' }}>
-                      ₹3,450 · +91 98869 21568
+                      ₹3,450 · +91 94135 48001
                     </span>
                   </button>
                 </li>
