@@ -143,11 +143,11 @@ export default function SignIn({ title = 'Welcome to Kridhya', intro = 'Sign in 
           {mode === 'signin' && error.startsWith('We couldn’t sign you in') && (
             <div className="space-y-3 border border-gold/40 bg-ivory/70 p-4 text-[14px] leading-relaxed text-wine-900/80">
               <p>Check the email and password, or choose what fits:</p>
-              <div className="grid gap-2 sm:grid-cols-2">
-                <button type="button" onClick={() => { go('signup'); setF((x) => ({ ...x, password: '', confirm: '' })) }} className="btn btn-wine h-11 text-[12px]">New here? Create account</button>
-                <button type="button" onClick={() => go('forgot')} className="btn btn-outline-dark h-11 text-[12px]">Forgot password</button>
+              <div className="flex flex-col gap-2">
+                <button type="button" onClick={() => { go('signup'); setF((x) => ({ ...x, password: '', confirm: '' })) }} className="btn btn-wine min-h-11 w-full whitespace-normal px-4 text-center sm:whitespace-normal">New here? Create an account</button>
+                <button type="button" onClick={() => go('forgot')} className="btn btn-outline-dark min-h-11 w-full whitespace-normal px-4 text-center sm:whitespace-normal">Reset my password</button>
               </div>
-              <button type="button" onClick={() => go('code')} className="link-underline text-[13px] text-wine-700">Or get a one-time sign-in code by email (works for new and existing accounts)</button>
+              <button type="button" onClick={() => go('code')} className="link-underline block text-left text-[13px] text-wine-700">Or sign in with a one-time code by email</button>
             </div>
           )}
           {error.startsWith('Please confirm your email') && (
