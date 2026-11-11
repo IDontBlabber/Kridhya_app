@@ -11,10 +11,22 @@ const must = ({ data, error }) => {
   return data
 }
 
-/* ---------- auth ---------- */
+/* ---------- auth: password, then a one-time code emailed to the admin (backend/database/005_admin_login_code.sql) ---------- */
+// true only when listed as admin AND this sign-in passed the code check
 async function isAdmin() {
   const { data, error } = await sb.rpc('is_admin')
   return !error && data === true
+}
+async function isAdminAccount() {
+  const { data, error } = await sb.rpc('is_admin_account')
+  return !error && data === true
+}
+async function codeApi(body) {
+  const token = (await sb.auth.getSession()).data.session?.access_token || ''
+  const res = await fetch('/api/admin/code', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify(body) })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) throw new Error(data.error || 'Something went wrong. Please try again.')
+  return data
 }
 export async function getSession() {
   const { data } = await sb.auth.getSession()
@@ -23,13 +35,32 @@ export async function getSession() {
   return { user: data.session.user.email }
 }
 export async function signIn(email, password) {
+  // any half-finished sign-in (password done, code never entered) is closed first
+  await sb.auth.signOut().catch(() => {})
   const { data, error } = await sb.auth.signInWithPassword({ email: email.trim(), password })
   if (error) return { error: error.message === 'Invalid login credentials' ? 'That email or password is not right.' : error.message }
-  if (!(await isAdmin())) {
+  if (!(await isAdminAccount())) {
     await sb.auth.signOut()
     return { error: 'This account is not an admin. Ask the site owner to add it in Supabase.' }
   }
-  return { session: { user: data.user.email } }
+  try {
+    const r = await codeApi({ action: 'send' })
+    return { needsCode: true, to: r.to, user: data.user.email }
+  } catch (e) {
+    await sb.auth.signOut()
+    return { error: e.message }
+  }
+}
+export async function resendCode() {
+  try { return await codeApi({ action: 'send' }) } catch (e) { return { error: e.message } }
+}
+export async function verifyCode(code) {
+  try {
+    const r = await codeApi({ action: 'verify', code })
+    return { session: { user: r.email } }
+  } catch (e) {
+    return { error: e.message }
+  }
 }
 export const signOut = () => sb.auth.signOut()
 export const accessToken = async () => (await sb.auth.getSession()).data.session?.access_token || ''

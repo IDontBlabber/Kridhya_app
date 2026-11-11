@@ -66,6 +66,14 @@ export async function signIn(user, password, remember) {
   return { session }
 }
 
+// step 2 (database mode): the 6-digit code emailed after the password
+export async function verifyCode(code) {
+  const res = await (await remote()).verifyCode(code)
+  if (!res.error) remove(LOCK)
+  return res
+}
+export const resendCode = async () => (await remote()).resendCode()
+
 export async function signOut() {
   remove(KEY)
   if (hasBackend) await (await remote()).signOut()

@@ -51,6 +51,15 @@ ${o.items.map((i) => `<tr><td style="padding:10px 0;border-bottom:1px solid #E7D
 const trackLink = (o) => `${config.siteUrl}/track-order?order=${encodeURIComponent(o.order_no)}`
 const first = (o) => esc(String(o.customer?.name || '').split(' ')[0] || 'there')
 
+// ── admin sign-in code ──
+export const adminCodeEmail = (code, minutes) => ({
+  subject: `${code} is your Kridhya admin sign-in code`,
+  html: shell('Your admin sign-in code', `<p>Someone signed in to the Kridhya admin dashboard with your password. To finish signing in, enter this code:</p>
+<p style="margin:22px 0;font-family:Georgia,serif;font-size:34px;letter-spacing:10px;color:#2B0912;text-align:center;">${esc(code)}</p>
+<p>The code works once and expires in ${minutes} minutes.</p>
+<p style="color:#8E6B36;">If this wasn’t you, don’t share the code - change your password straight away (Supabase &gt; Authentication &gt; Users).</p>`),
+})
+
 // ── templates ──
 export const templates = {
   confirmed: (o) => ({

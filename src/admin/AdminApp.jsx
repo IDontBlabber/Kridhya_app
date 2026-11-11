@@ -5,6 +5,7 @@ import Logo, { BRAND } from '../components/Logo'
 import Mandala from '../components/Mandala'
 import Login from './Login'
 import { getSession, signOut } from './auth'
+import { markAdminPreview } from '../lib/maintenance'
 import { AdminStoreProvider, hasBackend as backend, useAdmin } from './store'
 import { cx } from './ui'
 import Dashboard from './pages/Dashboard'
@@ -35,10 +36,12 @@ export default function AdminApp() {
   const [session, setSession] = useState(undefined) // undefined = still checking
   useEffect(() => { getSession().then((s) => setSession(s || null)) }, [])
   if (session === undefined) return <p className="p-10 text-center font-sans text-[14px] text-wine-900/60">Checking your session…</p>
+  // remember on this browser that an admin is signed in, so the site stays visible to them in maintenance mode
+  if (session) markAdminPreview(true)
   if (!session) return <Login onSignedIn={setSession} />
   return (
     <AdminStoreProvider>
-      <Shell user={session.user} onSignOut={() => signOut().finally(() => setSession(null))} />
+      <Shell user={session.user} onSignOut={() => { markAdminPreview(false); signOut().finally(() => setSession(null)) }} />
     </AdminStoreProvider>
   )
 }

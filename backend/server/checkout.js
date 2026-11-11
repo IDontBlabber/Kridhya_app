@@ -77,6 +77,9 @@ export async function quote({ items, pincode, payment = 'online' }) {
 
 /** Create the order. Online: also creates the Razorpay order for the payment window. */
 export async function createCheckout(body, user = null) {
+  // maintenance mode (Admin > Dashboard): no new orders while the site is closed
+  const [m] = await select('settings?key=eq.maintenance&select=value').catch(() => [])
+  if (m?.value?.on) throw new UserError('The Kridhya store is closed for a short update. Please try again soon, or message us on WhatsApp.')
   const payment = body.payment === 'cod' ? 'cod' : 'online'
   if (payment === 'online' && !paymentsLive()) throw new UserError('Online payment is not available right now. Please choose Cash on Delivery or message us on WhatsApp.')
   const items = cleanItems(body.items)

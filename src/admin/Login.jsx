@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { ArrowLeft, Eye, EyeOff, LockKeyhole } from 'lucide-react'
 import Logo, { BRAND, LogoStacked } from '../components/Logo'
 import Mandala from '../components/Mandala'
-import { isConfigured, signIn, usesEmail } from './auth'
+import { isConfigured, resendCode, signIn, usesEmail, verifyCode } from './auth'
 
 export default function Login({ onSignedIn }) {
   const [user, setUser] = useState('')
@@ -12,6 +12,9 @@ export default function Login({ onSignedIn }) {
   const [remember, setRemember] = useState(false)
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
+  const [step, setStep] = useState(null) // { to } once the password is accepted and a code was emailed
+  const [code, setCode] = useState('')
+  const [info, setInfo] = useState('')
 
   const submit = async (e) => {
     e.preventDefault()
@@ -23,7 +26,34 @@ export default function Login({ onSignedIn }) {
     if (res.error) {
       setError(res.error)
       setPassword('')
+    } else if (res.needsCode) {
+      setPassword('')
+      setCode('')
+      setInfo('')
+      setStep({ to: res.to })
     } else onSignedIn(res.session)
+  }
+
+  const submitCode = async (e) => {
+    e.preventDefault()
+    if (!/^\d{6}$/.test(code)) return setError('Enter the 6-digit code from the email.')
+    setBusy(true)
+    setError('')
+    const res = await verifyCode(code)
+    setBusy(false)
+    if (res.error) {
+      setError(res.error)
+      setCode('')
+      if (/sign in again/i.test(res.error)) setStep(null)
+    } else onSignedIn(res.session)
+  }
+  const resend = async () => {
+    setBusy(true)
+    setError('')
+    const r = await resendCode()
+    setBusy(false)
+    if (r.error) setError(r.error)
+    else setInfo(`A new code was sent to ${r.to}.`)
   }
 
   return (
@@ -49,6 +79,26 @@ export default function Login({ onSignedIn }) {
           <h1 className="mt-3 font-display text-[32px] font-normal leading-tight">Admin portal</h1>
           <p className="mt-2 text-[14.5px] leading-relaxed text-wine-900/65">Sign in to manage products, stock and the journal.</p>
 
+          {step ? (
+            <form onSubmit={submitCode} noValidate className="mt-8 space-y-5">
+              <p className="bg-[#f3ead9] px-3 py-2.5 text-[13.5px] leading-relaxed text-wine-900/80">
+                Password accepted. For security we’ve emailed a 6-digit code to <strong className="font-semibold">{step.to}</strong>. It expires in 10 minutes (check spam too).
+              </p>
+              <label className="block">
+                <span className="mb-1.5 block text-[13px] font-semibold">Sign-in code</span>
+                <input inputMode="numeric" autoComplete="one-time-code" autoFocus maxLength={6} value={code} onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))} placeholder="••••••" className="num h-12 w-full border border-wine-900/20 bg-white px-3.5 text-[20px] tracking-[0.5em] focus:border-wine-700 focus:outline-none focus:ring-2 focus:ring-gold/30" />
+              </label>
+              {error && <p role="alert" className=" bg-[#f8e3e6] px-3 py-2.5 text-[13.5px] font-medium text-[#9b2335]">{error}</p>}
+              {info && !error && <p role="status" className="text-[13px] text-gold-deep">{info}</p>}
+              <button type="submit" disabled={busy} className="btn btn-wine h-12 w-full disabled:opacity-60">
+                <LockKeyhole size={16} /> {busy ? 'Checking…' : 'Verify and sign in'}
+              </button>
+              <div className="flex justify-between text-[13px]">
+                <button type="button" disabled={busy} onClick={resend} className="font-medium text-wine-700 underline underline-offset-4 disabled:opacity-50">Send a new code</button>
+                <button type="button" onClick={() => { setStep(null); setError(''); setInfo('') }} className="font-medium text-wine-900/60 hover:text-wine-900">Use a different account</button>
+              </div>
+            </form>
+          ) : (
           <form onSubmit={submit} noValidate className="mt-8 space-y-5">
             <label className="block">
               <span className="mb-1.5 block text-[13px] font-semibold">{usesEmail ? 'Email' : 'Username'}</span>
@@ -73,6 +123,7 @@ export default function Login({ onSignedIn }) {
               <LockKeyhole size={16} /> {busy ? 'Signing in…' : 'Sign in'}
             </button>
           </form>
+          )}
         </div>
 
         <p className="text-center text-[12px] text-wine-900/45">{BRAND.tagline}</p>

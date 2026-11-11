@@ -10,15 +10,16 @@ import { mailLive, shiprocketLive } from '../../backend/server/config.js'
 import { notify } from '../../backend/server/email.js'
 import { addEvent, currentUser, getOrder, select, update } from '../../backend/server/db.js'
 import { handle, json, readJson } from '../../backend/server/http.js'
+import { verifiedAdmin } from '../../backend/server/adminCode.js'
 import { changeStatus, reconcilePayment, refundOrder, refundable, syncTracking } from '../../backend/server/orders.js'
 import { assignAwb, cancelShipment, courierOptions, getLabel, requestPickup, resetLogin, trackingUrl } from '../../backend/server/shiprocket.js'
 
 const NEED_SR = 'Shiprocket is not set up yet (SHIPROCKET_EMAIL, SHIPROCKET_PASSWORD, SHIPROCKET_PICKUP_PINCODE).'
 
 export const POST = handle(async (request) => {
-  const user = await currentUser(request)
-  const isAdmin = user && (await select(`admins?user_id=eq.${encodeURIComponent(user.id)}&select=user_id`)).length > 0
-  if (!isAdmin) return json({ error: 'Admins only' }, 403)
+  // admin + this sign-in passed the emailed code check
+  const user = await verifiedAdmin(request)
+  if (!user) return json({ error: 'Admins only - please sign in again (password + email code).' }, 403)
   const actor = user.email
   const body = await readJson(request)
   const { action } = body

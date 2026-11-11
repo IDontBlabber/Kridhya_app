@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { AlertTriangle, BookOpen, Boxes, Gem, IndianRupee, Megaphone, PackageX, Plus } from 'lucide-react'
 import { popupStatus } from './PopupPage'
 import { StatusBadge } from './Orders'
+import MaintenanceCard from './MaintenanceCard'
 import { useOrders } from '../orders'
 import { isActive, fmtDateTime } from '../../lib/orders'
 import { hasBackend } from '../store'
@@ -33,6 +34,8 @@ export default function Dashboard() {
         <Link to="/admin/journal/new"><Button variant="ghost"><Plus size={15} /> New post</Button></Link>
         <Link to="/admin/products/new"><Button><Plus size={15} /> New product</Button></Link>
       </PageHeader>
+
+      <MaintenanceCard />
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
         <Kpi icon={Gem} label="Products" value={products.length} note={`${live.length} published · ${products.length - live.length} draft`} />

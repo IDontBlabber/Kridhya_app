@@ -31,6 +31,8 @@ import PromoPopup from './components/PromoPopup'
 import { SHOW_FONT_PICKER } from './data/site'
 import { onCatalogueChange } from './admin/store'
 import { CatalogueVersion } from './lib/catalogue'
+import { useMaintenance } from './lib/maintenance'
+import Maintenance from './pages/Maintenance'
 
 // Admin portal is code-split: shoppers never download it.
 const AdminApp = lazy(() => import('./admin/AdminApp'))
@@ -73,6 +75,9 @@ export default function App() {
     return () => { window.removeEventListener('kridhya:catalogue', bump); stop() }
   }, [])
 
+  // maintenance mode (switched in Admin > Dashboard): visitors get the 'back soon' page; admins still see the site
+  const maintenance = useMaintenance()
+
   if (isAdmin)
     return (
       <Suspense fallback={<p className="p-10 text-center font-sans text-[14px] text-wine-900/60">Loading admin…</p>}>
@@ -81,6 +86,9 @@ export default function App() {
         </Routes>
       </Suspense>
     )
+
+  if (maintenance.checking) return <div className="min-h-[100svh] bg-ivory" aria-busy="true" />
+  if (maintenance.on && !maintenance.adminView) return <Maintenance message={maintenance.message} until={maintenance.until} />
 
   return (
     <CatalogueVersion.Provider value={catalogueVersion}>
