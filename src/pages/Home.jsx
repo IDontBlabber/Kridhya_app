@@ -306,6 +306,7 @@ function Gifting() {
 }
 
 function Journal() {
+  if (!POSTS.length) return null // no published journal posts yet: skip the section
   return (
     <section className="section bg-ivory">
       <div className="container-site">

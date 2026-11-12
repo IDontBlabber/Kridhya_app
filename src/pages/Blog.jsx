@@ -28,7 +28,7 @@ export default function Blog() {
           <motion.h1 initial={{ opacity: 0, y: 14, filter: 'blur(10px)' }} animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }} transition={{ duration: 1, ease: EASE }} className="h-display mt-5">
             The Journal
           </motion.h1>
-          <div className="mt-6 flex flex-col gap-3 border-b border-wine-900/10 pb-4 sm:flex-row sm:items-center sm:justify-between">
+          {POSTS.length > 0 && <div className="mt-6 flex flex-col gap-3 border-b border-wine-900/10 pb-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="scrollbar-none -mx-5 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:px-0" role="tablist" aria-label="Journal categories">
               {cats.map((c) => (
                 <button key={c} role="tab" aria-selected={cat === c} onClick={() => setCat(c)} className={`relative min-h-[44px] shrink-0 px-4 text-[10px] uppercase tracking-[0.2em] ${cat === c ? 'text-wine-900' : 'text-wine-900/55 hover:text-wine-900'}`}>
@@ -48,7 +48,7 @@ export default function Blog() {
                 className="h-11 w-full border border-wine-900/15 bg-transparent pl-9 pr-3 text-[13px] placeholder:text-wine-900/45 focus:border-wine-700 focus:outline-none"
               />
             </label>
-          </div>
+          </div>}
         </div>
       </section>
 
@@ -56,9 +56,16 @@ export default function Blog() {
         <div className="mx-auto w-[90%]">
           <AnimatePresence mode="wait">
             <motion.div key={`${cat}-${term}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
-              {!featured && (
+              {!featured && POSTS.length === 0 && (
+                <div className="mx-auto max-w-md border-t border-wine-900/10 py-16 text-center" role="status">
+                  <p className="font-display text-[clamp(1.6rem,3vw,2rem)] leading-tight text-wine-900">Stories are on their way</p>
+                  <p className="mt-3 text-[14px] leading-relaxed text-wine-900/70">Our first journal entries, with styling notes, care tips and gifting ideas, will be here soon. Until then, explore the collection.</p>
+                  <Link to="/shop" className="btn btn-wine mt-7">Shop the collection</Link>
+                </div>
+              )}
+              {!featured && POSTS.length > 0 && (
                 <p className="py-16 text-center text-[13px] text-wine-900/70" role="status">
-                  No articles match “{q.trim()}”. Try another word or <button type="button" onClick={() => { setQ(''); setCat('All') }} className="font-semibold text-wine-800 underline decoration-gold-deep/60 underline-offset-4">clear the search</button>.
+                  {term ? <>No articles match “{q.trim()}”.</> : <>No articles in {cat} yet.</>} Try another word or <button type="button" onClick={() => { setQ(''); setCat('All') }} className="font-semibold text-wine-800 underline decoration-gold-deep/60 underline-offset-4">clear the search</button>.
                 </p>
               )}
               {featured && (
