@@ -18,27 +18,20 @@ const STRIPS = 5
 const srcSet = (name) =>
   [1080, 1920, 3840].map((w) => `/images/hero/hero-${name}-${w}.webp ${w}w`).join(', ')
 
-// phones get a portrait version (jewellery composed into the top of a 9:16 frame) where one exists
-const PHONE = '(max-width: 767px) and (orientation: portrait)'
-const portraitSet = (name) => [720, 1080, 1440].map((w) => `/images/hero/hero-${name}-portrait-${w}.webp ${w}w`).join(', ')
-
 function Banner({ slide, eager, className = '', style }) {
   return (
-    <picture className="block h-full w-full">
-      {slide.portrait && <source media={PHONE} srcSet={portraitSet(slide.name)} sizes="100vw" />}
-      <img
-        src={`/images/hero/hero-${slide.name}-1920.webp`}
-        srcSet={srcSet(slide.name)}
-        sizes="100vw"
-        alt={slide.alt}
-        data-placeholder={slide.placeholder ? 'true' : undefined}
-        loading={eager ? 'eager' : 'lazy'}
-        fetchpriority={eager ? 'high' : 'auto'}
-        decoding="async"
-        className={`hero-img h-full w-full object-cover ${className}`}
-        style={{ '--pos': slide.position, '--pos-t': slide.tabletPosition, '--pos-m': slide.mobilePosition, ...style }}
-      />
-    </picture>
+    <img
+      src={`/images/hero/hero-${slide.name}-1920.webp`}
+      srcSet={srcSet(slide.name)}
+      sizes="100vw"
+      alt={slide.alt}
+      data-placeholder={slide.placeholder ? 'true' : undefined}
+      loading={eager ? 'eager' : 'lazy'}
+      fetchpriority={eager ? 'high' : 'auto'}
+      decoding="async"
+      className={`h-full w-full object-cover [object-position:var(--pos-m)] md:[object-position:var(--pos)] ${className}`}
+      style={{ '--pos': slide.position, '--pos-m': slide.mobilePosition, ...style }}
+    />
   )
 }
 
@@ -83,7 +76,7 @@ export default function HeroSlideshow() {
   useEffect(() => {
     const n = SLIDES[(index + 1) % SLIDES.length]
     const img = new Image()
-    img.srcset = n.portrait && window.matchMedia(PHONE).matches ? portraitSet(n.name) : srcSet(n.name)
+    img.srcset = srcSet(n.name)
     img.sizes = '100vw'
   }, [index])
 
@@ -92,7 +85,7 @@ export default function HeroSlideshow() {
   return (
     <motion.section
       ref={ref}
-      className="hero-section relative h-[100svh] min-h-[560px] w-full overflow-hidden bg-wine-950 text-ivory"
+      className="relative h-[100svh] min-h-[560px] w-full overflow-hidden bg-wine-950 text-ivory"
       style={{ touchAction: 'pan-y' }}
       aria-roledescription="carousel"
       aria-label="Featured jewellery"
@@ -108,9 +101,7 @@ export default function HeroSlideshow() {
       onMouseLeave={() => setHover(false)}
     >
       {/* banners */}
-      {/* on portrait phones/tablets the banner fills the top of the screen and fades into the wine background,
-          so the headline and buttons sit below the jewellery instead of on top of it (see .hero-media in index.css) */}
-      <motion.div style={{ y: bannerY }} className="hero-media">
+      <motion.div style={{ y: bannerY }} className="absolute inset-0">
         {prev !== null && (
           <div className="absolute inset-0">
             <Banner slide={SLIDES[prev]} />
@@ -149,17 +140,16 @@ export default function HeroSlideshow() {
             ))}
           </div>
         )}
-        <div className="hero-fade pointer-events-none absolute inset-x-0 bottom-0 h-24 md:h-40 bg-gradient-to-t from-wine-950 via-wine-950/70 to-transparent" />
       </motion.div>
 
       {/* brand grade: burgundy tint + legibility gradients */}
       <div className="pointer-events-none absolute inset-0 bg-wine-800/15 mix-blend-multiply" />
-      <div className="hero-side-grad pointer-events-none absolute inset-0 bg-gradient-to-r from-wine-950/75 via-wine-950/20 to-transparent" />
-      <div className="hero-foot pointer-events-none absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-wine-950/85 via-wine-950/25 to-transparent" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-wine-950/75 via-wine-950/20 to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-wine-950/85 via-wine-950/25 to-transparent" />
       <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-wine-950/50 to-transparent" />
 
       {/* copy */}
-      <motion.div style={{ y: copyY, opacity: fade }} className="hero-copy container-hero relative flex h-full flex-col justify-end pb-28 sm:pb-32">
+      <motion.div style={{ y: copyY, opacity: fade }} className="container-hero relative flex h-full flex-col justify-end pb-28 sm:pb-32">
         <div className="max-w-xl" aria-live={autoplay ? 'off' : 'polite'}>
           <AnimatePresence mode="wait">
             <motion.div key={index} initial="hidden" animate="show" exit="exit">
@@ -190,13 +180,13 @@ export default function HeroSlideshow() {
             <Link to="/shop" className="btn btn-gold group">
               Explore the Collection <IconArrow size={14} className="transition-transform group-hover:translate-x-1" />
             </Link>
-            <Link to="/corporate-gifting" className="btn btn-outline-light backdrop-blur-sm"><span className="min-[400px]:hidden">Corporate Gifting</span><span className="hidden min-[400px]:inline">Corporate Gifting &amp; Bulk Orders</span></Link>
+            <Link to="/corporate-gifting" className="btn btn-outline-light backdrop-blur-sm">Corporate Gifting &amp; Bulk Orders</Link>
           </motion.div>
         </div>
       </motion.div>
 
       {/* chapter navigation */}
-      <div className="hero-nav absolute inset-x-0 bottom-0 border-t border-ivory/15 bg-wine-950/30 backdrop-blur-md">
+      <div className="absolute inset-x-0 bottom-0 border-t border-ivory/15 bg-wine-950/30 backdrop-blur-md">
         <div className="container-site flex items-stretch">
           <div className="grid flex-1 grid-cols-4" role="tablist" aria-label="Choose slide">
             {SLIDES.map((s, i) => (
