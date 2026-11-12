@@ -124,8 +124,9 @@ function Hero() {
   const fade = useTransform(scrollYProgress, [0, 0.55], [1, 0])
   const img = IMG.giftingBoxes
   return (
-    <section ref={ref} className="relative h-[100svh] min-h-[560px] w-full overflow-hidden bg-wine-950 text-ivory">
-      <motion.div style={{ y: bannerY }} className="absolute inset-0">
+    <section ref={ref} className="hero-section relative h-[100svh] min-h-[640px] w-full overflow-hidden bg-wine-950 text-ivory" style={{ '--hero-copy-m': '400px', '--hero-copy-t': '420px' }}>
+      {/* portrait phones/tablets: photo on top fading into wine, copy underneath (.hero-media in index.css) */}
+      <motion.div style={{ y: bannerY }} className="hero-media">
         <motion.img
           src={img.src}
           srcSet={srcSetFor(img.src)}
@@ -135,18 +136,19 @@ function Hero() {
           initial={{ scale: reduce ? 1 : 1.1 }}
           animate={{ scale: 1 }}
           transition={{ duration: 2.4, ease: EASE }}
-          className="h-full w-full object-cover [object-position:var(--pos-m)] md:[object-position:var(--pos)]"
-          style={{ '--pos': img.position, '--pos-m': img.mobilePosition }}
+          className="hero-img h-full w-full object-cover"
+          style={{ '--pos': img.position, '--pos-t': '38% 50%', '--pos-m': '31% 50%' }}
         />
+        <div className="hero-fade pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-wine-950 via-wine-950/70 to-transparent md:h-40" />
       </motion.div>
 
       {/* brand grade: burgundy tint, copy-side gradient (right) and a soft foot for phones */}
       <div className="pointer-events-none absolute inset-0 bg-wine-800/15 mix-blend-multiply" />
-      <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-l from-wine-950/85 via-wine-950/35 to-transparent md:block" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-wine-950/95 via-wine-950/55 to-transparent md:h-2/5 md:from-wine-950/60 md:via-transparent" />
+      <div className="hero-side-grad pointer-events-none absolute inset-0 hidden bg-gradient-to-l from-wine-950/85 via-wine-950/35 to-transparent md:block" />
+      <div className="hero-foot pointer-events-none absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-wine-950/95 via-wine-950/55 to-transparent md:h-2/5 md:from-wine-950/60 md:via-transparent" />
       <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-wine-950/55 to-transparent" />
 
-      <motion.div style={{ y: copyY, opacity: fade }} className="container-hero relative flex h-full flex-col justify-end pb-16 sm:pb-20 md:items-end md:justify-center md:pb-0 md:pt-20">
+      <motion.div style={{ y: copyY, opacity: fade }} className="hero-copy container-hero relative flex h-full flex-col justify-end pb-16 sm:pb-20 md:items-end md:justify-center md:pb-0 md:pt-20">
         <div className="max-w-xl md:w-[46%] md:max-w-[560px]">
           <motion.p initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.3, ease: EASE }} className="eyebrow text-gold">
             Corporate gifting &amp; bulk orders

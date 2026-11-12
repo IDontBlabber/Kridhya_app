@@ -38,6 +38,27 @@
 }
 
 @layer components {
+  /* hero banner area: full screen on landscape screens; on portrait phones/tablets it takes the top of the
+     screen and fades into the wine background, leaving the bottom for the headline and buttons */
+  .hero-media { position: absolute; inset: 0; }
+  .hero-img { object-position: var(--pos); }
+  .hero-fade { display: none; }
+  /* --hero-copy-t / --hero-copy-m: room kept for the copy under the picture (set per page on the section) */
+  @media (max-width: 1023px) and (orientation: portrait) {
+    .hero-media { bottom: var(--hero-copy-t, 330px); }
+    .hero-img { object-position: var(--pos-t, var(--pos)); }
+    .hero-fade { display: block; }
+    .hero-side-grad, .hero-foot { display: none; }
+    .hero-copy { justify-content: flex-end !important; align-items: flex-start !important; padding-top: 0 !important; padding-bottom: 5rem !important; }
+  }
+  /* phones: no full-screen hero - photo at a fixed height, copy straight underneath, then the slide controls */
+  @media (max-width: 767px) and (orientation: portrait) {
+    .hero-section { height: auto !important; min-height: 0 !important; }
+    .hero-media { position: relative; inset: auto; height: min(122vw, 62svh); }
+    .hero-img { object-position: var(--pos-m, var(--pos)); }
+    .hero-copy { height: auto !important; align-items: stretch !important; margin-top: -1.75rem; padding-bottom: 2rem !important; }
+    .hero-nav { position: relative !important; }
+  }
   /* hero + header container: wider than body sections so hero copy sits further left, with less empty space on big screens */
   .container-hero { @apply mx-auto w-full max-w-[1500px] px-5 sm:px-8 lg:px-12; }
   .container-site { @apply mx-auto w-full max-w-site px-5 sm:px-8 lg:px-10; }

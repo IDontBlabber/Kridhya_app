@@ -47,12 +47,16 @@ export default function Story() {
 
       {/* static banner - no scroll animation */}
       <section className="relative isolate overflow-hidden bg-wine-950 text-ivory">
-        <img src={IMG.storyQuote.src} srcSet={srcSetFor(IMG.storyQuote.src)} sizes="100vw" alt={IMG.storyQuote.alt} loading="lazy" decoding="async" className="absolute inset-0 -z-10 h-full w-full object-cover" />
-        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-wine-950/80 via-wine-950/35 to-transparent" />
-        <div className="container-site flex min-h-[52svh] items-center py-10">
-          <blockquote className="max-w-md font-display text-[clamp(calc(1.75rem_+_1px),calc(3.2vw_+_1px),calc(2.6rem_+_1px))] italic leading-tight">
+        <img src={IMG.storyQuote.src} srcSet={srcSetFor(IMG.storyQuote.src)} sizes="100vw" alt={IMG.storyQuote.alt} loading="lazy" decoding="async" className="absolute inset-0 -z-10 hidden h-full w-full object-cover md:block" />
+        <div className="absolute inset-0 -z-10 hidden bg-gradient-to-r from-wine-950/80 via-wine-950/35 to-transparent md:block" />
+        {/* phones: the wide photo would only show dark velvet, so the quote sits above a square crop of the heart */}
+        <div className="container-site flex flex-col gap-8 py-14 md:min-h-[52svh] md:flex-row md:items-center md:py-10">
+          <blockquote className="max-w-md text-center font-display text-[clamp(calc(1.75rem_+_1px),calc(3.2vw_+_1px),calc(2.6rem_+_1px))] italic leading-tight md:text-left">
             “Jewellery is more than something we wear.”
           </blockquote>
+          <div className="mx-auto aspect-square w-full max-w-[360px] overflow-hidden md:hidden">
+            <img src={IMG.storyQuote.src} srcSet={srcSetFor(IMG.storyQuote.src)} sizes="100vw" alt="" aria-hidden="true" loading="lazy" decoding="async" className="h-full w-full scale-[1.15] object-cover [object-position:96%_55%]" />
+          </div>
         </div>
       </section>
 

@@ -115,11 +115,14 @@ function HighlightCard({ item, big = false }) {
       <div className={`overflow-hidden ${big ? 'aspect-[4/3] sm:aspect-[4/5] lg:aspect-auto lg:h-full lg:min-h-[560px]' : 'aspect-square'}`}>
         <img src={product.images[0]} alt={`${product.name} - ${product.short}`} loading="lazy" className="h-full w-full object-cover mix-blend-multiply transition-transform duration-[1.2s] ease-luxe group-hover:scale-[1.04]" />
       </div>
-      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-wine-950/85 via-wine-950/45 to-transparent p-3 pt-12 text-ivory sm:p-5 sm:pt-16">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-gold-light sm:text-[12px] sm:tracking-[0.18em]">{item.tag}</p>
-        <h3 className={`mt-1 font-display font-medium leading-tight ${big ? 'text-[20px] sm:text-[30px]' : 'text-[15px] sm:text-[20px]'}`}>{product.name}</h3>
+      {/* phones: small cards carry their caption under the photo (nothing covers the piece); the lead card and larger screens keep the overlay */}
+      <div className={big
+        ? 'absolute inset-x-0 bottom-0 bg-gradient-to-t from-wine-950/80 via-wine-950/30 to-transparent p-4 pt-16 text-ivory sm:p-5 sm:pt-16'
+        : 'px-2.5 pb-3 pt-2.5 text-wine-900 sm:absolute sm:inset-x-0 sm:bottom-0 sm:bg-gradient-to-t sm:from-wine-950/85 sm:via-wine-950/45 sm:to-transparent sm:p-5 sm:pt-16 sm:text-ivory'}>
+        <p className={`text-[10px] font-semibold uppercase tracking-[0.14em] sm:text-[12px] sm:tracking-[0.18em] ${big ? 'text-gold-light' : 'text-gold-deep sm:text-gold-light'}`}>{item.tag}</p>
+        <h3 className={`mt-1 font-display font-medium leading-tight ${big ? 'text-[22px] sm:text-[30px]' : 'text-[15px] sm:text-[20px]'}`}>{product.name}</h3>
         {big && <p className="mt-1.5 max-w-sm text-[13.5px] leading-snug text-ivory/80 sm:text-[15px]">{item.line}</p>}
-        <p className="num mt-1 text-[13px] text-ivory/90 sm:mt-1.5 sm:text-[15px]">{formatPrice(product.price)}</p>
+        <p className={`num mt-1 text-[13px] sm:mt-1.5 sm:text-[15px] ${big ? 'text-ivory/90' : 'text-wine-900/75 sm:text-ivory/90'}`}>{formatPrice(product.price)}</p>
       </div>
     </Link>
   )
@@ -262,19 +265,30 @@ function ParallaxColumns() {
 function Gifting() {
   return (
     <section className="relative isolate overflow-hidden bg-wine-950 text-ivory">
+      {/* tablets and up: the wide banner, copy on its plain dark left half */}
       <img
         src={IMG.giftBanner.src}
         srcSet={srcSetFor(IMG.giftBanner.src)}
         sizes="100vw"
-        alt={IMG.giftBanner.alt}
+        alt=""
+        aria-hidden="true"
         loading="lazy"
         decoding="async"
-        className="absolute inset-0 -z-10 h-full w-full object-cover"
+        className="absolute inset-0 -z-10 hidden h-full w-full object-cover md:block"
         style={{ objectPosition: IMG.giftBanner.position }}
       />
-      {/* phones: the framed photo sits behind the copy, so darken it; from md the banner's own dark left half carries the text */}
-      <div className="absolute inset-0 -z-10 bg-wine-950/70 md:hidden" />
-      <div className="container-site flex min-h-[64svh] items-center py-14 md:min-h-[56vw] lg:min-h-[min(56.25vw,720px)]">
+      {/* phones: soft wine backdrop, the framed photo as its own card above the copy (nothing sits on top of the jewellery) */}
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(120%_70%_at_50%_0%,#5a1a2a_0%,#2a0a12_60%,#1a060b_100%)] md:hidden" />
+      <div className="container-site flex flex-col gap-9 py-14 md:min-h-[56vw] md:flex-row md:items-center md:py-14 lg:min-h-[min(56.25vw,720px)]">
+        <img
+          src="/images/editorial/gift-meaningful-card-800.webp"
+          srcSet="/images/editorial/gift-meaningful-card-800.webp 800w, /images/editorial/gift-meaningful-card-1200.webp 1200w"
+          sizes="80vw"
+          alt={IMG.giftBanner.alt}
+          loading="lazy"
+          decoding="async"
+          className="mx-auto aspect-[4/5] w-[78%] max-w-[340px] object-cover shadow-[0_30px_60px_-20px_rgba(0,0,0,0.65)] ring-1 ring-gold/25 md:hidden"
+        />
         <div className="max-w-md">
           <p className="eyebrow text-gold">Corporate gifting &amp; bulk orders</p>
           <h2 className="h-section mt-3">Gifting, made meaningful.</h2>
