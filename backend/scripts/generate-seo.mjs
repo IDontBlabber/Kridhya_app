@@ -40,7 +40,7 @@ const STATIC = [
   ['/', '1.0', 'weekly'], ['/shop', '0.9', 'daily'], ['/collections', '0.8', 'weekly'], ['/corporate-gifting', '0.8', 'monthly'],
   ['/our-story', '0.6', 'monthly'], ['/about', '0.6', 'monthly'], ['/blog', '0.7', 'weekly'], ['/contact', '0.5', 'yearly'],
   ['/faq', '0.4', 'yearly'], ['/jewellery-care', '0.4', 'yearly'], ['/shipping-returns', '0.4', 'yearly'],
-  ['/privacy-policy', '0.2', 'yearly'], ['/terms', '0.2', 'yearly'],
+  ['/privacy-policy', '0.2', 'yearly'], ['/terms', '0.2', 'yearly'], ['/terms-of-service', '0.2', 'yearly'],
 ]
 const urls = [
   ...STATIC.map(([path, priority, freq]) => ({ loc: path, priority, freq })),

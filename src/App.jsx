@@ -25,7 +25,7 @@ import OrderConfirmed from './pages/OrderConfirmed'
 import TrackOrder from './pages/TrackOrder'
 import Account from './pages/Account'
 import ResetPassword from './pages/ResetPassword'
-import { Faq, JewelleryCare, ShippingReturns, Privacy, Terms } from './pages/Info'
+import { Faq, JewelleryCare, ShippingReturns, Privacy, Terms, TermsOfService } from './pages/Info'
 import FontPicker from './components/FontPicker'
 import PromoPopup from './components/PromoPopup'
 import { SHOW_FONT_PICKER } from './data/site'
@@ -130,6 +130,7 @@ export default function App() {
                 <Route path="/shipping-returns" element={<ShippingReturns />} />
                 <Route path="/privacy-policy" element={<Privacy />} />
                 <Route path="/terms" element={<Terms />} />
+                <Route path="/terms-of-service" element={<TermsOfService />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>

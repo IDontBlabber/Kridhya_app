@@ -38,6 +38,7 @@ export const HELP = [
   { label: 'Shipping & Returns', to: '/shipping-returns' },
   { label: 'Privacy Policy', to: '/privacy-policy' },
   { label: 'Terms & Conditions', to: '/terms' },
+  { label: 'Terms of Service', to: '/terms-of-service' },
 ]
 
 // Contact details shown on the Contact page and Corporate Gifting enquiry block.

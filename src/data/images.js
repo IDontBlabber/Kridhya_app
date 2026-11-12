@@ -39,10 +39,9 @@ export const IMG = {
     { name: 'calla', alt: 'Kridhya infinity earrings, pendant, bangle and ring resting on burgundy calla lilies and satin', position: '72% 50%', mobilePosition: '70% 50%' },
     // KRIDHYA/16.png and 17.png (AI-upscaled to 4K; picture lifted so the heart sits higher in the frame)
     { name: 'heart', alt: 'Gold infinity pendant and matching earrings on a burgundy velvet heart', position: '50% 50%', mobilePosition: '74% 45%' },
+    { name: 'heart-necklace', alt: 'Gold infinity necklace and earrings resting on a burgundy velvet heart', position: '75% 55%', mobilePosition: '82% 55%' },
     // KRIDHYA/29.png (fuller frame of the same photo, beige band trimmed), AI-upscaled to 4K
     { name: 'necklace-hands', alt: 'Layered gold infinity necklaces and stacked infinity rings worn together', position: '68% 50%', mobilePosition: '58% 50%' },
-    // KRIDHYA/17.png - recomposed so the whole heart sits in frame (moved up and in from the right edge)
-    { name: 'heart-necklace', alt: 'Gold infinity necklace and earrings resting on a burgundy velvet heart', position: '60% 50%', mobilePosition: '63% 50%' },
   ],
   // Editorial slots - the client's supplied photos, cleaned of edge bands and enhanced
   // (2-step Lanczos upscale + edge-aware sharpening) to 1600px, with an 800px version for phones.

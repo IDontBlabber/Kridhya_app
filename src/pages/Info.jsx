@@ -72,9 +72,25 @@ export function ShippingReturns() {
         <Block title="Delivery">
           <p>Orders are packed in Kridhya gift packaging. Delivery charges and timelines are confirmed with you when your order is accepted.</p>
         </Block>
-        <Block title="Exchanges & returns">
-          <p>If something arrives damaged or is not what you ordered, contact us as soon as you can with your order number and a photo. We will explain the next steps.</p>
-          <p>The exact return and exchange window will be published here once confirmed.</p>
+        <h2 id="returns-exchange" className="mb-3 mt-14 scroll-mt-28 border-t border-wine-900/15 pt-12 font-display text-[clamp(1.7rem,3vw,2.2rem)] font-normal leading-tight">Returns &amp; Exchange Policy</h2>
+        <p className="mb-8 text-[15px] leading-[1.75] text-wine-900/80">At Kridhya, every piece is thoughtfully crafted with care. If something isn’t right, we’re here to help.</p>
+        <Block title="Exchanges">
+          <p>We offer exchanges within <strong className="font-semibold text-wine-900">48 hours of delivery</strong>. Refunds to the original payment method are not available.</p>
+        </Block>
+        <Block title="Store Credit">
+          <p>If an exchange isn’t possible, store credit equal to your order value may be issued, valid for <strong className="font-semibold text-wine-900">6 months</strong>.</p>
+        </Block>
+        <Block title="Customized Pieces">
+          <p>Personalized, customized, or engraved jewellery is final sale and cannot be exchanged, except in the case of a manufacturing defect.</p>
+        </Block>
+        <Block title="Shipping Costs">
+          <p>Kridhya covers return shipping for manufacturing defects or incorrect orders. For exchanges due to size, style, or preference, return shipping is the customer’s responsibility.</p>
+        </Block>
+        <Block title="How to Request an Exchange">
+          <p>Email us at <a href={`mailto:${CONTACT.email}`} className="underline decoration-gold underline-offset-4">{CONTACT.email}</a> within 48 hours of delivery with your order number and reason for exchange.</p>
+        </Block>
+        <Block title="Eligibility">
+          <p>Items must be unworn, undamaged, and returned in their original packaging, including the keepsake box.</p>
         </Block>
         <Block title="Need help?">
           <p>Call or WhatsApp {CONTACT.phoneDisplay}, or write to {CONTACT.email}.</p>
@@ -99,6 +115,42 @@ export function Privacy() {
         </Block>
         <Block title="Your choices">
           <p>You can ask us to update or delete your details, or unsubscribe from our emails at any time by writing to {CONTACT.email}.</p>
+        </Block>
+      </InfoBody>
+    </>
+  )
+}
+
+export function TermsOfService() {
+  useDocumentMeta('Terms of Service | Kridhya by Devanshi Agarwal', 'The terms of service for using kridhyabydevanshi.com and shopping with Kridhya by Devanshi Agarwal.')
+  return (
+    <>
+      <InfoHero eyebrow="Legal" title="Terms of service" intro="The terms that apply when you visit kridhyabydevanshi.com and shop with us." />
+      <InfoBody>
+        <Block title="Copyright">
+          <p>The jewelry designs, written, visual and audio content, and website design and processes are the property of Kridhya by Devanshi Agarwal and its affiliates/vendors and are protected by The Indian and international copyright laws.</p>
+        </Block>
+        <Block title="Trademarks">
+          <p>The trademarks or trade dress of Kridhya by Devanshi Agarwal and our affiliates may not be used without our written permission. Trademarks or trade dress include the Kridhya by Devanshi Agarwal name, logo and other graphics, page headers, button icons, scripts and service names of Kridhya by Devanshi Agarwal products and programs, are the property of Kridhya by Devanshi Agarwal and its affiliates and are protected by The Indian and international trademark laws. All other trademarks that appear on this site are the property of their respective owners, who may or may not be affiliated with, connected to, or sponsored by us or our affiliates.</p>
+        </Block>
+        <Block title="Use">
+          <p>You have permission to electronically copy and print hard copies of pages from this website solely for personal, non-commercial purposes related to placing an order or shopping with kridhyabydevanshi.com. Unless we give you written permission in advance, any other use of this website, its content, and its information, including linking or framing to this website, are strictly prohibited.</p>
+        </Block>
+        <Block title="Errors and Inaccuracies">
+          <p>Our goal is to provide complete, accurate, and up-to-date information on our website. Unfortunately, it is not possible to ensure that any website is completely free of human or technological errors. This site may contain typographical mistakes, inaccuracies, or omissions, some of which may relate to pricing and availability, and some information may not be complete or current. We reserve the right to correct any errors, inaccuracies, or omissions—including after an order has been submitted—and to change or update information at any time without prior notice. We sincerely apologize for any inconvenience this may cause.</p>
+        </Block>
+        <Block title="Disclaimer of liability">
+          <p>We make no representations or warranties of any kind, whether expressed or implied, with respect to this website, its content, or the information available on or through it; they are provided “as is,” with all faults. Except as otherwise provided under applicable laws, we and our corporate affiliates, and the directors, officers, employees, agents, contractors, successors and assigns of each, will not be liable for any damages whatsoever arising out of, or related to the use of this website or any other website linked to it. This limitation of liability applies to direct, indirect, consequential, special, punitive, or other damages you or others may suffer, as well as damages for lost profits, business interruption, or the loss of data or information, even if we are notified in advance of the potential for any such damages.</p>
+        </Block>
+        <Block title="No Confidentiality">
+          <p>Except for information necessary to place an order, we do not want to receive confidential or proprietary information or trade secrets through this website. Any information, materials, suggestions, ideas, or comments sent to us will be deemed non-confidential, and by submitting it, you are granting us an irrevocable and unrestricted license to use, modify, reproduce, transmit, display, and distribute it for any purpose whatsoever, with no payment or other compensation to you. However, we will not use your name unless we are required by law to identify the source of the materials, information, suggestions, ideas, or comments, or unless we first obtain your permission.</p>
+        </Block>
+        <Block title="Applicable Laws">
+          <p>By visiting this website, you agree that the laws of India, without regard to principles of conflict of laws, will govern the Terms of Service / Conditions of Use of this Website and any dispute of any sort that might arise between you and us or any of our affiliates shall be subject to exclusive jurisdiction of Court in Jodhpur, India.</p>
+        </Block>
+        <Block title="Protecting Your Information">
+          <p>As part of our ongoing commitment to ensure that your shopping experience with kridhyabydevanshi.com is protected, kridhyabydevanshi.com will prosecute all unauthorized or fraudulent transactions to the fullest extent allowed by law.</p>
+          <p>Should you have other questions or concerns about these privacy policies, please call us at <a href={CONTACT.phoneHref} className="num underline decoration-gold underline-offset-4">{CONTACT.phoneDisplay}</a> or send us an email at <a href={`mailto:${CONTACT.email}`} className="underline decoration-gold underline-offset-4">{CONTACT.email}</a>.</p>
         </Block>
       </InfoBody>
     </>

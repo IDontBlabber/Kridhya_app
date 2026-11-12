@@ -8,7 +8,7 @@ import { useAuth } from '../context/AuthContext'
 import { hasBackend } from '../lib/backend'
 
 // Pages whose first section is dark - header text is beige there, burgundy on light pages.
-const DARK_TOP = ['/', '/contact', '/corporate-gifting', '/our-story', '/about', '/collections', '/checkout', '/order-confirmed', '/track-order', '/account', '/account/reset', '/faq', '/jewellery-care', '/shipping-returns', '/privacy-policy', '/terms']
+const DARK_TOP = ['/', '/contact', '/corporate-gifting', '/our-story', '/about', '/collections', '/checkout', '/order-confirmed', '/track-order', '/account', '/account/reset', '/faq', '/jewellery-care', '/shipping-returns', '/privacy-policy', '/terms', '/terms-of-service']
 
 // Nested routes light up their section: products → Shop, category archives → Collections, posts → Journal.
 function isSection(path, to) {
