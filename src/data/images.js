@@ -38,8 +38,8 @@ export const IMG = {
     // Images Direction PDF p.2 - Aevum earrings, pendant, bangle and ring on burgundy calla lilies (AI-upscaled to 4K)
     { name: 'calla', alt: 'Kridhya infinity earrings, pendant, bangle and ring resting on burgundy calla lilies and satin', position: '72% 50%', tabletPosition: '100% 50%', mobilePosition: '80% 50%' },
     // KRIDHYA/16.png and 17.png (AI-upscaled to 4K; picture lifted so the heart sits higher in the frame)
-    { name: 'heart', alt: 'Gold infinity pendant and matching earrings on a burgundy velvet heart', position: '50% 50%', tabletPosition: '100% 50%', mobilePosition: '50% 22%', portrait: true },
-    { name: 'heart-necklace', alt: 'Gold infinity necklace and earrings resting on a burgundy velvet heart', position: '75% 55%', tabletPosition: '100% 55%', mobilePosition: '50% 22%', portrait: true },
+    { name: 'heart', alt: 'Gold infinity pendant and matching earrings on a burgundy velvet heart', position: '50% 50%', tabletPosition: '100% 50%', mobilePosition: '74% 45%' },
+    { name: 'heart-necklace', alt: 'Gold infinity necklace and earrings resting on a burgundy velvet heart', position: '75% 55%', tabletPosition: '100% 55%', mobilePosition: '82% 55%' },
     // KRIDHYA/29.png (fuller frame of the same photo, beige band trimmed), AI-upscaled to 4K
     { name: 'necklace-hands', alt: 'Layered gold infinity necklaces and stacked infinity rings worn together', position: '68% 50%', tabletPosition: '69% 50%', mobilePosition: '50% 0%', portrait: true },
   ],
